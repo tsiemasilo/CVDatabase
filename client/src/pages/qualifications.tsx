@@ -103,74 +103,87 @@ export default function Qualifications() {
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          {/* Header */}
-          <div className="bg-blue-900 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
-            <h2 className="text-lg font-medium">Qualification type</h2>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm">Actions</span>
-              <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="bg-white text-blue-900 hover:bg-gray-100">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
+        {/* Action Bar */}
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Qualifications Management</h1>
+          <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+            <DialogTrigger asChild>
+              <Button className="btn-primary btn-icon">
+                <Plus className="w-4 h-4" />
+                Add Qualification
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Qualification Type</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="type">Qualification Type</Label>
+                  <Input
+                    id="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    placeholder="Enter qualification type"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="name">Qualification Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Enter qualification name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Enter qualification description"
+                    rows={3}
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                    Cancel
                   </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Qualification Type</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="type">Qualification Type</Label>
-                      <Input
-                        id="type"
-                        value={formData.type}
-                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                        placeholder="Enter qualification type"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="name">Qualification Name</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="Enter qualification name"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        placeholder="Enter qualification description"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="flex justify-end space-x-2">
-                      <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
-                        Cancel
-                      </Button>
-                      <Button onClick={handleAdd}>
-                        Add Qualification
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
+                  <Button onClick={handleAdd}>
+                    Add Qualification
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-          {/* Table */}
+        {/* CV Table */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <tbody>
+              <thead>
+                <tr style={{ backgroundColor: 'rgb(0, 0, 83)' }} className="text-white">
+                  <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                    Qualification Type
+                  </th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {qualifications.map((qualification) => (
-                  <tr key={qualification.id} className="border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 w-full">
-                      {qualification.type}
+                  <tr key={qualification.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      <div>
+                        <div className="font-medium">{qualification.type}</div>
+                        <div className="text-xs text-gray-500 mt-1">{qualification.name}</div>
+                        {qualification.description && (
+                          <div className="text-xs text-gray-400 mt-1">{qualification.description}</div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center space-x-2">
@@ -178,7 +191,7 @@ export default function Qualifications() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEdit(qualification)}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="btn-secondary btn-icon h-8 w-8 p-0"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -186,7 +199,7 @@ export default function Qualifications() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(qualification.id)}
-                          className="text-red-600 hover:text-red-800"
+                          className="btn-danger btn-icon h-8 w-8 p-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
