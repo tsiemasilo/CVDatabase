@@ -259,6 +259,7 @@ export default function CVDatabase() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
             {/* Basic Filters */}
             <div className="rounded-lg overflow-hidden mb-6">
