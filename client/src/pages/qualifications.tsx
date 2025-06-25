@@ -184,8 +184,36 @@ export default function Qualifications() {
     }
   };
 
+  const [editingQualificationName, setEditingQualificationName] = useState<QualificationName | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    qualificationType: "",
+    qualificationName: "",
+    description: ""
+  });
+
   const handleEditQualificationName = (qualificationName: QualificationName) => {
-    console.log("Edit qualification name:", qualificationName);
+    setEditingQualificationName(qualificationName);
+    setEditFormData({
+      qualificationType: qualificationName.qualificationType,
+      qualificationName: qualificationName.qualificationName,
+      description: qualificationName.description
+    });
+  };
+
+  const handleUpdateQualificationName = () => {
+    if (editingQualificationName && editFormData.qualificationType && editFormData.qualificationName) {
+      setQualificationNames(qualificationNames.map(q => 
+        q.id === editingQualificationName.id 
+          ? { ...q, ...editFormData }
+          : q
+      ));
+      setEditingQualificationName(null);
+      setEditFormData({
+        qualificationType: "",
+        qualificationName: "",
+        description: ""
+      });
+    }
   };
 
   const handleDeleteQualificationName = (id: number) => {
@@ -499,6 +527,69 @@ export default function Qualifications() {
             </table>
           </div>
         </div>
+
+        {/* Edit Qualification Name Modal */}
+        <Dialog open={editingQualificationName !== null} onOpenChange={() => setEditingQualificationName(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Qualification</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  • Qualification Type
+                </label>
+                <Select 
+                  value={editFormData.qualificationType} 
+                  onValueChange={(value) => setEditFormData({...editFormData, qualificationType: value})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select qualification type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {qualifications.map((qual) => (
+                      <SelectItem key={qual.id} value={qual.type}>
+                        {qual.type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  • Qualification Name
+                </label>
+                <Input
+                  value={editFormData.qualificationName}
+                  onChange={(e) => setEditFormData({...editFormData, qualificationName: e.target.value})}
+                  placeholder="Enter qualification name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  • Description
+                </label>
+                <Textarea
+                  value={editFormData.description}
+                  onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
+                  placeholder="Enter description"
+                  rows={4}
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditingQualificationName(null)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleUpdateQualificationName}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  Update
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
