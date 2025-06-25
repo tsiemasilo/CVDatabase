@@ -107,6 +107,8 @@ Abstracted storage interface in `server/storage.ts`:
 ```
 Changelog:
 - June 25, 2025. Initial setup
+- June 25, 2025. Fixed React import error in qualifications.tsx - replaced React.useEffect with useEffect
+- June 25, 2025. Implemented comprehensive filter functionality across all pages - all apply filter buttons now work correctly
 ```
 
 ## User Preferences

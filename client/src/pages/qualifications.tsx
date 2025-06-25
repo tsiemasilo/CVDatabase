@@ -236,7 +236,7 @@ export default function Qualifications() {
   };
 
   // Update filtered list when qualificationNames changes
-  React.useEffect(() => {
+  useEffect(() => {
     handleApplyQualificationFilter();
   }, [qualificationNames, selectedQualificationTypeFilter]);
 
