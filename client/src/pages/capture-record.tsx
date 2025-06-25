@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { DEPARTMENTS, ROLES, LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_NAMES } from "@shared/data";
+import { DEPARTMENTS, ROLES, LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
 
 export default function CaptureRecord() {
   const { toast } = useToast();
@@ -41,6 +41,13 @@ export default function CaptureRecord() {
     return ROLES
       .filter(role => role.department === formData.department)
       .map(role => role.role);
+  };
+
+  // Get qualification names for the selected qualification type
+  const getAvailableQualificationNames = () => {
+    if (!formData.qualificationType) return [];
+    const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === formData.qualificationType);
+    return selectedMapping ? selectedMapping.names : [];
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -423,7 +430,11 @@ export default function CaptureRecord() {
                   <Label htmlFor="qualificationType">Qualification Type</Label>
                   <Select
                     value={formData.qualificationType}
-                    onValueChange={(value) => handleInputChange("qualificationType", value)}
+                    onValueChange={(value) => {
+                      handleInputChange("qualificationType", value);
+                      // Clear qualification name when type changes
+                      handleInputChange("qualificationName", "");
+                    }}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select qualification type" />
@@ -442,12 +453,13 @@ export default function CaptureRecord() {
                   <Select
                     value={formData.qualificationName}
                     onValueChange={(value) => handleInputChange("qualificationName", value)}
+                    disabled={!formData.qualificationType}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select qualification name" />
+                      <SelectValue placeholder={formData.qualificationType ? "Select qualification name" : "Select qualification type first"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {QUALIFICATION_NAMES.map((name) => (
+                      {getAvailableQualificationNames().map((name) => (
                         <SelectItem key={name} value={name}>
                           {name}
                         </SelectItem>

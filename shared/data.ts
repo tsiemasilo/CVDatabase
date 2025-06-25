@@ -112,28 +112,75 @@ export const LANGUAGES = [
   "Sepedi", "isiSwati", "Xitsonga", "Tshivenda", "isiNdebele"
 ];
 
-export const QUALIFICATION_TYPES = [
-  "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
-  "National Diplomas and Diplomas (NQF 6)", 
-  "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
-  "Honours Degree, Post Graduate Diploma (NQF 8)",
-  "Master's Degree (NQF 9)",
-  "Doctoral Degree (NQF 10)"
+export interface QualificationMapping {
+  type: string;
+  names: string[];
+}
+
+export const QUALIFICATION_MAPPINGS: QualificationMapping[] = [
+  {
+    type: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+    names: [
+      "Higher Certificate in Information Technology",
+      "Higher Certificate in Business Management",
+      "Higher Certificate in Engineering",
+      "Advanced National Vocational Certificate"
+    ]
+  },
+  {
+    type: "National Diplomas and Diplomas (NQF 6)",
+    names: [
+      "National Diploma in Engineering",
+      "National Diploma in Information Technology", 
+      "National Diploma in Business Studies",
+      "National Diploma in Marketing",
+      "Diploma in Nursing"
+    ]
+  },
+  {
+    type: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+    names: [
+      "Bachelor of Commerce",
+      "Bachelor of Science",
+      "Bachelor of Arts",
+      "Bachelor of Technology",
+      "Bachelor of Engineering",
+      "Advanced Diploma in Engineering",
+      "Post Graduate Certificate in Education"
+    ]
+  },
+  {
+    type: "Honours Degree, Post Graduate Diploma (NQF 8)",
+    names: [
+      "Bachelor of Commerce Honours",
+      "Bachelor of Science Honours", 
+      "Bachelor of Arts Honours",
+      "Post Graduate Diploma in Management",
+      "Post Graduate Diploma in Education"
+    ]
+  },
+  {
+    type: "Master's Degree (NQF 9)",
+    names: [
+      "Master of Business Administration",
+      "Master of Science",
+      "Master of Arts",
+      "Master of Engineering",
+      "Master of Commerce"
+    ]
+  },
+  {
+    type: "Doctoral Degree (NQF 10)",
+    names: [
+      "Doctor of Philosophy (PhD)",
+      "Doctor of Engineering",
+      "Doctor of Business Administration",
+      "Doctor of Education"
+    ]
+  }
 ];
 
-export const QUALIFICATION_NAMES = [
-  "National Senior Certificate",
-  "Bachelor of Commerce", 
-  "Bachelor of Science",
-  "Bachelor of Arts",
-  "National Diploma",
-  "Bachelor of Technology",
-  "Master of Business Administration",
-  "Chartered Accountant",
-  "Higher Certificate in Information Technology",
-  "Advanced Diploma in Engineering",
-  "Post Graduate Certificate in Education"
-];
+export const QUALIFICATION_TYPES = QUALIFICATION_MAPPINGS.map(q => q.type);
 
 export const NQF_LEVELS = ["5", "6", "7", "8", "9", "10"];
 
