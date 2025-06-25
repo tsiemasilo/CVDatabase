@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
+import { DEPARTMENTS, ROLES, LANGUAGES, GENDERS, SAP_K_LEVELS } from "@shared/data";
 
 export default function CaptureRecord() {
   const { toast } = useToast();
@@ -32,24 +33,13 @@ export default function CaptureRecord() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const departments = [
-    "Administration", "Finance", "Human Resources", "Information Technology",
-    "Operations", "Marketing", "Sales", "Legal", "Procurement", "Customer Service"
-  ];
-
-  const roles = [
-    "Manager", "Senior Analyst", "Analyst", "Coordinator", "Specialist",
-    "Officer", "Administrator", "Assistant", "Consultant", "Supervisor"
-  ];
-
-  const genders = ["Male", "Female", "Other", "Prefer not to say"];
-
-  const sapKLevels = ["---n/a---", "K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8"];
-
-  const languageOptions = [
-    "English", "Afrikaans", "isiZulu", "isiXhosa", "Sesotho", "Setswana",
-    "Sepedi", "isiSwati", "Xitsonga", "Tshivenda", "isiNdebele"
-  ];
+  // Get unique role names for the selected department
+  const getAvailableRoles = () => {
+    if (!formData.department) return [];
+    return ROLES
+      .filter(role => role.department === formData.department)
+      .map(role => role.role);
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -277,7 +267,7 @@ export default function CaptureRecord() {
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                     <SelectContent>
-                      {genders.map((gender) => (
+                      {GENDERS.map((gender) => (
                         <SelectItem key={gender} value={gender.toLowerCase()}>
                           {gender}
                         </SelectItem>
@@ -303,15 +293,19 @@ export default function CaptureRecord() {
                   <Label htmlFor="department">Department *</Label>
                   <Select
                     value={formData.department}
-                    onValueChange={(value) => handleInputChange("department", value)}
+                    onValueChange={(value) => {
+                      handleInputChange("department", value);
+                      // Clear position when department changes
+                      handleInputChange("position", "");
+                    }}
                   >
                     <SelectTrigger className={errors.department ? "border-red-500" : ""}>
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
                     <SelectContent>
-                      {departments.map((dept) => (
-                        <SelectItem key={dept} value={dept}>
-                          {dept}
+                      {DEPARTMENTS.map((dept) => (
+                        <SelectItem key={dept.id} value={dept.name}>
+                          {dept.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -323,12 +317,13 @@ export default function CaptureRecord() {
                   <Select
                     value={formData.position}
                     onValueChange={(value) => handleInputChange("position", value)}
+                    disabled={!formData.department}
                   >
                     <SelectTrigger className={errors.position ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Select role" />
+                      <SelectValue placeholder={formData.department ? "Select role" : "Select department first"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {roles.map((role) => (
+                      {getAvailableRoles().map((role) => (
                         <SelectItem key={role} value={role}>
                           {role}
                         </SelectItem>
@@ -362,7 +357,7 @@ export default function CaptureRecord() {
                       <SelectValue placeholder="Select SAP K Level" />
                     </SelectTrigger>
                     <SelectContent>
-                      {sapKLevels.map((level) => (
+                      {SAP_K_LEVELS.map((level) => (
                         <SelectItem key={level} value={level}>
                           {level}
                         </SelectItem>
@@ -427,7 +422,7 @@ export default function CaptureRecord() {
                         <SelectValue placeholder="Select language" />
                       </SelectTrigger>
                       <SelectContent>
-                        {languageOptions.map((lang) => (
+                        {LANGUAGES.map((lang) => (
                           <SelectItem key={lang} value={lang}>
                             {lang}
                           </SelectItem>
