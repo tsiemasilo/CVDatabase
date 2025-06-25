@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
+import { useState } from "react";
 
 export default function Header() {
+  const [activeTab, setActiveTab] = useState("Landing page");
+
   const handleProfile = () => {
     // TODO: Implement profile functionality
     console.log("Profile clicked");
@@ -11,6 +14,15 @@ export default function Header() {
     // TODO: Implement logout functionality
     console.log("Logout clicked");
   };
+
+  const tabs = [
+    "Landing page",
+    "Qualifications", 
+    "Positions | Roles",
+    "Access User Profiles",
+    "Tenders",
+    "Capture record"
+  ];
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -47,6 +59,25 @@ export default function Header() {
               <LogOut className="w-4 h-4" />
               Logout
             </Button>
+          </div>
+        </div>
+        
+        {/* Navigation Tabs */}
+        <div className="border-t border-gray-100">
+          <div className="flex space-x-0">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-3 text-sm font-medium border-r border-gray-200 last:border-r-0 transition-colors ${
+                  activeTab === tab
+                    ? "bg-orange-500 text-white"
+                    : "text-orange-500 hover:bg-orange-50 border-orange-300 border"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </div>
       </div>
