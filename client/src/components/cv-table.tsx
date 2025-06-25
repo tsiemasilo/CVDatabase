@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Eye, Edit, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -166,8 +166,21 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   <div className="text-sm text-gray-900">{record.email}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6 max-w-xs">
-                  <div className="text-sm text-gray-900 truncate" title={record.qualifications || 'No qualifications listed'}>
-                    {record.qualifications || 'No qualifications listed'}
+                  <div className="flex items-center space-x-2">
+                    <div className="text-sm text-gray-900 truncate flex-1" title={record.qualifications || 'No qualifications listed'}>
+                      {record.qualifications || 'No qualifications listed'}
+                    </div>
+                    {record.cvFile && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => window.open(`/api/cv-records/${record.id}/download`, '_blank')}
+                        className="text-blue-600 hover:text-blue-800 flex-shrink-0"
+                        title="Download CV"
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">

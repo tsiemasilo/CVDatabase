@@ -258,24 +258,49 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
               )}
             />
             
-            <FormField
-              control={form.control}
-              name="cvFile"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="block text-sm font-medium text-gray-700">CV File</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="file" 
-                      accept=".pdf,.doc,.docx" 
-                      onChange={(e) => field.onChange(e.target.files?.[0]?.name || "")}
-                      className="w-full" 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-4">
+              <FormLabel className="block text-sm font-medium text-gray-700">CV File</FormLabel>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                {selectedFile ? (
+                  <div className="space-y-2">
+                    <FileText className="w-8 h-8 text-green-600 mx-auto" />
+                    <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+                    <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedFile(null);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="w-8 h-8 text-gray-400 mx-auto" />
+                    <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
+                    <p className="text-xs text-gray-500">PDF, DOC, or DOCX (max 5MB)</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Choose File
+                    </Button>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+              </div>
+            </div>
             
             <div className="flex justify-end space-x-4 pt-4">
               <Button type="button" variant="outline" onClick={handleClose}>
