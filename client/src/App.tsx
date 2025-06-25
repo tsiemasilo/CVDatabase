@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import CVDatabase from "@/pages/cv-database";
 import Qualifications from "@/pages/qualifications";
 import PositionsRoles from "@/pages/positions-roles";
+import Tenders from "@/pages/tenders";
 import NotFound from "@/pages/not-found";
 import { AppProvider, useAppContext, type ActiveTab } from "@/contexts/AppContext";
 
@@ -17,8 +18,9 @@ function MainContent({ activeTab }: { activeTab: ActiveTab }) {
       return <Qualifications />;
     case "Positions | Roles":
       return <PositionsRoles />;
-    case "Access User Profiles":
     case "Tenders":
+      return <Tenders />;
+    case "Access User Profiles":
     case "Capture record":
       return (
         <div className="bg-gray-50 font-sans min-h-screen">
