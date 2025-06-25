@@ -25,39 +25,39 @@ export default function Qualifications() {
   const [qualifications, setQualifications] = useState<Qualification[]>([
     {
       id: 1,
-      type: "Certificate Programs",
-      name: "Professional Certificate",
-      description: "Short-term specialized training programs typically lasting 3-12 months"
+      type: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+      name: "Higher Certificate",
+      description: "Post-secondary certificate qualification"
     },
     {
       id: 2,
-      type: "Diploma Programs",
-      name: "Associate Degree/Diploma",
-      description: "Two-year post-secondary programs focusing on practical skills and technical knowledge"
+      type: "National Diploma and Advanced Certificate (NQF 6)",
+      name: "National Diploma",
+      description: "Vocational diploma qualification"
     },
     {
       id: 3,
-      type: "Bachelor's Degrees",
-      name: "Undergraduate Degree",
-      description: "Four-year university degrees providing broad knowledge and specialized skills"
+      type: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+      name: "Bachelor's Degree",
+      description: "Undergraduate degree qualification"
     },
     {
       id: 4,
-      type: "Postgraduate Qualifications",
-      name: "Graduate Certificates & Diplomas",
-      description: "Advanced professional qualifications and specialized postgraduate programs"
+      type: "Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)",
+      name: "Honours Degree",
+      description: "Postgraduate honours qualification"
     },
     {
       id: 5,
-      type: "Master's Degrees",
-      name: "Graduate Degree",
-      description: "Advanced academic or professional degrees typically requiring 1-2 years of study"
+      type: "Master (NQF 9)",
+      name: "Master's Degree",
+      description: "Advanced postgraduate qualification"
     },
     {
       id: 6,
-      type: "Doctoral Degrees",
-      name: "PhD and Professional Doctorates",
-      description: "Highest level of academic achievement involving original research and dissertation"
+      type: "Doctoral degree (NQF 10)",
+      name: "Doctoral Degree",
+      description: "Highest level academic qualification"
     }
   ]);
 
@@ -68,45 +68,51 @@ export default function Qualifications() {
   const [qualificationNames, setQualificationNames] = useState<QualificationName[]>([
     {
       id: 1,
-      qualificationType: "Bachelor's Degrees",
-      qualificationName: "Bachelor of Science in Computer Science",
-      description: "Four-year undergraduate degree covering programming, algorithms, data structures, software engineering, and computer systems fundamentals."
+      qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+      qualificationName: "Higher Certificate in Information Technology",
+      description: "Foundation IT qualification covering computer fundamentals, basic programming, networking concepts, and digital literacy skills."
     },
     {
       id: 2,
-      qualificationType: "Bachelor's Degrees",
-      qualificationName: "Bachelor of Business Administration",
-      description: "Comprehensive business degree covering management, finance, marketing, operations, and strategic planning for business leadership roles."
+      qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+      qualificationName: "Higher Certificate in Business Management",
+      description: "Entry-level business qualification focusing on management principles, communication skills, and basic financial management."
     },
     {
       id: 3,
-      qualificationType: "Certificate Programs",
-      qualificationName: "Google Project Management Certificate",
-      description: "Six-month professional certificate program teaching project planning, execution, and management using industry-standard tools and methodologies."
+      qualificationType: "National Diploma and Advanced Certificate (NQF 6)",
+      qualificationName: "National Diploma in Electrical Engineering",
+      description: "Technical qualification combining theoretical knowledge with practical skills in electrical systems, circuits, and power distribution."
     },
     {
       id: 4,
-      qualificationType: "Diploma Programs",
-      qualificationName: "Associate Degree in Nursing",
-      description: "Two-year healthcare program preparing students for registered nursing practice with clinical experience and theoretical knowledge."
+      qualificationType: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+      qualificationName: "Bachelor of Science in Computer Science",
+      description: "Comprehensive undergraduate degree covering programming, algorithms, software engineering, database systems, and computer networks."
     },
     {
       id: 5,
-      qualificationType: "Postgraduate Qualifications",
-      qualificationName: "Graduate Certificate in Data Analytics",
-      description: "Specialized postgraduate program focusing on statistical analysis, data visualization, and business intelligence for working professionals."
+      qualificationType: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+      qualificationName: "Bachelor of Commerce in Accounting",
+      description: "Business degree specializing in financial accounting, auditing, taxation, management accounting, and business law."
     },
     {
       id: 6,
-      qualificationType: "Master's Degrees",
-      qualificationName: "Master of Business Administration (MBA)",
-      description: "Advanced business degree emphasizing leadership, strategy, finance, and operations management for executive-level positions."
+      qualificationType: "Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)",
+      qualificationName: "Honours Degree in Psychology",
+      description: "Advanced undergraduate degree with specialized focus on psychological research methods, cognitive psychology, and behavioral analysis."
     },
     {
       id: 7,
-      qualificationType: "Doctoral Degrees",
+      qualificationType: "Master (NQF 9)",
+      qualificationName: "Master of Business Administration (MBA)",
+      description: "Advanced business degree emphasizing strategic leadership, financial management, operations, and organizational development."
+    },
+    {
+      id: 8,
+      qualificationType: "Doctoral degree (NQF 10)",
       qualificationName: "Doctor of Philosophy in Engineering",
-      description: "Research-focused doctoral program requiring original dissertation work in engineering fields with significant contribution to knowledge."
+      description: "Research-intensive doctoral program requiring original dissertation contributing significant new knowledge to engineering science."
     }
   ]);
   
@@ -348,7 +354,7 @@ export default function Qualifications() {
         {/* Qualification Names Section */}
         <div className="mt-8">
           <div className="mb-4 flex items-center gap-4">
-            <Select defaultValue="Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)">
+            <Select defaultValue="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">
               <SelectTrigger className="w-96">
                 <SelectValue />
               </SelectTrigger>
