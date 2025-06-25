@@ -36,8 +36,20 @@ export default function Header() {
                 alt="Alteram Logo" 
               />
             </div>
-            <div className="ml-6">
-              <h1 className="text-xl font-semibold text-gray-900">CV Database Management</h1>
+            <div className="ml-6 flex space-x-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
+                    activeTab === tab
+                      ? "bg-orange-500 text-white"
+                      : "text-orange-500 hover:bg-orange-50 border border-orange-300"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -61,25 +73,7 @@ export default function Header() {
             </Button>
           </div>
         </div>
-        
-        {/* Navigation Tabs */}
-        <div className="border-t border-gray-100">
-          <div className="flex space-x-0">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-6 py-3 text-sm font-medium border-r border-gray-200 last:border-r-0 transition-colors ${
-                  activeTab === tab
-                    ? "bg-orange-500 text-white"
-                    : "text-orange-500 hover:bg-orange-50 border-orange-300 border"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-        </div>
+
       </div>
     </header>
   );
