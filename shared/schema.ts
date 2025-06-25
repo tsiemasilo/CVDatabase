@@ -11,6 +11,7 @@ export const cvRecords = pgTable("cv_records", {
   department: text("department"),
   experience: integer("experience"),
   qualifications: text("qualifications"),
+  languages: text("languages"),
   status: text("status").notNull().default("pending"),
   cvFile: text("cv_file"),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
@@ -27,6 +28,7 @@ export const insertCVRecordSchema = createInsertSchema(cvRecords).omit({
   department: z.string().optional(),
   experience: z.number().min(0).optional(),
   qualifications: z.string().optional(),
+  languages: z.string().optional(),
   status: z.enum(["active", "pending", "archived"]).default("pending"),
   cvFile: z.string().optional(),
 });

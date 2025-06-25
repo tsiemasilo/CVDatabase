@@ -112,6 +112,7 @@ export class MemStorage implements IStorage {
       department: insertCVRecord.department || null,
       experience: insertCVRecord.experience || null,
       qualifications: insertCVRecord.qualifications || null,
+      languages: insertCVRecord.languages || null,
       cvFile: insertCVRecord.cvFile || null,
       submittedAt: new Date(),
     };

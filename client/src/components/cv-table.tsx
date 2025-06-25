@@ -205,6 +205,9 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
               <TableHead className="text-white font-medium py-4 px-6">
                 Qualifications
               </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">
+                Languages
+              </TableHead>
               <TableHead className="text-white font-medium py-4 px-6 text-center">
                 Actions
               </TableHead>
@@ -262,6 +265,11 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                         <Download className="w-4 h-4" />
                       </Button>
                     )}
+                  </div>
+                </TableCell>
+                <TableCell className="py-4 px-6 max-w-xs">
+                  <div className="text-sm text-gray-900 truncate" title={record.languages || 'No languages listed'}>
+                    {record.languages || 'No languages listed'}
                   </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">

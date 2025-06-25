@@ -180,7 +180,8 @@ export default function CaptureRecord() {
       experience: parseInt(formData.yearsOfExperience) || 0,
       status: "active",
       cvFile: "",
-      qualifications: validLanguages.join(", ") // Store languages in qualifications field
+      languages: validLanguages.join(", "), // Store languages in languages field
+      qualifications: "" // Leave qualifications empty for now
     };
 
     console.log("Submitting CV data:", cvData);
