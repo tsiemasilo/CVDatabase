@@ -113,14 +113,26 @@ export const LANGUAGES = [
 ];
 
 export const QUALIFICATION_TYPES = [
-  "Certificate", "Diploma", "Degree", "Honours", "Masters", "Doctorate", 
-  "Professional", "Trade", "Matric", "Short Course", "Other"
+  "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+  "National Diplomas and Diplomas (NQF 6)", 
+  "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+  "Honours Degree, Post Graduate Diploma (NQF 8)",
+  "Master's Degree (NQF 9)",
+  "Doctoral Degree (NQF 10)"
 ];
 
 export const QUALIFICATION_NAMES = [
-  "National Senior Certificate", "Bachelor of Commerce", "Bachelor of Science", 
-  "Bachelor of Arts", "National Diploma", "Bachelor of Technology", 
-  "Master of Business Administration", "Chartered Accountant"
+  "National Senior Certificate",
+  "Bachelor of Commerce", 
+  "Bachelor of Science",
+  "Bachelor of Arts",
+  "National Diploma",
+  "Bachelor of Technology",
+  "Master of Business Administration",
+  "Chartered Accountant",
+  "Higher Certificate in Information Technology",
+  "Advanced Diploma in Engineering",
+  "Post Graduate Certificate in Education"
 ];
 
 export const NQF_LEVELS = ["5", "6", "7", "8", "9", "10"];

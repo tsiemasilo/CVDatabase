@@ -115,6 +115,9 @@ Changelog:
 - June 25, 2025. Moved "Add New CV" functionality from landing page to navigation bar as "Capture Record" tab
 - June 25, 2025. Created comprehensive Capture Record page with detailed form fields matching website requirements (Basic Details, Position/Role, Department, Contact Info, Languages)
 - June 25, 2025. Changed Export button color from green to orange to match consistent design theme
+- June 25, 2025. Updated department and role options to use shared data structures for consistency across Capture Record and Positions|Roles pages
+- June 25, 2025. Fixed schema to separate languages and qualifications fields, added Languages column to CV table
+- June 25, 2025. Enhanced qualifications selection with dropdown menus using qualification types and names from Qualifications section
 ```
 
 ## User Preferences
