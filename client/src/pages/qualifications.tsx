@@ -186,22 +186,22 @@ export default function Qualifications() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <div className="flex items-center justify-center space-x-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                      <div className="flex items-center justify-center space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
                           onClick={() => handleEdit(qualification)}
-                          className="btn-secondary btn-icon h-7 w-7 p-0"
+                          className="text-gray-600 hover:text-gray-900"
                         >
-                          <Edit className="w-3.5 h-3.5" />
+                          <Edit className="w-4 h-4" />
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
                           onClick={() => handleDelete(qualification.id)}
-                          className="btn-danger btn-icon h-7 w-7 p-0"
+                          className="text-gray-600 hover:text-gray-900"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                     </td>
