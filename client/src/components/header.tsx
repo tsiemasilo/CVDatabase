@@ -36,12 +36,12 @@ export default function Header() {
                 alt="Alteram Logo" 
               />
             </div>
-            <div className="ml-6 flex space-x-2">
+            <div className="ml-10 flex space-x-3">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
                     activeTab === tab
                       ? "bg-orange-500 text-white"
                       : "text-orange-500 hover:bg-orange-50 border border-orange-300"
