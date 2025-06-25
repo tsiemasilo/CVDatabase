@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useAppContext } from "@/App";
 
 export default function Header() {
-  const [activeTab, setActiveTab] = useState("Landing page");
+  const { activeTab, setActiveTab } = useAppContext();
 
   const handleProfile = () => {
     // TODO: Implement profile functionality

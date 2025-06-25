@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CVRecord } from "@shared/schema";
-import Header from "@/components/header";
+
 import CVTable from "@/components/cv-table";
 import AddCVModal from "@/components/add-cv-modal";
 import { Button } from "@/components/ui/button";
@@ -81,7 +81,6 @@ export default function CVDatabase() {
 
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
-      <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filtering/Searching options */}
