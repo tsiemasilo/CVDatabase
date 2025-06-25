@@ -27,17 +27,61 @@ export default function CVDatabase() {
   const [qualification1Filter, setQualification1Filter] = useState("");
   const [qualification2Filter, setQualification2Filter] = useState("");
 
-  const { data: cvRecords = [], isLoading, refetch } = useQuery<CVRecord[]>({
-    queryKey: ["/api/cv-records", { search: searchTerm, status: statusFilter }],
+  const { data: allCVRecords = [], isLoading, refetch } = useQuery<CVRecord[]>({
+    queryKey: ["/api/cv-records"],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      if (searchTerm) params.append("search", searchTerm);
-      if (statusFilter) params.append("status", statusFilter);
-      
-      const response = await fetch(`/api/cv-records?${params}`);
+      const response = await fetch(`/api/cv-records`);
       if (!response.ok) throw new Error("Failed to fetch CV records");
       return response.json();
     },
+  });
+
+  // Apply all filters to the data
+  const cvRecords = allCVRecords.filter(record => {
+    // Search term filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = 
+        record.name.toLowerCase().includes(searchLower) ||
+        record.email.toLowerCase().includes(searchLower) ||
+        (record.phone && record.phone.toLowerCase().includes(searchLower)) ||
+        (record.position && record.position.toLowerCase().includes(searchLower)) ||
+        (record.department && record.department.toLowerCase().includes(searchLower)) ||
+        (record.qualifications && record.qualifications.toLowerCase().includes(searchLower));
+      
+      if (!matchesSearch) return false;
+    }
+
+    // Status filter
+    if (statusFilter && record.status !== statusFilter) return false;
+
+    // Department filter
+    if (departmentFilter && record.department !== departmentFilter) return false;
+
+    // Name filter
+    if (nameFilter) {
+      const nameParts = record.name.split(' ');
+      const firstName = nameParts.slice(1).join(' ') || record.name;
+      if (!firstName.toLowerCase().includes(nameFilter.toLowerCase())) return false;
+    }
+
+    // Surname filter
+    if (surnameFilter) {
+      const surname = record.name.split(' ')[0] || record.name;
+      if (!surname.toLowerCase().includes(surnameFilter.toLowerCase())) return false;
+    }
+
+    // Role filter (checking position field)
+    if (roleFilter && record.position !== roleFilter) return false;
+
+    // Qualification filters
+    if (qualification1Filter || qualification2Filter) {
+      const qualifications = record.qualifications?.toLowerCase() || '';
+      if (qualification1Filter && !qualifications.includes(qualification1Filter.toLowerCase())) return false;
+      if (qualification2Filter && !qualifications.includes(qualification2Filter.toLowerCase())) return false;
+    }
+
+    return true;
   });
 
   const handleExport = async () => {
@@ -45,6 +89,12 @@ export default function CVDatabase() {
       const params = new URLSearchParams();
       if (searchTerm) params.append("search", searchTerm);
       if (statusFilter) params.append("status", statusFilter);
+      if (departmentFilter) params.append("department", departmentFilter);
+      if (nameFilter) params.append("name", nameFilter);
+      if (surnameFilter) params.append("surname", surnameFilter);
+      if (roleFilter) params.append("role", roleFilter);
+      if (qualification1Filter) params.append("qualification1", qualification1Filter);
+      if (qualification2Filter) params.append("qualification2", qualification2Filter);
       
       const response = await fetch(`/api/cv-records/export/csv?${params}`);
       if (!response.ok) throw new Error("Failed to export CV records");

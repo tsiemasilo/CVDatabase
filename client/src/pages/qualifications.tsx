@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -122,6 +122,10 @@ export default function Qualifications() {
     qualificationName: "",
     description: ""
   });
+  
+  // Filter state for qualification names
+  const [selectedQualificationTypeFilter, setSelectedQualificationTypeFilter] = useState<string>("all");
+  const [filteredQualificationNames, setFilteredQualificationNames] = useState<QualificationName[]>(qualificationNames);
   const [formData, setFormData] = useState({
     type: "",
     name: "",
@@ -219,6 +223,22 @@ export default function Qualifications() {
   const handleDeleteQualificationName = (id: number) => {
     setQualificationNames(qualificationNames.filter(q => q.id !== id));
   };
+
+  const handleApplyQualificationFilter = () => {
+    if (selectedQualificationTypeFilter === "all") {
+      setFilteredQualificationNames(qualificationNames);
+    } else {
+      const filtered = qualificationNames.filter(qName => 
+        qName.qualificationType === selectedQualificationTypeFilter
+      );
+      setFilteredQualificationNames(filtered);
+    }
+  };
+
+  // Update filtered list when qualificationNames changes
+  React.useEffect(() => {
+    handleApplyQualificationFilter();
+  }, [qualificationNames, selectedQualificationTypeFilter]);
 
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
@@ -382,11 +402,12 @@ export default function Qualifications() {
         {/* Qualification Names Section */}
         <div className="mt-8">
           <div className="mb-4 flex items-center gap-4">
-            <Select defaultValue="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">
+            <Select value={selectedQualificationTypeFilter} onValueChange={setSelectedQualificationTypeFilter}>
               <SelectTrigger className="w-96">
-                <SelectValue />
+                <SelectValue placeholder="Select qualification type to filter" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All Qualification Types</SelectItem>
                 {qualifications.map((qual) => (
                   <SelectItem key={qual.id} value={qual.type}>
                     {qual.type}
@@ -394,7 +415,10 @@ export default function Qualifications() {
                 ))}
               </SelectContent>
             </Select>
-            <Button className="bg-blue-800 hover:bg-blue-900 text-white px-6">
+            <Button 
+              onClick={handleApplyQualificationFilter}
+              className="bg-blue-800 hover:bg-blue-900 text-white px-6"
+            >
               Apply filter
             </Button>
           </div>
@@ -490,7 +514,7 @@ export default function Qualifications() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {qualificationNames.map((qualName) => (
+                {filteredQualificationNames.map((qualName) => (
                   <tr key={qualName.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 text-sm text-gray-500">
                       {qualName.qualificationType}
