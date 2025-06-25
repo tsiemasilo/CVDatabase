@@ -190,15 +190,20 @@ export default function CVDatabase() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
                 <Select value={departmentFilter || "all"} onValueChange={(value) => setDepartmentFilter(value === "all" ? "" : value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="---" />
+                    <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">---</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="operations">Operations</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
-                    <SelectItem value="sales">Sales</SelectItem>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="Engineering and Technology">Engineering and Technology</SelectItem>
+                    <SelectItem value="Healthcare and Medical Services">Healthcare and Medical Services</SelectItem>
+                    <SelectItem value="Education and Training">Education and Training</SelectItem>
+                    <SelectItem value="Finance and Accounting">Finance and Accounting</SelectItem>
+                    <SelectItem value="Legal and Compliance">Legal and Compliance</SelectItem>
+                    <SelectItem value="Mining and Natural Resources">Mining and Natural Resources</SelectItem>
+                    <SelectItem value="Agriculture and Food Security">Agriculture and Food Security</SelectItem>
+                    <SelectItem value="Human Resources and Development">Human Resources and Development</SelectItem>
+                    <SelectItem value="Communications and Media">Communications and Media</SelectItem>
+                    <SelectItem value="Construction and Built Environment">Construction and Built Environment</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -237,14 +242,21 @@ export default function CVDatabase() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
                 <Select value={languageFilter || "all"} onValueChange={(value) => setLanguageFilter(value === "all" ? "" : value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="---" />
+                    <SelectValue placeholder="All Languages" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">---</SelectItem>
-                    <SelectItem value="english">English</SelectItem>
-                    <SelectItem value="afrikaans">Afrikaans</SelectItem>
-                    <SelectItem value="zulu">Zulu</SelectItem>
-                    <SelectItem value="xhosa">Xhosa</SelectItem>
+                    <SelectItem value="all">All Languages</SelectItem>
+                    <SelectItem value="English">English</SelectItem>
+                    <SelectItem value="Afrikaans">Afrikaans</SelectItem>
+                    <SelectItem value="isiZulu">isiZulu</SelectItem>
+                    <SelectItem value="isiXhosa">isiXhosa</SelectItem>
+                    <SelectItem value="Sesotho">Sesotho</SelectItem>
+                    <SelectItem value="Setswana">Setswana</SelectItem>
+                    <SelectItem value="Sepedi">Sepedi</SelectItem>
+                    <SelectItem value="Xitsonga">Xitsonga</SelectItem>
+                    <SelectItem value="SiSwati">SiSwati</SelectItem>
+                    <SelectItem value="Tshivenda">Tshivenda</SelectItem>
+                    <SelectItem value="isiNdebele">isiNdebele</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -267,10 +279,36 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Roles</SelectItem>
-                      <SelectItem value="developer">Developer</SelectItem>
-                      <SelectItem value="designer">Designer</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="analyst">Analyst</SelectItem>
+                      <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                      <SelectItem value="Civil Engineer">Civil Engineer</SelectItem>
+                      <SelectItem value="Electrical Engineer">Electrical Engineer</SelectItem>
+                      <SelectItem value="Registered Nurse">Registered Nurse</SelectItem>
+                      <SelectItem value="Medical Doctor">Medical Doctor</SelectItem>
+                      <SelectItem value="Physiotherapist">Physiotherapist</SelectItem>
+                      <SelectItem value="Primary School Teacher">Primary School Teacher</SelectItem>
+                      <SelectItem value="Mathematics Teacher">Mathematics Teacher</SelectItem>
+                      <SelectItem value="TVET Lecturer">TVET Lecturer</SelectItem>
+                      <SelectItem value="Chartered Accountant (CA)">Chartered Accountant (CA)</SelectItem>
+                      <SelectItem value="Financial Analyst">Financial Analyst</SelectItem>
+                      <SelectItem value="Tax Practitioner">Tax Practitioner</SelectItem>
+                      <SelectItem value="Attorney">Attorney</SelectItem>
+                      <SelectItem value="Advocate">Advocate</SelectItem>
+                      <SelectItem value="Legal Advisor">Legal Advisor</SelectItem>
+                      <SelectItem value="Mining Engineer">Mining Engineer</SelectItem>
+                      <SelectItem value="Geologist">Geologist</SelectItem>
+                      <SelectItem value="Environmental Officer">Environmental Officer</SelectItem>
+                      <SelectItem value="Agricultural Extension Officer">Agricultural Extension Officer</SelectItem>
+                      <SelectItem value="Veterinarian">Veterinarian</SelectItem>
+                      <SelectItem value="Food Technologist">Food Technologist</SelectItem>
+                      <SelectItem value="HR Manager">HR Manager</SelectItem>
+                      <SelectItem value="Training and Development Specialist">Training and Development Specialist</SelectItem>
+                      <SelectItem value="Skills Development Facilitator">Skills Development Facilitator</SelectItem>
+                      <SelectItem value="Digital Marketing Specialist">Digital Marketing Specialist</SelectItem>
+                      <SelectItem value="Public Relations Officer">Public Relations Officer</SelectItem>
+                      <SelectItem value="Content Creator">Content Creator</SelectItem>
+                      <SelectItem value="Architect">Architect</SelectItem>
+                      <SelectItem value="Quantity Surveyor">Quantity Surveyor</SelectItem>
+                      <SelectItem value="Project Manager">Project Manager</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -300,14 +338,16 @@ export default function CVDatabase() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type 1</label>
                   <Select value={qualificationType1Filter || "all"} onValueChange={(value) => setQualificationType1Filter(value === "all" ? "" : value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="---" />
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">---</SelectItem>
-                      <SelectItem value="degree">Degree</SelectItem>
-                      <SelectItem value="diploma">Diploma</SelectItem>
-                      <SelectItem value="certificate">Certificate</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
+                      <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
+                      <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
+                      <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
+                      <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
+                      <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -315,14 +355,18 @@ export default function CVDatabase() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Qualification 1</label>
                   <Select value={qualification1Filter || "all"} onValueChange={(value) => setQualification1Filter(value === "all" ? "" : value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="---" />
+                      <SelectValue placeholder="Select qualification" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">---</SelectItem>
-                      <SelectItem value="computer-science">Computer Science</SelectItem>
-                      <SelectItem value="business">Business</SelectItem>
-                      <SelectItem value="engineering">Engineering</SelectItem>
-                      <SelectItem value="design">Design</SelectItem>
+                      <SelectItem value="all">All Qualifications</SelectItem>
+                      <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
+                      <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
+                      <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
+                      <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
+                      <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
+                      <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
+                      <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
+                      <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -333,14 +377,16 @@ export default function CVDatabase() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type 2</label>
                   <Select value={qualificationType2Filter || "all"} onValueChange={(value) => setQualificationType2Filter(value === "all" ? "" : value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="---" />
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">---</SelectItem>
-                      <SelectItem value="degree">Degree</SelectItem>
-                      <SelectItem value="diploma">Diploma</SelectItem>
-                      <SelectItem value="certificate">Certificate</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
+                      <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
+                      <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
+                      <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
+                      <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
+                      <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -348,10 +394,10 @@ export default function CVDatabase() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Qualification 2</label>
                   <Select value={qualification2Filter || "all"} onValueChange={(value) => setQualification2Filter(value === "all" ? "" : value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="---" />
+                      <SelectValue placeholder="Select qualification" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">---</SelectItem>
+                      <SelectItem value="all">All Qualifications</SelectItem>
                       <SelectItem value="computer-science">Computer Science</SelectItem>
                       <SelectItem value="business">Business</SelectItem>
                       <SelectItem value="engineering">Engineering</SelectItem>
