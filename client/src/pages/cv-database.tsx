@@ -151,7 +151,7 @@ export default function CVDatabase() {
                 </Button>
                 <Button 
                   onClick={handleExport}
-                  className="bg-green-600 hover:bg-green-700 text-white shadow-md transition-all duration-200 hover:shadow-lg"
+                  className="bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 hover:shadow-lg"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Export
