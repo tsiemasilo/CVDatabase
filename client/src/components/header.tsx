@@ -20,7 +20,7 @@ export default function Header() {
             <div className="flex-shrink-0">
               <img 
                 className="h-10 w-auto" 
-                src="/attached_assets/alteram1_1_600x197_1750838676214.png" 
+                src="/assets/alteram-logo.png" 
                 alt="Alteram Logo" 
               />
             </div>
