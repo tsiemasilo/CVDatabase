@@ -69,32 +69,44 @@ export default function Qualifications() {
     {
       id: 1,
       qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
-      qualificationName: "Bachelor of Arts (BA)",
-      description: "na"
+      qualificationName: "Bachelor of Science in Software Engineering",
+      description: "Four-year undergraduate degree focusing on software development methodologies, system design, project management, and programming languages including Java, Python, and C++."
     },
     {
       id: 2,
       qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
-      qualificationName: "Bachelor of Science",
-      description: "na"
+      qualificationName: "Bachelor of Commerce in Human Resources",
+      description: "Comprehensive business degree specializing in talent acquisition, employee relations, organizational behavior, labor law, and strategic HR management practices."
     },
     {
       id: 3,
       qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
-      qualificationName: "certificate in programming",
-      description: "almost any form of programming"
+      qualificationName: "Higher Certificate in Project Management",
+      description: "Entry-level qualification covering project planning, risk management, scheduling, budgeting, and team coordination using industry-standard methodologies like PMBOK and Agile."
     },
     {
       id: 4,
-      qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
-      qualificationName: "certificate in something",
-      description: "something..."
+      qualificationType: "National Diploma and Advanced Certificate (NQF 6)",
+      qualificationName: "National Diploma in Electrical Engineering",
+      description: "Three-year technical qualification combining theoretical knowledge with practical skills in circuit design, power systems, electronics, and industrial automation."
     },
     {
       id: 5,
-      qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
-      qualificationName: "Computer Science",
-      description: "BSc Computer Science"
+      qualificationType: "Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)",
+      qualificationName: "Postgraduate Diploma in Financial Management",
+      description: "Advanced qualification in corporate finance, investment analysis, financial planning, risk management, and strategic financial decision-making for business professionals."
+    },
+    {
+      id: 6,
+      qualificationType: "Master (NQF 9)",
+      qualificationName: "Master of Science in Data Science",
+      description: "Advanced degree covering machine learning, statistical analysis, big data technologies, predictive modeling, and data visualization using tools like Python, R, and SQL."
+    },
+    {
+      id: 7,
+      qualificationType: "Doctoral degree (NQF 10)",
+      qualificationName: "Doctor of Philosophy in Business Administration",
+      description: "Research-intensive doctoral program focusing on advanced business theory, organizational leadership, strategic management, and original research contributing to business knowledge."
     }
   ]);
   
