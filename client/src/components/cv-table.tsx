@@ -102,132 +102,100 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-        <h2 className="text-lg font-medium text-gray-900">CV Records</h2>
-        <p className="text-sm text-gray-600 mt-1">Manage and review submitted CVs</p>
+        <h2 className="text-lg font-medium text-gray-900">Records</h2>
       </div>
       
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
+            <TableRow className="bg-slate-700 hover:bg-slate-700">
               <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
+                className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('name')}
               >
-                <div className="flex items-center space-x-1">
-                  <span>Name</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
+                Surname
               </TableHead>
               <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleSort('email')}
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('name')}
               >
-                <div className="flex items-center space-x-1">
-                  <span>Email</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
+                First name
               </TableHead>
               <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleSort('position')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Position</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
-              </TableHead>
-              <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
+                className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('experience')}
               >
-                <div className="flex items-center space-x-1">
-                  <span>Experience</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
+                Years experience
               </TableHead>
               <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleSort('status')}
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('phone')}
               >
-                <div className="flex items-center space-x-1">
-                  <span>Status</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
+                Contact number
               </TableHead>
               <TableHead 
-                className="cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleSort('submittedAt')}
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('email')}
               >
-                <div className="flex items-center space-x-1">
-                  <span>Submitted</span>
-                  <span className="text-gray-400">↕</span>
-                </div>
+                E-mail
               </TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead 
+                className="text-white font-medium py-4 px-6"
+              >
+                Qualifications
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedRecords.map((record) => (
-              <TableRow key={record.id} className="hover:bg-blue-50 transition-colors duration-150">
-                <TableCell>
-                  <div className="flex items-center">
-                    <div className={`h-10 w-10 rounded-full ${getAvatarColor(record.name)} flex items-center justify-center text-white font-medium`}>
-                      <span>{getInitials(record.name)}</span>
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{record.name}</div>
-                      <div className="text-sm text-gray-500">{record.phone}</div>
-                    </div>
-                  </div>
+              <TableRow key={record.id} className="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100">
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(-1)[0]}</div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(0, -1).join(' ')}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.experience || 0}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.phone || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.email}</div>
                 </TableCell>
-                <TableCell>
-                  <div className="text-sm text-gray-900">{record.position}</div>
-                  <div className="text-sm text-gray-500">{record.department}</div>
+                <TableCell className="py-4 px-6 max-w-xs">
+                  <div className="text-sm text-gray-900 truncate" title={record.qualifications || 'No qualifications listed'}>
+                    {record.qualifications || 'No qualifications listed'}
+                  </div>
                 </TableCell>
-                <TableCell>
-                  <div className="text-sm text-gray-900">{record.experience} years</div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={`${getStatusColor(record.status)} border-0`}>
-                    {record.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-sm text-gray-500">
-                  {new Date(record.submittedAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
+                <TableCell className="py-4 px-6">
                   <div className="flex items-center space-x-2">
                     <Button 
-                      variant="outline" 
+                      variant="ghost" 
                       size="sm" 
                       onClick={() => handleView(record)}
-                      className="btn-icon"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Eye className="w-4 h-4" />
-                      View
                     </Button>
                     <Button 
-                      variant="outline" 
+                      variant="ghost" 
                       size="sm" 
                       onClick={() => handleEdit(record)}
-                      className="btn-icon btn-warning"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Edit className="w-4 h-4" />
-                      Edit
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button 
-                          variant="outline" 
+                          variant="ghost" 
                           size="sm"
-                          className="btn-icon btn-danger"
+                          className="text-gray-600 hover:text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
-                          Delete
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>

@@ -31,6 +31,7 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
       position: "",
       department: "",
       experience: 0,
+      qualifications: "",
       status: "pending",
       cvFile: "",
     },
