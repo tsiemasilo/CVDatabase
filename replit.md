@@ -109,6 +109,7 @@ Changelog:
 - June 25, 2025. Initial setup
 - June 25, 2025. Fixed React import error in qualifications.tsx - replaced React.useEffect with useEffect
 - June 25, 2025. Implemented comprehensive filter functionality across all pages - all apply filter buttons now work correctly
+- June 25, 2025. Created comprehensive Positions | Roles page with departments and roles tables featuring South African job market data
 ```
 
 ## User Preferences

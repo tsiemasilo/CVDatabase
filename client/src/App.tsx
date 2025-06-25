@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Header from "@/components/header";
 import CVDatabase from "@/pages/cv-database";
 import Qualifications from "@/pages/qualifications";
+import PositionsRoles from "@/pages/positions-roles";
 import NotFound from "@/pages/not-found";
 import { AppProvider, useAppContext, type ActiveTab } from "@/contexts/AppContext";
 
