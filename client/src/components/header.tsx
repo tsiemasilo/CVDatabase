@@ -19,9 +19,9 @@ export default function Header() {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <img 
-                className="h-8 w-auto" 
-                src="https://images.unsplash.com/photo-1560472355-a9a6009c5c18?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=40" 
-                alt="Company Logo" 
+                className="h-10 w-auto" 
+                src="/attached_assets/alteram1_1_600x197_1750838676214.png" 
+                alt="Alteram Logo" 
               />
             </div>
             <div className="ml-6">
