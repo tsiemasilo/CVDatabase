@@ -143,13 +143,6 @@ export default function CVDatabase() {
               </div>
               <div className="flex items-center space-x-3">
                 <Button 
-                  onClick={() => setIsAddModalOpen(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 hover:shadow-lg"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New CV
-                </Button>
-                <Button 
                   onClick={handleExport}
                   className="bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 hover:shadow-lg"
                 >
@@ -504,12 +497,6 @@ export default function CVDatabase() {
           onRefetch={refetch}
         />
       </main>
-
-      <AddCVModal 
-        open={isAddModalOpen} 
-        onOpenChange={setIsAddModalOpen}
-        onSuccess={refetch}
-      />
     </div>
   );
 }

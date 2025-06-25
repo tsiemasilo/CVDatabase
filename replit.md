@@ -112,6 +112,9 @@ Changelog:
 - June 25, 2025. Created comprehensive Positions | Roles page with departments and roles tables featuring South African job market data
 - June 25, 2025. Implemented Tenders section with authentic South African government tender examples and full CRUD functionality
 - June 25, 2025. Updated landing page filters to correlate with actual data from Positions|Roles and Qualifications sections - all dropdown options now match available data
+- June 25, 2025. Moved "Add New CV" functionality from landing page to navigation bar as "Capture Record" tab
+- June 25, 2025. Created comprehensive Capture Record page with detailed form fields matching website requirements (Basic Details, Position/Role, Department, Contact Info, Languages)
+- June 25, 2025. Changed Export button color from green to orange to match consistent design theme
 ```
 
 ## User Preferences
