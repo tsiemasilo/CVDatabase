@@ -134,38 +134,54 @@ export default function CVDatabase() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filtering/Searching options */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="mb-4">
-            <h2 className="text-lg font-medium text-gray-700 mb-4">Filtering/Searching options</h2>
-            
-            {/* Action buttons */}
-            <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                onClick={() => setIsAddModalOpen(true)}
-                className="btn-primary btn-icon"
-              >
-                <Plus className="w-4 h-4" />
-                Add New CV
-              </Button>
-              <Button 
-                onClick={handleExport}
-                className="btn-success btn-icon"
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </Button>
-              <Button 
-                onClick={handleClearFilters}
-                variant="outline"
-                className="btn-icon"
-              >
-                <X className="w-4 h-4" />
-                Clear
-              </Button>
-              <label className="flex items-center space-x-2 text-sm text-gray-600">
-                <input type="checkbox" className="rounded" />
-                <span>Case sensitive search</span>
-              </label>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-1">Search & Filter Records</h2>
+                <p className="text-sm text-gray-600">Find and manage CV records using the filters below</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Button 
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 hover:shadow-lg"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add New CV
+                </Button>
+                <Button 
+                  onClick={handleExport}
+                  className="bg-green-600 hover:bg-green-700 text-white shadow-md transition-all duration-200 hover:shadow-lg"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Filter Content */}
+          <div className="p-6">
+            {/* Quick Actions */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <Button 
+                  onClick={handleClearFilters}
+                  variant="outline"
+                  className="border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Clear All Filters
+                </Button>
+                <label className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-md">
+                  <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                  <span>Case sensitive search</span>
+                </label>
+              </div>
+              <div className="text-sm text-gray-500">
+                {cvRecords.length} record{cvRecords.length !== 1 ? 's' : ''} found
+              </div>
             </div>
 
             {/* First row of filters */}
@@ -234,38 +250,46 @@ export default function CVDatabase() {
               </div>
             </div>
 
-            {/* Second row of filters */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                <Select value={roleFilter || "all"} onValueChange={(value) => setRoleFilter(value === "all" ? "" : value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="---" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">---</SelectItem>
-                    <SelectItem value="developer">Developer</SelectItem>
-                    <SelectItem value="designer">Designer</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="analyst">Analyst</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Position & Experience Filters */}
+            <div className="bg-blue-50 rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                </svg>
+                Position & Experience
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role/Position</label>
+                  <Select value={roleFilter || "all"} onValueChange={(value) => setRoleFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="All Roles" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="developer">Developer</SelectItem>
+                      <SelectItem value="designer">Designer</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="analyst">Analyst</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">SAP & Level</label>
-                <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="---" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">---</SelectItem>
-                    <SelectItem value="entry">Entry Level</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                    <SelectItem value="expert">Expert</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                  <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="All Levels" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Levels</SelectItem>
+                      <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
+                      <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
+                      <SelectItem value="advanced">Advanced (6-10 years)</SelectItem>
+                      <SelectItem value="expert">Expert (10+ years)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
