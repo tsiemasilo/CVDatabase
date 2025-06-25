@@ -131,7 +131,6 @@ export default function CVDatabase() {
 
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filtering/Searching options */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
@@ -260,18 +259,17 @@ export default function CVDatabase() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            {/* Position & Experience Filters */}
+            {/* Basic Filters */}
             <div className="rounded-lg overflow-hidden mb-6">
               <div className="px-4 py-3 flex items-center" style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
                 <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
-                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Position & Experience</h3>
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Basic Filters</h3>
               </div>
               <div className="bg-gray-50 p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Role/Position</label>
                   <Select value={roleFilter || "all"} onValueChange={(value) => setRoleFilter(value === "all" ? "" : value)}>
@@ -329,86 +327,170 @@ export default function CVDatabase() {
                     </SelectContent>
                   </Select>
                 </div>
+                </div>
               </div>
             </div>
 
-            {/* Third row - Qualifications */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type 1</label>
-                  <Select value={qualificationType1Filter || "all"} onValueChange={(value) => setQualificationType1Filter(value === "all" ? "" : value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
-                      <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
-                      <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
-                      <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
-                      <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
-                      <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Qualification 1</label>
-                  <Select value={qualification1Filter || "all"} onValueChange={(value) => setQualification1Filter(value === "all" ? "" : value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select qualification" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Qualifications</SelectItem>
-                      <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
-                      <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
-                      <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
-                      <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
-                      <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
-                      <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
-                      <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
-                      <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {/* Position & Experience Filters */}
+            <div className="rounded-lg overflow-hidden mb-6">
+              <div className="px-4 py-3 flex items-center" style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
+                <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                </svg>
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Position & Experience</h3>
+              </div>
+              <div className="bg-gray-50 p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Role/Position</label>
+                    <Select value={roleFilter || "all"} onValueChange={(value) => setRoleFilter(value === "all" ? "" : value)}>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="All Roles" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Roles</SelectItem>
+                        <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                        <SelectItem value="Civil Engineer">Civil Engineer</SelectItem>
+                        <SelectItem value="Electrical Engineer">Electrical Engineer</SelectItem>
+                        <SelectItem value="Registered Nurse">Registered Nurse</SelectItem>
+                        <SelectItem value="Medical Doctor">Medical Doctor</SelectItem>
+                        <SelectItem value="Physiotherapist">Physiotherapist</SelectItem>
+                        <SelectItem value="Primary School Teacher">Primary School Teacher</SelectItem>
+                        <SelectItem value="Mathematics Teacher">Mathematics Teacher</SelectItem>
+                        <SelectItem value="TVET Lecturer">TVET Lecturer</SelectItem>
+                        <SelectItem value="Chartered Accountant (CA)">Chartered Accountant (CA)</SelectItem>
+                        <SelectItem value="Financial Analyst">Financial Analyst</SelectItem>
+                        <SelectItem value="Tax Practitioner">Tax Practitioner</SelectItem>
+                        <SelectItem value="Attorney">Attorney</SelectItem>
+                        <SelectItem value="Advocate">Advocate</SelectItem>
+                        <SelectItem value="Legal Advisor">Legal Advisor</SelectItem>
+                        <SelectItem value="Mining Engineer">Mining Engineer</SelectItem>
+                        <SelectItem value="Geologist">Geologist</SelectItem>
+                        <SelectItem value="Environmental Officer">Environmental Officer</SelectItem>
+                        <SelectItem value="Agricultural Extension Officer">Agricultural Extension Officer</SelectItem>
+                        <SelectItem value="Veterinarian">Veterinarian</SelectItem>
+                        <SelectItem value="Food Technologist">Food Technologist</SelectItem>
+                        <SelectItem value="HR Manager">HR Manager</SelectItem>
+                        <SelectItem value="Training and Development Specialist">Training and Development Specialist</SelectItem>
+                        <SelectItem value="Skills Development Facilitator">Skills Development Facilitator</SelectItem>
+                        <SelectItem value="Digital Marketing Specialist">Digital Marketing Specialist</SelectItem>
+                        <SelectItem value="Public Relations Officer">Public Relations Officer</SelectItem>
+                        <SelectItem value="Content Creator">Content Creator</SelectItem>
+                        <SelectItem value="Architect">Architect</SelectItem>
+                        <SelectItem value="Quantity Surveyor">Quantity Surveyor</SelectItem>
+                        <SelectItem value="Project Manager">Project Manager</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                    <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="All Levels" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Levels</SelectItem>
+                        <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
+                        <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
+                        <SelectItem value="advanced">Advanced (6-10 years)</SelectItem>
+                        <SelectItem value="expert">Expert (10+ years)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type 2</label>
-                  <Select value={qualificationType2Filter || "all"} onValueChange={(value) => setQualificationType2Filter(value === "all" ? "" : value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
-                      <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
-                      <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
-                      <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
-                      <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
-                      <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Qualification 2</label>
-                  <Select value={qualification2Filter || "all"} onValueChange={(value) => setQualification2Filter(value === "all" ? "" : value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select qualification" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Qualifications</SelectItem>
-                      <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
-                      <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
-                      <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
-                      <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
-                      <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
-                      <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
-                      <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
-                      <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {/* Advanced Qualifications Filters */}
+            <div className="rounded-lg overflow-hidden">
+              <div className="px-4 py-3 flex items-center" style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
+                <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Qualifications Search</h3>
+              </div>
+              <div className="bg-gray-50 p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wider">Primary Qualification</h4>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type</label>
+                      <Select value={qualificationType1Filter || "all"} onValueChange={(value) => setQualificationType1Filter(value === "all" ? "" : value)}>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
+                          <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
+                          <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
+                          <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
+                          <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
+                          <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Specific Qualification</label>
+                      <Select value={qualification1Filter || "all"} onValueChange={(value) => setQualification1Filter(value === "all" ? "" : value)}>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Select qualification" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Qualifications</SelectItem>
+                          <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
+                          <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
+                          <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
+                          <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
+                          <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
+                          <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
+                          <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
+                          <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wider">Secondary Qualification</h4>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Type</label>
+                      <Select value={qualificationType2Filter || "all"} onValueChange={(value) => setQualificationType2Filter(value === "all" ? "" : value)}>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="Higher Certificates and Advanced National Vocational Certificate (NQF 5)">Higher Certificates (NQF 5)</SelectItem>
+                          <SelectItem value="National Diploma and Advanced Certificate (NQF 6)">National Diploma (NQF 6)</SelectItem>
+                          <SelectItem value="Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)">Bachelor's Degree (NQF 7)</SelectItem>
+                          <SelectItem value="Honours Degrees, Post Graduate Diploma, and Professional Qualifications(NQF 8)">Honours Degree (NQF 8)</SelectItem>
+                          <SelectItem value="Master (NQF 9)">Master's Degree (NQF 9)</SelectItem>
+                          <SelectItem value="Doctoral degree (NQF 10)">Doctoral Degree (NQF 10)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Specific Qualification</label>
+                      <Select value={qualification2Filter || "all"} onValueChange={(value) => setQualification2Filter(value === "all" ? "" : value)}>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Select qualification" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Qualifications</SelectItem>
+                          <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
+                          <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
+                          <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
+                          <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
+                          <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
+                          <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
+                          <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
+                          <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
