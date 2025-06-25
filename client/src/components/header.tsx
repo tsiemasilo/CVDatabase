@@ -36,7 +36,7 @@ export default function Header() {
                 alt="Alteram Logo" 
               />
             </div>
-            <div className="ml-10 flex space-x-3">
+            <div className="ml-16 flex space-x-3">
               {tabs.map((tab) => (
                 <button
                   key={tab}
