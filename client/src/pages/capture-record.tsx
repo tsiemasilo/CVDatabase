@@ -128,10 +128,8 @@ export default function CaptureRecord() {
 
   const createCVMutation = useMutation({
     mutationFn: async (data: InsertCVRecord) => {
-      return await apiRequest("/api/cv-records", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("POST", "/api/cv-records", data);
+      return await response.json();
     },
     onSuccess: () => {
       toast({
@@ -158,9 +156,10 @@ export default function CaptureRecord() {
       });
     },
     onError: (error: any) => {
+      console.error("CV creation error:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to capture CV record.",
+        description: error.message || "Failed to capture CV record. Please check all required fields.",
         variant: "destructive",
       });
     },
@@ -188,11 +187,13 @@ export default function CaptureRecord() {
       phone: formData.contactNumber,
       position: formData.position,
       department: formData.department,
-      experience: parseInt(formData.yearsOfExperience),
+      experience: parseInt(formData.yearsOfExperience) || 0,
       status: "active",
-      cvFile: "", // Will be handled separately if file upload is needed
+      cvFile: "",
+      qualifications: validLanguages.join(", ") // Store languages in qualifications field
     };
 
+    console.log("Submitting CV data:", cvData);
     createCVMutation.mutate(cvData);
   };
 
