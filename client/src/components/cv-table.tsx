@@ -108,7 +108,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-800 hover:bg-slate-800">
+            <TableRow className="bg-slate-600 hover:bg-slate-600">
               <TableHead 
                 className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('name')}
