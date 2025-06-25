@@ -16,6 +16,7 @@ function MainContent({ activeTab }: { activeTab: ActiveTab }) {
     case "Qualifications":
       return <Qualifications />;
     case "Positions | Roles":
+      return <PositionsRoles />;
     case "Access User Profiles":
     case "Tenders":
     case "Capture record":
