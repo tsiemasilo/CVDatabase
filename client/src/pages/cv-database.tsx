@@ -263,13 +263,14 @@ export default function CVDatabase() {
             </div>
 
             {/* Position & Experience Filters */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="rounded-lg overflow-hidden mb-6">
+              <div className="px-4 py-3 flex items-center" style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
+                <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
                 </svg>
-                Position & Experience
-              </h3>
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Position & Experience</h3>
+              </div>
+              <div className="bg-gray-50 p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Role/Position</label>
@@ -398,10 +399,14 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Qualifications</SelectItem>
-                      <SelectItem value="computer-science">Computer Science</SelectItem>
-                      <SelectItem value="business">Business</SelectItem>
-                      <SelectItem value="engineering">Engineering</SelectItem>
-                      <SelectItem value="design">Design</SelectItem>
+                      <SelectItem value="Higher Certificate in Information Technology">Higher Certificate in Information Technology</SelectItem>
+                      <SelectItem value="Higher Certificate in Business Management">Higher Certificate in Business Management</SelectItem>
+                      <SelectItem value="National Diploma in Electrical Engineering">National Diploma in Electrical Engineering</SelectItem>
+                      <SelectItem value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</SelectItem>
+                      <SelectItem value="Bachelor of Commerce in Accounting">Bachelor of Commerce in Accounting</SelectItem>
+                      <SelectItem value="Honours Degree in Psychology">Honours Degree in Psychology</SelectItem>
+                      <SelectItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</SelectItem>
+                      <SelectItem value="Doctor of Philosophy in Engineering">Doctor of Philosophy in Engineering</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
