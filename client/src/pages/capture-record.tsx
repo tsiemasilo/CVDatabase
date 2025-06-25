@@ -28,7 +28,8 @@ export default function CaptureRecord() {
     email: "",
     position: "",
     department: "",
-    languages: [""]
+    languages: [""],
+    qualifications: ""
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -142,7 +143,8 @@ export default function CaptureRecord() {
         email: "",
         position: "",
         department: "",
-        languages: [""]
+        languages: [""],
+        qualifications: ""
       });
     },
     onError: (error: any) => {
@@ -181,7 +183,7 @@ export default function CaptureRecord() {
       status: "active",
       cvFile: "",
       languages: validLanguages.join(", "), // Store languages in languages field
-      qualifications: "" // Leave qualifications empty for now
+      qualifications: formData.qualifications || "No qualifications listed" // Include qualifications from form
     };
 
     console.log("Submitting CV data:", cvData);
@@ -400,6 +402,26 @@ export default function CaptureRecord() {
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Qualifications */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
+                Qualifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="qualifications">Educational Background / Certifications</Label>
+                <Input
+                  id="qualifications"
+                  placeholder="e.g., Bachelor's Degree in Computer Science, PMP Certification"
+                  value={formData.qualifications}
+                  onChange={(e) => handleInputChange("qualifications", e.target.value)}
+                />
               </div>
             </CardContent>
           </Card>
