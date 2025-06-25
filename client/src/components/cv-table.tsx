@@ -51,23 +51,38 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (data: { id: number; updates: Partial<CVRecord> }) => {
+      const response = await apiRequest("PUT", `/api/cv-records/${data.id}`, data.updates);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
+      setEditingRecord(null);
+      toast({ title: "CV record updated successfully" });
+      onRefetch();
+    },
+    onError: () => {
+      toast({ title: "Failed to update CV record", variant: "destructive" });
+    }
+  });
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'archived': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const getRandomColor = (index: number) => {
+    const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-teal-500'];
+    return colors[index % colors.length];
   };
 
-  const getAvatarColor = (name: string) => {
-    const colors = ['bg-primary-500', 'bg-purple-500', 'bg-indigo-500', 'bg-green-500', 'bg-red-500', 'bg-yellow-500'];
-    const index = name.length % colors.length;
-    return colors[index];
+  const getStatusColor = (status: string) => {
+    const colors = {
+      active: 'bg-green-100 text-green-800',
+      pending: 'bg-yellow-100 text-yellow-800',
+      archived: 'bg-gray-100 text-gray-800'
+    };
+    return colors[status as keyof typeof colors] || colors.pending;
   };
 
   const handleSort = (key: keyof CVRecord) => {
@@ -76,19 +91,6 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
     }));
   };
-
-  const sortedRecords = [...records].sort((a, b) => {
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-    
-    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-    return 0;
-  });
-
-  const totalPages = Math.ceil(sortedRecords.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedRecords = sortedRecords.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleView = (record: CVRecord) => {
     setViewingRecord(record);
@@ -108,22 +110,6 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     });
   };
 
-  const updateMutation = useMutation({
-    mutationFn: async (data: { id: number; updates: Partial<CVRecord> }) => {
-      const response = await apiRequest(`/api/cv-records/${data.id}`, {
-        method: "PUT",
-        body: JSON.stringify(data.updates),
-        headers: { "Content-Type": "application/json" }
-      });
-      return response;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
-      setEditingRecord(null);
-      onRefetch();
-    }
-  });
-
   const handleUpdate = () => {
     if (editingRecord) {
       updateMutation.mutate({
@@ -135,6 +121,19 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       });
     }
   };
+
+  const sortedRecords = [...records].sort((a, b) => {
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedRecords.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedRecords = sortedRecords.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   if (isLoading) {
     return (
@@ -171,42 +170,72 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('name')}
               >
-                First name
+                Name
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('department')}
+              >
+                Department
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('position')}
+              >
+                Position
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('status')}
+              >
+                Status
               </TableHead>
               <TableHead 
                 className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('experience')}
               >
-                Years experience
+                Experience
               </TableHead>
-              <TableHead 
-                className="cursor-pointer text-white font-medium py-4 px-6"
-                onClick={() => handleSort('phone')}
-              >
-                Contact number
+              <TableHead className="text-white font-medium py-4 px-6">
+                Phone
               </TableHead>
-              <TableHead 
-                className="cursor-pointer text-white font-medium py-4 px-6"
-                onClick={() => handleSort('email')}
-              >
-                E-mail
+              <TableHead className="text-white font-medium py-4 px-6">
+                Email
               </TableHead>
-              <TableHead 
-                className="text-white font-medium py-4 px-6"
-              >
+              <TableHead className="text-white font-medium py-4 px-6">
                 Qualifications
               </TableHead>
-              <TableHead className="text-white font-medium py-4 px-6">Actions</TableHead>
+              <TableHead className="text-white font-medium py-4 px-6 text-center">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedRecords.map((record) => (
-              <TableRow key={record.id} className="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100">
+            {paginatedRecords.map((record, index) => (
+              <TableRow key={record.id} className="hover:bg-gray-50">
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(-1)[0]}</div>
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full ${getRandomColor(index)} flex items-center justify-center text-white text-sm font-medium`}>
+                      {getInitials(record.name)}
+                    </div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {record.name.split(' ')[0] || record.name}
+                    </div>
+                  </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(0, -1).join(' ')}</div>
+                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(1).join(' ') || record.name}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.department || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.position || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <Badge className={`${getStatusColor(record.status)} border-0`}>
+                    {record.status}
+                  </Badge>
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.experience || 0}</div>
@@ -287,62 +316,62 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       </div>
 
       {/* Pagination */}
-      <div className="bg-white px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-        <div className="flex items-center text-sm text-gray-700">
-          <span>
-            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, sortedRecords.length)} of {sortedRecords.length} results
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="btn-icon"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </Button>
-          <div className="flex items-center space-x-1">
-            {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-              const page = i + 1;
-              return (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setCurrentPage(page)}
-                  className={currentPage === page ? "bg-primary-500 text-white" : ""}
-                >
-                  {page}
-                </Button>
-              );
-            })}
-            {totalPages > 5 && (
-              <>
-                <span className="px-2 text-gray-500">...</span>
-                <Button
-                  variant={currentPage === totalPages ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setCurrentPage(totalPages)}
-                  className={currentPage === totalPages ? "bg-primary-500 text-white" : ""}
-                >
-                  {totalPages}
-                </Button>
-              </>
-            )}
+      <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, sortedRecords.length)} of {sortedRecords.length} records
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="btn-icon"
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="btn-icon"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </Button>
+            <div className="flex items-center space-x-1">
+              {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                const page = i + 1;
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page)}
+                    className={currentPage === page ? "bg-primary-500 text-white" : ""}
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
+              {totalPages > 5 && (
+                <>
+                  <span className="px-2 text-gray-500">...</span>
+                  <Button
+                    variant={currentPage === totalPages ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(totalPages)}
+                    className={currentPage === totalPages ? "bg-primary-500 text-white" : ""}
+                  >
+                    {totalPages}
+                  </Button>
+                </>
+              )}
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="btn-icon"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
