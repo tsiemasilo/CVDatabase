@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
+import { X, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AddCVModalProps {
@@ -21,6 +20,8 @@ interface AddCVModalProps {
 export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModalProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const form = useForm<InsertCVRecord>({
     resolver: zodResolver(insertCVRecordSchema),
@@ -38,11 +39,38 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: InsertCVRecord) => apiRequest("POST", "/api/cv-records", data),
+    mutationFn: async (data: InsertCVRecord) => {
+      const formData = new FormData();
+      
+      // Append all form fields
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+      
+      // Append file if selected
+      if (selectedFile) {
+        formData.append('cvFile', selectedFile);
+      }
+      
+      const response = await fetch('/api/cv-records', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create CV record');
+      }
+      
+      return response.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
       toast({ title: "CV record created successfully" });
       form.reset();
+      setSelectedFile(null);
       onOpenChange(false);
       onSuccess();
     },
@@ -55,12 +83,44 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
     },
   });
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Only PDF, DOC, and DOCX files are allowed",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "File size must be less than 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setSelectedFile(file);
+    }
+  };
+
   const onSubmit = (data: InsertCVRecord) => {
     createMutation.mutate(data);
   };
 
   const handleClose = () => {
     form.reset();
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     onOpenChange(false);
   };
 
