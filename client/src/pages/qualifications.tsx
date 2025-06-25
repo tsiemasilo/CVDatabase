@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Plus, Edit, Trash2 } from "lucide-react";
@@ -10,6 +11,13 @@ interface Qualification {
   id: number;
   type: string;
   name: string;
+  description: string;
+}
+
+interface QualificationName {
+  id: number;
+  qualificationType: string;
+  qualificationName: string;
   description: string;
 }
 
@@ -55,6 +63,47 @@ export default function Qualifications() {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingQualification, setEditingQualification] = useState<Qualification | null>(null);
+  
+  // Qualification Names state
+  const [qualificationNames, setQualificationNames] = useState<QualificationName[]>([
+    {
+      id: 1,
+      qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
+      qualificationName: "Bachelor of Arts (BA)",
+      description: "na"
+    },
+    {
+      id: 2,
+      qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
+      qualificationName: "Bachelor of Science",
+      description: "na"
+    },
+    {
+      id: 3,
+      qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+      qualificationName: "certificate in programming",
+      description: "almost any form of programming"
+    },
+    {
+      id: 4,
+      qualificationType: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
+      qualificationName: "certificate in something",
+      description: "something..."
+    },
+    {
+      id: 5,
+      qualificationType: "Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)",
+      qualificationName: "Computer Science",
+      description: "BSc Computer Science"
+    }
+  ]);
+  
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [newQualificationName, setNewQualificationName] = useState({
+    qualificationType: "",
+    qualificationName: "",
+    description: ""
+  });
   const [formData, setFormData] = useState({
     type: "",
     name: "",
@@ -98,6 +147,31 @@ export default function Qualifications() {
 
   const handleDelete = (id: number) => {
     setQualifications(qualifications.filter(q => q.id !== id));
+  };
+
+  // Qualification Names handlers
+  const handleAddQualificationName = () => {
+    if (newQualificationName.qualificationType && newQualificationName.qualificationName) {
+      const newId = Math.max(...qualificationNames.map(q => q.id), 0) + 1;
+      setQualificationNames([...qualificationNames, {
+        id: newId,
+        ...newQualificationName
+      }]);
+      setNewQualificationName({
+        qualificationType: "",
+        qualificationName: "",
+        description: ""
+      });
+      setAddModalOpen(false);
+    }
+  };
+
+  const handleEditQualificationName = (qualificationName: QualificationName) => {
+    console.log("Edit qualification name:", qualificationName);
+  };
+
+  const handleDeleteQualificationName = (id: number) => {
+    setQualificationNames(qualificationNames.filter(q => q.id !== id));
   };
 
   return (
@@ -258,6 +332,155 @@ export default function Qualifications() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Qualification Names Section */}
+        <div className="mt-8">
+          <div className="mb-4 flex items-center gap-4">
+            <Select defaultValue="Bachelor's degree, Advanced Diplomas, Post Graduate Certificates (NQF 7)">
+              <SelectTrigger className="w-96">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {qualifications.map((qual) => (
+                  <SelectItem key={qual.id} value={qual.type}>
+                    {qual.type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button className="bg-blue-800 hover:bg-blue-900 text-white px-6">
+              Apply filter
+            </Button>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+            <h2 className="text-lg font-medium text-gray-900">Qualifications</h2>
+            <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="btn-primary btn-icon">
+                  <Plus className="w-4 h-4" />
+                  Add qualification
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Qualification details</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      • Qualification Type
+                    </label>
+                    <Select 
+                      value={newQualificationName.qualificationType} 
+                      onValueChange={(value) => setNewQualificationName({...newQualificationName, qualificationType: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select qualification type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {qualifications.map((qual) => (
+                          <SelectItem key={qual.id} value={qual.type}>
+                            {qual.type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      • Qualification Name
+                    </label>
+                    <Input
+                      value={newQualificationName.qualificationName}
+                      onChange={(e) => setNewQualificationName({...newQualificationName, qualificationName: e.target.value})}
+                      placeholder="Enter qualification name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      • Description
+                    </label>
+                    <Textarea
+                      value={newQualificationName.description}
+                      onChange={(e) => setNewQualificationName({...newQualificationName, description: e.target.value})}
+                      placeholder="Enter description"
+                      rows={4}
+                    />
+                  </div>
+                  <div className="flex justify-end space-x-2 pt-4">
+                    <Button variant="outline" onClick={() => setAddModalOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleAddQualificationName}
+                      className="bg-orange-500 hover:bg-orange-600 text-white"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr style={{ backgroundColor: 'rgb(0, 0, 83)' }} className="text-white">
+                  <th className="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                    Qualification Type
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                    Qualification Name
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                    Qualification Description
+                  </th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {qualificationNames.map((qualName) => (
+                  <tr key={qualName.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 text-sm text-gray-500">
+                      {qualName.qualificationType}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                      {qualName.qualificationName}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900">
+                      {qualName.description}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleEditQualificationName(qualName)}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleDeleteQualificationName(qualName.id)}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </main>
     </div>
   );
