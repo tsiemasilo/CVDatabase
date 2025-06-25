@@ -105,6 +105,10 @@ export class MemStorage implements IStorage {
     const cvRecord: CVRecord = {
       ...insertCVRecord,
       id,
+      phone: insertCVRecord.phone || null,
+      department: insertCVRecord.department || null,
+      experience: insertCVRecord.experience || null,
+      cvFile: insertCVRecord.cvFile || null,
       submittedAt: new Date(),
     };
     this.cvRecords.set(id, cvRecord);
