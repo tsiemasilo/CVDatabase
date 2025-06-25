@@ -186,6 +186,20 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
             
             <FormField
               control={form.control}
+              name="qualifications"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="block text-sm font-medium text-gray-700">Qualifications</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="w-full" placeholder="e.g. Bachelor's degree, Advanced Diploma..." />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
               name="cvFile"
               render={({ field }) => (
                 <FormItem>
