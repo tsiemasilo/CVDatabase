@@ -17,21 +17,21 @@ export default function Qualifications() {
   const [qualifications, setQualifications] = useState<Qualification[]>([
     {
       id: 1,
-      type: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
-      name: "Bachelor's Degree",
-      description: "Undergraduate degree qualification"
-    },
-    {
-      id: 2,
-      type: "Doctoral degree (NQF 10)",
-      name: "Doctoral Degree",
-      description: "Highest level academic qualification"
-    },
-    {
-      id: 3,
       type: "Higher Certificates and Advanced National Vocational Certificate (NQF 5)",
       name: "Higher Certificate",
       description: "Post-secondary certificate qualification"
+    },
+    {
+      id: 2,
+      type: "National Diploma and Advanced Certificate (NQF 6)",
+      name: "National Diploma",
+      description: "Vocational diploma qualification"
+    },
+    {
+      id: 3,
+      type: "Bachelor's degree, Advanced Diploma, Post Graduate Certificates (NQF 7)",
+      name: "Bachelor's Degree",
+      description: "Undergraduate degree qualification"
     },
     {
       id: 4,
@@ -47,9 +47,9 @@ export default function Qualifications() {
     },
     {
       id: 6,
-      type: "National Diploma and Advanced Certificate (NQF 6)",
-      name: "National Diploma",
-      description: "Vocational diploma qualification"
+      type: "Doctoral degree (NQF 10)",
+      name: "Doctoral Degree",
+      description: "Highest level academic qualification"
     }
   ]);
 
@@ -165,10 +165,10 @@ export default function Qualifications() {
             <table className="w-full">
               <thead>
                 <tr style={{ backgroundColor: 'rgb(0, 0, 83)' }} className="text-white">
-                  <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">
                     Qualification Type
                   </th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+                  <th className="px-4 py-3 text-center text-sm font-semibold uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -176,32 +176,32 @@ export default function Qualifications() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {qualifications.map((qualification) => (
                   <tr key={qualification.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-gray-900">
                       <div>
                         <div className="font-medium">{qualification.type}</div>
-                        <div className="text-xs text-gray-500 mt-1">{qualification.name}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{qualification.name}</div>
                         {qualification.description && (
-                          <div className="text-xs text-gray-400 mt-1">{qualification.description}</div>
+                          <div className="text-xs text-gray-400 mt-0.5">{qualification.description}</div>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center space-x-2">
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center space-x-1">
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEdit(qualification)}
-                          className="btn-secondary btn-icon h-8 w-8 p-0"
+                          className="btn-secondary btn-icon h-7 w-7 p-0"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-3.5 h-3.5" />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(qualification.id)}
-                          className="btn-danger btn-icon h-8 w-8 p-0"
+                          className="btn-danger btn-icon h-7 w-7 p-0"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                     </td>
