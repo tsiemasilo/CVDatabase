@@ -1,30 +1,12 @@
-import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useState, createContext, useContext } from "react";
 import Header from "@/components/header";
 import CVDatabase from "@/pages/cv-database";
 import Qualifications from "@/pages/qualifications";
 import NotFound from "@/pages/not-found";
-
-type ActiveTab = "Landing page" | "Qualifications" | "Positions | Roles" | "Access User Profiles" | "Tenders" | "Capture record";
-
-interface AppContextType {
-  activeTab: ActiveTab;
-  setActiveTab: (tab: ActiveTab) => void;
-}
-
-const AppContext = createContext<AppContextType | undefined>(undefined);
-
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("useAppContext must be used within App component");
-  }
-  return context;
-};
+import { AppProvider, useAppContext, type ActiveTab } from "@/contexts/AppContext";
 
 function MainContent({ activeTab }: { activeTab: ActiveTab }) {
   switch (activeTab) {
@@ -51,19 +33,25 @@ function MainContent({ activeTab }: { activeTab: ActiveTab }) {
   }
 }
 
-function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("Landing page");
+function AppContent() {
+  const { activeTab } = useAppContext();
+  
+  return (
+    <div>
+      <Toaster />
+      <Header />
+      <MainContent activeTab={activeTab} />
+    </div>
+  );
+}
 
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AppContext.Provider value={{ activeTab, setActiveTab }}>
-          <div>
-            <Toaster />
-            <Header />
-            <MainContent activeTab={activeTab} />
-          </div>
-        </AppContext.Provider>
+        <AppProvider>
+          <AppContent />
+        </AppProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
-import { useAppContext } from "@/App";
+import { useAppContext } from "@/contexts/AppContext";
 
 export default function Header() {
   const { activeTab, setActiveTab } = useAppContext();
