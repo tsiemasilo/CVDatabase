@@ -3,6 +3,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CVRecord } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
@@ -20,6 +24,18 @@ const ITEMS_PER_PAGE = 10;
 export default function CVTable({ records, isLoading, onRefetch }: CVTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CVRecord; direction: 'asc' | 'desc' }>({ key: 'submittedAt', direction: 'desc' });
+  const [viewingRecord, setViewingRecord] = useState<CVRecord | null>(null);
+  const [editingRecord, setEditingRecord] = useState<CVRecord | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    position: "",
+    department: "",
+    qualifications: "",
+    experience: "",
+    status: "active" as const
+  });
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -75,13 +91,49 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   const paginatedRecords = sortedRecords.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleView = (record: CVRecord) => {
-    // TODO: Implement view functionality
-    console.log("View CV:", record);
+    setViewingRecord(record);
   };
 
   const handleEdit = (record: CVRecord) => {
-    // TODO: Implement edit functionality
-    console.log("Edit CV:", record);
+    setEditingRecord(record);
+    setEditFormData({
+      name: record.name,
+      email: record.email,
+      phone: record.phone || "",
+      position: record.position || "",
+      department: record.department || "",
+      qualifications: record.qualifications || "",
+      experience: record.experience?.toString() || "",
+      status: record.status
+    });
+  };
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: { id: number; updates: Partial<CVRecord> }) => {
+      const response = await apiRequest(`/api/cv-records/${data.id}`, {
+        method: "PUT",
+        body: JSON.stringify(data.updates),
+        headers: { "Content-Type": "application/json" }
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
+      setEditingRecord(null);
+      onRefetch();
+    }
+  });
+
+  const handleUpdate = () => {
+    if (editingRecord) {
+      updateMutation.mutate({
+        id: editingRecord.id,
+        updates: {
+          ...editFormData,
+          experience: editFormData.experience ? parseInt(editFormData.experience) : 0
+        }
+      });
+    }
   };
 
   if (isLoading) {
@@ -293,6 +345,161 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
           </Button>
         </div>
       </div>
+
+      {/* View Record Modal */}
+      <Dialog open={viewingRecord !== null} onOpenChange={() => setViewingRecord(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>CV Record Details</DialogTitle>
+          </DialogHeader>
+          {viewingRecord && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.name}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.email}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.phone || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Position</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.position || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Department</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.department || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Experience</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.experience || 0} years</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <p className="mt-1 text-sm text-gray-900 capitalize">{viewingRecord.status}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Submitted</label>
+                  <p className="mt-1 text-sm text-gray-900">
+                    {new Date(viewingRecord.submittedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Qualifications</label>
+                <p className="mt-1 text-sm text-gray-900">{viewingRecord.qualifications || 'No qualifications listed'}</p>
+              </div>
+              <div className="flex justify-end">
+                <Button variant="outline" onClick={() => setViewingRecord(null)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Record Modal */}
+      <Dialog open={editingRecord !== null} onOpenChange={() => setEditingRecord(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit CV Record</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <Input
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                  placeholder="Enter full name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <Input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  placeholder="Enter email address"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <Input
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  placeholder="Enter phone number"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                <Input
+                  value={editFormData.position}
+                  onChange={(e) => setEditFormData({...editFormData, position: e.target.value})}
+                  placeholder="Enter position applied for"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                <Input
+                  value={editFormData.department}
+                  onChange={(e) => setEditFormData({...editFormData, department: e.target.value})}
+                  placeholder="Enter department"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Experience (years)</label>
+                <Input
+                  type="number"
+                  value={editFormData.experience}
+                  onChange={(e) => setEditFormData({...editFormData, experience: e.target.value})}
+                  placeholder="Enter years of experience"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <Select value={editFormData.status} onValueChange={(value) => setEditFormData({...editFormData, status: value as any})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Qualifications</label>
+              <Textarea
+                value={editFormData.qualifications}
+                onChange={(e) => setEditFormData({...editFormData, qualifications: e.target.value})}
+                placeholder="Enter qualifications"
+                rows={3}
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setEditingRecord(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleUpdate}
+                disabled={updateMutation.isPending}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                {updateMutation.isPending ? "Updating..." : "Update"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
