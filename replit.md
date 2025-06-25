@@ -111,6 +111,7 @@ Changelog:
 - June 25, 2025. Implemented comprehensive filter functionality across all pages - all apply filter buttons now work correctly
 - June 25, 2025. Created comprehensive Positions | Roles page with departments and roles tables featuring South African job market data
 - June 25, 2025. Implemented Tenders section with authentic South African government tender examples and full CRUD functionality
+- June 25, 2025. Updated landing page filters to correlate with actual data from Positions|Roles and Qualifications sections - all dropdown options now match available data
 ```
 
 ## User Preferences
