@@ -35,12 +35,18 @@ export default function CaptureRecord() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Get unique role names for the selected department
+  // Get unique role names for the selected department (simplified for new structure)
   const getAvailableRoles = () => {
     if (!formData.department) return [];
-    return ROLES
-      .filter(role => role.department === formData.department)
-      .map(role => role.role);
+    // For now, return sample roles based on department
+    const rolesByDept: Record<string, string[]> = {
+      "SAP": ["SAP Consultant", "ABAP Developer", "SAP Basis Administrator"],
+      "ICT": ["Network Engineer", "Software Developer", "System Administrator"],
+      "HR": ["HR Specialist", "Recruiter", "Training Coordinator"],
+      "PROJECT MANAGEMENT": ["Project Manager", "Scrum Master", "Business Analyst"],
+      "SERVICE DESK": ["Level 1 Support", "Level 2 Support", "Service Manager"]
+    };
+    return rolesByDept[formData.department] || [];
   };
 
   // Get qualification names for the selected qualification type
