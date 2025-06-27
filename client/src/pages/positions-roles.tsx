@@ -214,6 +214,16 @@ export default function PositionsRoles() {
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
+  const isSAPCategory = () => {
+    // Check if we're currently in a SAP category (categories 1-9)
+    return selectedCategoryId && selectedCategoryId <= 9;
+  };
+
+  const isSAPDepartment = () => {
+    // Check if we're in SAP department (department ID 1)
+    return selectedDepartmentId === 1 || newDepartmentId === 1;
+  };
+
   const handleAddStep = () => {
     if (!formData.name.trim()) return;
 
@@ -536,6 +546,43 @@ export default function PositionsRoles() {
                   placeholder={`Enter ${getStepTitle().toLowerCase()} description`}
                 />
               </div>
+
+              {/* K-Level field for SAP roles only */}
+              {getCurrentLevel() === 'Roles' && isSAPCategory() && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    K-Level (SAP Knowledge Level)
+                  </label>
+                  <Select
+                    value={formData.kLevel}
+                    onValueChange={(value) => setFormData({ ...formData, kLevel: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select K-Level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="K4">K4 - Basic Level</SelectItem>
+                      <SelectItem value="K5">K5 - Intermediate Level</SelectItem>
+                      <SelectItem value="K6">K6 - Advanced Level</SelectItem>
+                      <SelectItem value="K7">K7 - Expert Level</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Certificate field for roles */}
+              {getCurrentLevel() === 'Roles' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Certificate Required (Optional)
+                  </label>
+                  <Input
+                    value={formData.certificate}
+                    onChange={(e) => setFormData({ ...formData, certificate: e.target.value })}
+                    placeholder="Enter required certification"
+                  />
+                </div>
+              )}
 
               <div className="flex gap-3 pt-4">
                 <Button
