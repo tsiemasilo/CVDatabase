@@ -266,7 +266,7 @@ export default function PositionsRoles() {
           </Button>
           <Button
             onClick={() => {
-              setAddFormType(type as any);
+              setAddFormStep(0);
               setShowAddForm(true);
             }}
             className="bg-orange-500 hover:bg-orange-600 text-white"
