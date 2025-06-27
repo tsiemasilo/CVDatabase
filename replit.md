@@ -118,6 +118,8 @@ Changelog:
 - June 25, 2025. Updated department and role options to use shared data structures for consistency across Capture Record and Positions|Roles pages
 - June 25, 2025. Fixed schema to separate languages and qualifications fields, added Languages column to CV table
 - June 25, 2025. Enhanced qualifications selection with dropdown menus using qualification types and names from Qualifications section
+- June 25, 2025. Restructured Positions|Roles section with hierarchical navigation: Department → Discipline → Domain → Category → Role
+- June 25, 2025. Implemented breadcrumb navigation and drill-down functionality for exploring organizational structure
 ```
 
 ## User Preferences

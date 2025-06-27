@@ -71,6 +71,8 @@ export const DEPARTMENTS: Department[] = [
   }
 ];
 
+export { Department, Discipline, Domain, Category, Role };
+
 export const ROLES: Role[] = [
   { id: 1, department: "Engineering and Technology", role: "Civil Engineer", description: "Design and oversee construction of infrastructure projects including roads, bridges, and water systems." },
   { id: 2, department: "Engineering and Technology", role: "Mechanical Engineer", description: "Design, develop, and maintain mechanical systems and equipment across various industries." },
