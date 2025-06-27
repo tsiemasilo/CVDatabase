@@ -56,6 +56,8 @@ export interface Role {
   description: string;
   certificate?: string;
   kLevel?: string;
+  department?: string;
+  role?: string;
 }
 
 export const DISCIPLINES: Discipline[] = [
