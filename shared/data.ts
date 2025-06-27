@@ -156,24 +156,40 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const ROLES: Role[] = [
-  { id: 1, categoryId: 1, name: "SAP FI Consultant", description: "SAP Financial Accounting module implementation and support", certificate: "SAP FI Certification", kLevel: "K5" },
-  { id: 2, categoryId: 1, name: "SAP CO Consultant", description: "SAP Controlling module configuration and optimization", certificate: "SAP CO Certification", kLevel: "K5" },
-  { id: 3, categoryId: 2, name: "SAP MM Consultant", description: "Materials Management module specialist", certificate: "SAP MM Certification", kLevel: "K4" },
-  { id: 4, categoryId: 2, name: "SAP WM Consultant", description: "Warehouse Management module expert", certificate: "SAP WM Certification", kLevel: "K4" },
-  { id: 5, categoryId: 3, name: "SAP SD Consultant", description: "Sales and Distribution module consultant", certificate: "SAP SD Certification", kLevel: "K5" },
-  { id: 6, categoryId: 3, name: "SAP LE Consultant", description: "Logistics Execution specialist", certificate: "SAP LE Certification", kLevel: "K4" },
-  { id: 7, categoryId: 4, name: "SAP HR Consultant", description: "Human Resources module implementation", certificate: "SAP HR Certification", kLevel: "K5" },
-  { id: 8, categoryId: 4, name: "SAP HCM Consultant", description: "Human Capital Management specialist", certificate: "SAP HCM Certification", kLevel: "K6" },
-  { id: 9, categoryId: 5, name: "ABAP Developer", description: "SAP ABAP programming and development", certificate: "SAP ABAP Certification", kLevel: "K6" },
-  { id: 10, categoryId: 5, name: "SAP Technical Consultant", description: "Technical SAP configuration and customization", certificate: "SAP Technical Certification", kLevel: "K7" },
-  { id: 11, categoryId: 6, name: "UI5 Developer", description: "SAP UI5 and Fiori application development", certificate: "SAP UI5 Certification", kLevel: "K5" },
-  { id: 12, categoryId: 6, name: "Fiori Consultant", description: "SAP Fiori user experience specialist", certificate: "SAP Fiori Certification", kLevel: "K5" },
-  { id: 13, categoryId: 7, name: "SAP Integration Specialist", description: "SAP system integration and middleware", certificate: "SAP PI/PO Certification", kLevel: "K7" },
-  { id: 14, categoryId: 7, name: "SAP Cloud Consultant", description: "SAP cloud platform integration", certificate: "SAP Cloud Certification", kLevel: "K6" },
-  { id: 15, categoryId: 8, name: "SAP Basis Administrator", description: "SAP system administration and monitoring", certificate: "SAP Basis Certification", kLevel: "K6" },
-  { id: 16, categoryId: 8, name: "SAP System Administrator", description: "SAP landscape maintenance and support", certificate: "SAP Admin Certification", kLevel: "K5" },
-  { id: 17, categoryId: 9, name: "SAP Database Administrator", description: "SAP database management and tuning", certificate: "SAP DBA Certification", kLevel: "K7" },
-  { id: 18, categoryId: 9, name: "SAP Performance Analyst", description: "SAP system performance optimization", certificate: "SAP Performance Certification", kLevel: "K6" },
+  // K1 - Basic Awareness / Entry-Level (Interns, Trainees) - 0-1 year experience
+  { id: 1, categoryId: 1, name: "SAP MM Trainee Consultant", description: "Learning SAP Materials Management with guidance, 0-1 year experience", certificate: "SAP MM Foundation", kLevel: "K1" },
+  { id: 2, categoryId: 1, name: "SAP FICO Intern", description: "Supporting SAP Finance and Controlling activities, entry-level trainee", certificate: "SAP FICO Foundation", kLevel: "K1" },
+  { id: 3, categoryId: 5, name: "SAP ABAP Junior Developer", description: "Learning ABAP programming fundamentals with supervision", certificate: "SAP ABAP Foundation", kLevel: "K1" },
+  { id: 4, categoryId: 4, name: "SAP HCM Support Assistant", description: "Supporting Human Capital Management processes, trainee level", certificate: "SAP HCM Foundation", kLevel: "K1" },
+  { id: 5, categoryId: 8, name: "SAP BASIS Trainee", description: "Learning SAP system administration basics under guidance", certificate: "SAP BASIS Foundation", kLevel: "K1" },
+  
+  // K2 - Functional Understanding / Junior Consultant - 1-2 years experience
+  { id: 6, categoryId: 3, name: "SAP SD Junior Consultant", description: "Working on Sales and Distribution with guidance, 1-2 years experience", certificate: "SAP SD Associate", kLevel: "K2" },
+  { id: 7, categoryId: 6, name: "SAP BI Analyst (Junior)", description: "Supporting Business Intelligence reporting and analysis", certificate: "SAP BI Associate", kLevel: "K2" },
+  { id: 8, categoryId: 2, name: "SAP PM Support Consultant", description: "Supporting Plant Maintenance processes with supervision", certificate: "SAP PM Associate", kLevel: "K2" },
+  { id: 9, categoryId: 7, name: "SAP Ariba Associate", description: "Supporting procurement processes in SAP Ariba platform", certificate: "SAP Ariba Foundation", kLevel: "K2" },
+  { id: 10, categoryId: 8, name: "SAP Security Assistant", description: "Supporting SAP security administration with guidance", certificate: "SAP Security Foundation", kLevel: "K2" },
+  
+  // K3 - Practitioner / Independent Consultant - 2-4 years experience
+  { id: 11, categoryId: 2, name: "SAP MM Functional Consultant", description: "Independent Materials Management implementation, 2-4 years experience", certificate: "SAP MM Consultant", kLevel: "K3" },
+  { id: 12, categoryId: 1, name: "SAP FICO Consultant", description: "Independent Finance and Controlling module delivery", certificate: "SAP FICO Consultant", kLevel: "K3" },
+  { id: 13, categoryId: 5, name: "SAP ABAP Developer", description: "Independent ABAP development and customization", certificate: "SAP ABAP Developer", kLevel: "K3" },
+  { id: 14, categoryId: 6, name: "SAP BW Consultant", description: "Independent Business Warehouse implementation and support", certificate: "SAP BW Consultant", kLevel: "K3" },
+  { id: 15, categoryId: 3, name: "SAP CRM Consultant", description: "Independent Customer Relationship Management implementation", certificate: "SAP CRM Consultant", kLevel: "K3" },
+  
+  // K4 - Senior Expert / Lead Consultant - 5-8+ years experience
+  { id: 16, categoryId: 3, name: "SAP SD Lead Consultant", description: "Leading Sales and Distribution projects, 5-8+ years experience", certificate: "SAP SD Expert", kLevel: "K4" },
+  { id: 17, categoryId: 1, name: "SAP S/4HANA Migration Consultant", description: "Leading S/4HANA migration projects and transformations", certificate: "SAP S/4HANA Migration", kLevel: "K4" },
+  { id: 18, categoryId: 8, name: "SAP BASIS Senior Administrator", description: "Leading SAP system administration and infrastructure", certificate: "SAP BASIS Expert", kLevel: "K4" },
+  { id: 19, categoryId: 4, name: "SAP SuccessFactors Solution Lead", description: "Leading SuccessFactors HR solutions implementation", certificate: "SAP SuccessFactors Expert", kLevel: "K4" },
+  { id: 20, categoryId: 9, name: "SAP Data Migration Lead", description: "Leading data migration projects and strategies", certificate: "SAP Data Migration Expert", kLevel: "K4" },
+  
+  // K5 - Master / Solution Architect / Strategist - 10+ years experience
+  { id: 21, categoryId: 1, name: "SAP Solution Architect (FICO/MM/SD)", description: "Enterprise solution architecture, 10+ years experience", certificate: "SAP Solution Architect", kLevel: "K5" },
+  { id: 22, categoryId: 1, name: "SAP S/4HANA Program Manager", description: "Managing enterprise S/4HANA transformation programs", certificate: "SAP Program Management", kLevel: "K5" },
+  { id: 23, categoryId: 5, name: "SAP Enterprise Architect", description: "Strategic enterprise SAP architecture and governance", certificate: "SAP Enterprise Architecture", kLevel: "K5" },
+  { id: 24, categoryId: 8, name: "SAP GRC Strategy Lead", description: "Leading Governance, Risk and Compliance strategy", certificate: "SAP GRC Master", kLevel: "K5" },
+  { id: 25, categoryId: 5, name: "SAP Technical Architect (ABAP + BASIS + Integration)", description: "Master technical architect for complex SAP landscapes", certificate: "SAP Technical Master", kLevel: "K5" },
   { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
   { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" }
 ];
@@ -255,6 +271,12 @@ export const QUALIFICATION_TYPES = QUALIFICATION_MAPPINGS.map(q => q.type);
 
 export const NQF_LEVELS = ["5", "6", "7", "8", "9", "10"];
 
-export const SAP_K_LEVELS = ["K1", "K2", "K3", "K4", "K5", "K6", "K7"];
+export const SAP_K_LEVELS = [
+  "K1", // Basic Awareness / Entry-Level (0-1 year)
+  "K2", // Functional Understanding / Junior Consultant (1-2 years) 
+  "K3", // Practitioner / Independent Consultant (2-4 years)
+  "K4", // Senior Expert / Lead Consultant (5-8+ years)
+  "K5"  // Master / Solution Architect / Strategist (10+ years)
+];
 
 export const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];

@@ -497,13 +497,11 @@ export default function PositionsRoles() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All K-Levels</SelectItem>
-                    <SelectItem value="K1">K1 - Entry Level</SelectItem>
-                    <SelectItem value="K2">K2 - Basic Level</SelectItem>
-                    <SelectItem value="K3">K3 - Foundation Level</SelectItem>
-                    <SelectItem value="K4">K4 - Intermediate Level</SelectItem>
-                    <SelectItem value="K5">K5 - Advanced Level</SelectItem>
-                    <SelectItem value="K6">K6 - Expert Level</SelectItem>
-                    <SelectItem value="K7">K7 - Master Level</SelectItem>
+                    <SelectItem value="K1">K1 - Basic Awareness / Entry-Level (0-1 year)</SelectItem>
+                    <SelectItem value="K2">K2 - Functional Understanding / Junior Consultant (1-2 years)</SelectItem>
+                    <SelectItem value="K3">K3 - Practitioner / Independent Consultant (2-4 years)</SelectItem>
+                    <SelectItem value="K4">K4 - Senior Expert / Lead Consultant (5-8+ years)</SelectItem>
+                    <SelectItem value="K5">K5 - Master / Solution Architect / Strategist (10+ years)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

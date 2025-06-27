@@ -123,6 +123,8 @@ Changelog:
 - June 25, 2025. Redesigned Positions|Roles page with cascading dropdown navigation instead of card-based drill-down for better user experience
 - June 25, 2025. Updated departments to specific business requirements: SAP, ICT, HR, PROJECT MANAGEMENT, SERVICE DESK with corresponding disciplines and domains
 - June 25, 2025. Added functionality to create new departments, disciplines, domains, categories, and roles through the Positions|Roles interface with proper hierarchical relationships
+- June 27, 2025. Implemented K-level filtering system for SAP department with dropdown appearing when SAP is selected
+- June 27, 2025. Restructured SAP roles into authentic K1-K5 knowledge levels based on experience: K1 (0-1 year entry-level), K2 (1-2 years junior), K3 (2-4 years independent), K4 (5-8+ years senior lead), K5 (10+ years master architect)
 ```
 
 ## User Preferences
