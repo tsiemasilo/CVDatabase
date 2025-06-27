@@ -14,11 +14,11 @@ export interface Role {
 }
 
 export const DEPARTMENTS: Department[] = [
-  { id: 1, name: "SAP", description: "SAP systems implementation, support, and management" },
-  { id: 2, name: "ICT", description: "Information and Communications Technology services" },
-  { id: 3, name: "HR", description: "Human Resources and people management" },
-  { id: 4, name: "PROJECT MANAGEMENT", description: "Project planning, execution, and delivery" },
-  { id: 5, name: "SERVICE DESK", description: "IT support and helpdesk services" }
+  { id: 1, name: "Systems Applications and Products Enterprise Resource Planning", description: "SAP systems implementation, support, and management" },
+  { id: 2, name: "Information and Communications Technology", description: "Information and Communications Technology services" },
+  { id: 3, name: "Human Resources", description: "Human Resources and people management" },
+  { id: 4, name: "Project Management", description: "Project planning, execution, and delivery" },
+  { id: 5, name: "Service Desk", description: "IT support and helpdesk services" }
 ];
 
 // Export interfaces for use in other files
@@ -61,9 +61,9 @@ export interface Role {
 }
 
 export const DISCIPLINES: Discipline[] = [
-  { id: 1, departmentId: 1, name: "SAP Functional", description: "SAP business modules and functionality" },
-  { id: 2, departmentId: 1, name: "SAP Technical", description: "SAP development and technical configuration" },
-  { id: 3, departmentId: 1, name: "SAP Basis", description: "SAP system administration and infrastructure" },
+  { id: 1, departmentId: 1, name: "SAP Functional Consulting", description: "SAP business modules and functionality" },
+  { id: 2, departmentId: 1, name: "SAP Technical Development", description: "SAP development and technical configuration" },
+  { id: 3, departmentId: 1, name: "SAP Basis Administration", description: "SAP system administration and infrastructure" },
   { id: 4, departmentId: 2, name: "Network & Infrastructure", description: "Network design and IT infrastructure" },
   { id: 5, departmentId: 2, name: "Software Development", description: "Application development and programming" },
   { id: 6, departmentId: 2, name: "Cybersecurity", description: "Information security and threat management" },
@@ -156,43 +156,63 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const ROLES: Role[] = [
-  // K1 - Basic Awareness / Entry-Level (Interns, Trainees) - 0-1 year experience
-  { id: 1, categoryId: 1, name: "SAP MM Trainee Consultant", description: "Learning SAP Materials Management with guidance, 0-1 year experience", certificate: "SAP MM Foundation", kLevel: "K1" },
-  { id: 2, categoryId: 1, name: "SAP FICO Intern", description: "Supporting SAP Finance and Controlling activities, entry-level trainee", certificate: "SAP FICO Foundation", kLevel: "K1" },
-  { id: 3, categoryId: 5, name: "SAP ABAP Junior Developer", description: "Learning ABAP programming fundamentals with supervision", certificate: "SAP ABAP Foundation", kLevel: "K1" },
-  { id: 4, categoryId: 4, name: "SAP HCM Support Assistant", description: "Supporting Human Capital Management processes, trainee level", certificate: "SAP HCM Foundation", kLevel: "K1" },
-  { id: 5, categoryId: 8, name: "SAP BASIS Trainee", description: "Learning SAP system administration basics under guidance", certificate: "SAP BASIS Foundation", kLevel: "K1" },
+  // Knowledge Level One - Basic Awareness and Entry Level (0-1 year experience)
+  { id: 1, categoryId: 1, name: "SAP Financial Accounting and Controlling Trainee", description: "Learning SAP Finance and Controlling fundamentals with guidance, 0-1 year experience", certificate: "SAP FICO Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 2, categoryId: 2, name: "SAP Materials Management Intern", description: "Supporting SAP Materials Management activities, entry-level trainee position", certificate: "SAP MM Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 3, categoryId: 3, name: "SAP Sales and Distribution Assistant", description: "Learning SAP Sales and Distribution processes under supervision", certificate: "SAP SD Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 4, categoryId: 4, name: "SAP Human Resources Support Trainee", description: "Supporting Human Resources Management processes, trainee level", certificate: "SAP HR Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 5, categoryId: 5, name: "Advanced Business Application Programming Junior Developer", description: "Learning ABAP programming fundamentals with supervision", certificate: "SAP ABAP Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 6, categoryId: 6, name: "SAP User Interface Development Trainee", description: "Learning SAP UI5 and Fiori development basics", certificate: "SAP UI5 Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 7, categoryId: 7, name: "SAP Integration Technologies Assistant", description: "Supporting system integration projects, entry-level position", certificate: "SAP Integration Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 8, categoryId: 8, name: "SAP Basis Administration Trainee", description: "Learning SAP system administration basics under guidance", certificate: "SAP BASIS Foundation Certificate", kLevel: "Knowledge Level One" },
+  { id: 9, categoryId: 9, name: "SAP Database Administration Assistant", description: "Supporting database management activities, trainee level", certificate: "SAP Database Foundation Certificate", kLevel: "Knowledge Level One" },
   
-  // K2 - Functional Understanding / Junior Consultant - 1-2 years experience
-  { id: 6, categoryId: 3, name: "SAP SD Junior Consultant", description: "Working on Sales and Distribution with guidance, 1-2 years experience", certificate: "SAP SD Associate", kLevel: "K2" },
-  { id: 7, categoryId: 6, name: "SAP BI Analyst (Junior)", description: "Supporting Business Intelligence reporting and analysis", certificate: "SAP BI Associate", kLevel: "K2" },
-  { id: 8, categoryId: 2, name: "SAP PM Support Consultant", description: "Supporting Plant Maintenance processes with supervision", certificate: "SAP PM Associate", kLevel: "K2" },
-  { id: 9, categoryId: 7, name: "SAP Ariba Associate", description: "Supporting procurement processes in SAP Ariba platform", certificate: "SAP Ariba Foundation", kLevel: "K2" },
-  { id: 10, categoryId: 8, name: "SAP Security Assistant", description: "Supporting SAP security administration with guidance", certificate: "SAP Security Foundation", kLevel: "K2" },
+  // Knowledge Level Two - Functional Understanding and Junior Consultant (1-2 years experience)
+  { id: 10, categoryId: 1, name: "SAP Financial Accounting and Controlling Junior Consultant", description: "Working on Finance and Controlling with guidance, 1-2 years experience", certificate: "SAP FICO Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 11, categoryId: 2, name: "SAP Materials Management Junior Consultant", description: "Supporting Materials Management processes with supervision", certificate: "SAP MM Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 12, categoryId: 3, name: "SAP Sales and Distribution Junior Consultant", description: "Working on Sales and Distribution with guidance, 1-2 years experience", certificate: "SAP SD Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 13, categoryId: 4, name: "SAP Human Resources Junior Consultant", description: "Supporting Human Resources processes with guidance", certificate: "SAP HR Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 14, categoryId: 5, name: "Advanced Business Application Programming Associate Developer", description: "Supporting ABAP development projects with supervision", certificate: "SAP ABAP Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 15, categoryId: 6, name: "SAP User Interface Development Associate", description: "Supporting UI5 and Fiori development with guidance", certificate: "SAP UI5 Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 16, categoryId: 7, name: "SAP Integration Technologies Associate", description: "Supporting integration processes with supervision", certificate: "SAP Integration Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 17, categoryId: 8, name: "SAP Basis Administration Associate", description: "Supporting SAP system administration with guidance", certificate: "SAP BASIS Associate Certificate", kLevel: "Knowledge Level Two" },
+  { id: 18, categoryId: 9, name: "SAP Database Administration Associate", description: "Supporting database management with supervision", certificate: "SAP Database Associate Certificate", kLevel: "Knowledge Level Two" },
   
-  // K3 - Practitioner / Independent Consultant - 2-4 years experience
-  { id: 11, categoryId: 2, name: "SAP MM Functional Consultant", description: "Independent Materials Management implementation, 2-4 years experience", certificate: "SAP MM Consultant", kLevel: "K3" },
-  { id: 12, categoryId: 1, name: "SAP FICO Consultant", description: "Independent Finance and Controlling module delivery", certificate: "SAP FICO Consultant", kLevel: "K3" },
-  { id: 13, categoryId: 5, name: "SAP ABAP Developer", description: "Independent ABAP development and customization", certificate: "SAP ABAP Developer", kLevel: "K3" },
-  { id: 14, categoryId: 6, name: "SAP BW Consultant", description: "Independent Business Warehouse implementation and support", certificate: "SAP BW Consultant", kLevel: "K3" },
-  { id: 15, categoryId: 3, name: "SAP CRM Consultant", description: "Independent Customer Relationship Management implementation", certificate: "SAP CRM Consultant", kLevel: "K3" },
+  // Knowledge Level Three - Practitioner and Independent Consultant (2-4 years experience)
+  { id: 19, categoryId: 1, name: "SAP Financial Accounting and Controlling Independent Consultant", description: "Independent Finance and Controlling module delivery, 2-4 years experience", certificate: "SAP FICO Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 20, categoryId: 2, name: "SAP Materials Management Independent Consultant", description: "Independent Materials Management implementation, 2-4 years experience", certificate: "SAP MM Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 21, categoryId: 3, name: "SAP Sales and Distribution Independent Consultant", description: "Independent Sales and Distribution module delivery", certificate: "SAP SD Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 22, categoryId: 4, name: "SAP Human Resources Independent Consultant", description: "Independent Human Resources module implementation", certificate: "SAP HR Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 23, categoryId: 5, name: "Advanced Business Application Programming Independent Developer", description: "Independent ABAP development and customization", certificate: "SAP ABAP Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 24, categoryId: 6, name: "SAP User Interface Development Independent Consultant", description: "Independent UI5 and Fiori application development", certificate: "SAP UI5 Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 25, categoryId: 7, name: "SAP Integration Technologies Independent Consultant", description: "Independent system integration implementation", certificate: "SAP Integration Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 26, categoryId: 8, name: "SAP Basis Administration Independent Consultant", description: "Independent SAP system administration and support", certificate: "SAP BASIS Professional Certificate", kLevel: "Knowledge Level Three" },
+  { id: 27, categoryId: 9, name: "SAP Database Administration Independent Consultant", description: "Independent database management and optimization", certificate: "SAP Database Professional Certificate", kLevel: "Knowledge Level Three" },
   
-  // K4 - Senior Expert / Lead Consultant - 5-8+ years experience
-  { id: 16, categoryId: 3, name: "SAP SD Lead Consultant", description: "Leading Sales and Distribution projects, 5-8+ years experience", certificate: "SAP SD Expert", kLevel: "K4" },
-  { id: 17, categoryId: 1, name: "SAP S/4HANA Migration Consultant", description: "Leading S/4HANA migration projects and transformations", certificate: "SAP S/4HANA Migration", kLevel: "K4" },
-  { id: 18, categoryId: 8, name: "SAP BASIS Senior Administrator", description: "Leading SAP system administration and infrastructure", certificate: "SAP BASIS Expert", kLevel: "K4" },
-  { id: 19, categoryId: 4, name: "SAP SuccessFactors Solution Lead", description: "Leading SuccessFactors HR solutions implementation", certificate: "SAP SuccessFactors Expert", kLevel: "K4" },
-  { id: 20, categoryId: 9, name: "SAP Data Migration Lead", description: "Leading data migration projects and strategies", certificate: "SAP Data Migration Expert", kLevel: "K4" },
+  // Knowledge Level Four - Senior Expert and Lead Consultant (5-8+ years experience)
+  { id: 28, categoryId: 1, name: "SAP Financial Accounting and Controlling Lead Consultant", description: "Leading Finance and Controlling projects, 5-8+ years experience", certificate: "SAP FICO Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 29, categoryId: 2, name: "SAP Materials Management Lead Consultant", description: "Leading Materials Management implementation projects", certificate: "SAP MM Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 30, categoryId: 3, name: "SAP Sales and Distribution Lead Consultant", description: "Leading Sales and Distribution projects, 5-8+ years experience", certificate: "SAP SD Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 31, categoryId: 4, name: "SAP Human Resources Solution Lead", description: "Leading Human Resources solutions implementation", certificate: "SAP HR Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 32, categoryId: 5, name: "Advanced Business Application Programming Lead Developer", description: "Leading ABAP development teams and complex projects", certificate: "SAP ABAP Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 33, categoryId: 6, name: "SAP User Interface Development Lead Consultant", description: "Leading UI5 and Fiori development projects", certificate: "SAP UI5 Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 34, categoryId: 7, name: "SAP Integration Technologies Lead Consultant", description: "Leading complex integration projects and strategies", certificate: "SAP Integration Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 35, categoryId: 8, name: "SAP Basis Administration Senior Lead", description: "Leading SAP system administration and infrastructure", certificate: "SAP BASIS Expert Certificate", kLevel: "Knowledge Level Four" },
+  { id: 36, categoryId: 9, name: "SAP Database Administration Lead Consultant", description: "Leading database management projects and strategies", certificate: "SAP Database Expert Certificate", kLevel: "Knowledge Level Four" },
   
-  // K5 - Master / Solution Architect / Strategist - 10+ years experience
-  { id: 21, categoryId: 1, name: "SAP Solution Architect (FICO/MM/SD)", description: "Enterprise solution architecture, 10+ years experience", certificate: "SAP Solution Architect", kLevel: "K5" },
-  { id: 22, categoryId: 1, name: "SAP S/4HANA Program Manager", description: "Managing enterprise S/4HANA transformation programs", certificate: "SAP Program Management", kLevel: "K5" },
-  { id: 23, categoryId: 5, name: "SAP Enterprise Architect", description: "Strategic enterprise SAP architecture and governance", certificate: "SAP Enterprise Architecture", kLevel: "K5" },
-  { id: 24, categoryId: 8, name: "SAP GRC Strategy Lead", description: "Leading Governance, Risk and Compliance strategy", certificate: "SAP GRC Master", kLevel: "K5" },
-  { id: 25, categoryId: 5, name: "SAP Technical Architect (ABAP + BASIS + Integration)", description: "Master technical architect for complex SAP landscapes", certificate: "SAP Technical Master", kLevel: "K5" },
+  // Knowledge Level Five - Master Solution Architect and Strategist (10+ years experience)
+  { id: 37, categoryId: 1, name: "SAP Financial Accounting and Controlling Solution Architect", description: "Enterprise Finance and Controlling solution architecture, 10+ years experience", certificate: "SAP FICO Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 38, categoryId: 2, name: "SAP Materials Management Solution Architect", description: "Enterprise Materials Management solution architecture", certificate: "SAP MM Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 39, categoryId: 3, name: "SAP Sales and Distribution Solution Architect", description: "Enterprise Sales and Distribution solution architecture", certificate: "SAP SD Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 40, categoryId: 4, name: "SAP Human Resources Enterprise Architect", description: "Strategic enterprise Human Resources architecture and governance", certificate: "SAP HR Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 41, categoryId: 5, name: "Advanced Business Application Programming Master Architect", description: "Master technical architect for complex ABAP landscapes", certificate: "SAP ABAP Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 42, categoryId: 6, name: "SAP User Interface Development Master Architect", description: "Enterprise UI5 and Fiori architecture strategy", certificate: "SAP UI5 Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 43, categoryId: 7, name: "SAP Integration Technologies Master Architect", description: "Enterprise integration architecture and governance", certificate: "SAP Integration Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 44, categoryId: 8, name: "SAP Basis Administration Master Architect", description: "Enterprise SAP system architecture and governance", certificate: "SAP BASIS Master Architect Certificate", kLevel: "Knowledge Level Five" },
+  { id: 45, categoryId: 9, name: "SAP Database Administration Master Architect", description: "Enterprise database architecture and strategic governance", certificate: "SAP Database Master Architect Certificate", kLevel: "Knowledge Level Five" },
   
   // Non-SAP roles (ICT department examples)
-  { id: 26, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
+  { id: 46, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
   { id: 27, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" },
   { id: 28, categoryId: 11, name: "Software Developer", description: "Application development using various programming languages", certificate: "Programming Certification" },
   { id: 29, categoryId: 11, name: "Full Stack Developer", description: "Frontend and backend web application development", certificate: "Full Stack Certification" },
