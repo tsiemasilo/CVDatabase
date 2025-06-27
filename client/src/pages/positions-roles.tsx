@@ -15,12 +15,15 @@ export default function PositionsRoles() {
   const [selectedDomainId, setSelectedDomainId] = useState<number | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [addFormType, setAddFormType] = useState<'department' | 'discipline' | 'domain' | 'category' | 'role'>('department');
+  const [addFormStep, setAddFormStep] = useState(0); // 0: department, 1: discipline, 2: domain, 3: category
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     certificate: ""
   });
+  const [newDepartmentId, setNewDepartmentId] = useState<number | null>(null);
+  const [newDisciplineId, setNewDisciplineId] = useState<number | null>(null);
+  const [newDomainId, setNewDomainId] = useState<number | null>(null);
 
   // State for managing dynamic data
   const [departments, setDepartments] = useState(DEPARTMENTS);
@@ -170,15 +173,8 @@ export default function PositionsRoles() {
   };
 
   const getAddButtonText = () => {
-    const { type } = getCurrentDisplayData();
-    switch (type) {
-      case 'departments': return 'Add Department';
-      case 'disciplines': return 'Add Discipline';
-      case 'domains': return 'Add Domain';
-      case 'categories': return 'Add Category';
-      case 'roles': return 'Add Role';
-      default: return 'Add Item';
-    }
+    if (addFormStep === 3) return 'Complete';
+    return 'Next';
   };
 
   const getCurrentLevel = () => {
@@ -186,69 +182,71 @@ export default function PositionsRoles() {
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
-  const handleAddItem = () => {
+  const handleAddStep = () => {
     if (!formData.name.trim()) return;
 
-    const { type } = getCurrentDisplayData();
-    
-    switch (type) {
-      case 'departments':
+    switch (addFormStep) {
+      case 0: // Department
         const newDept: Department = {
-          id: Math.max(...departments.map(d => d.id)) + 1,
+          id: Math.max(...departments.map(d => d.id), 0) + 1,
           name: formData.name,
           description: formData.description
         };
         setDepartments([...departments, newDept]);
+        setNewDepartmentId(newDept.id);
+        setAddFormStep(1);
         break;
 
-      case 'disciplines':
-        if (!selectedDepartmentId) return;
+      case 1: // Discipline
+        if (!newDepartmentId) return;
         const newDisc: Discipline = {
-          id: Math.max(...disciplines.map(d => d.id)) + 1,
-          departmentId: selectedDepartmentId,
+          id: Math.max(...disciplines.map(d => d.id), 0) + 1,
+          departmentId: newDepartmentId,
           name: formData.name,
           description: formData.description
         };
         setDisciplines([...disciplines, newDisc]);
+        setNewDisciplineId(newDisc.id);
+        setAddFormStep(2);
         break;
 
-      case 'domains':
-        if (!selectedDisciplineId) return;
+      case 2: // Domain
+        if (!newDisciplineId) return;
         const newDomain: Domain = {
-          id: Math.max(...domains.map(d => d.id)) + 1,
-          disciplineId: selectedDisciplineId,
+          id: Math.max(...domains.map(d => d.id), 0) + 1,
+          disciplineId: newDisciplineId,
           name: formData.name,
           description: formData.description
         };
         setDomains([...domains, newDomain]);
+        setNewDomainId(newDomain.id);
+        setAddFormStep(3);
         break;
 
-      case 'categories':
-        if (!selectedDomainId) return;
+      case 3: // Category
+        if (!newDomainId) return;
         const newCategory: Category = {
-          id: Math.max(...categories.map(c => c.id)) + 1,
-          domainId: selectedDomainId,
+          id: Math.max(...categories.map(c => c.id), 0) + 1,
+          domainId: newDomainId,
           name: formData.name,
           description: formData.description
         };
         setCategories([...categories, newCategory]);
-        break;
-
-      case 'roles':
-        if (!selectedCategoryId) return;
-        const newRole: Role = {
-          id: Math.max(...roles.map(r => r.id)) + 1,
-          categoryId: selectedCategoryId,
-          name: formData.name,
-          description: formData.description,
-          certificate: formData.certificate || undefined
-        };
-        setRoles([...roles, newRole]);
+        // Complete the process
+        setShowAddForm(false);
+        setAddFormStep(0);
+        setNewDepartmentId(null);
+        setNewDisciplineId(null);
+        setNewDomainId(null);
         break;
     }
 
-    setShowAddForm(false);
     setFormData({ name: "", description: "", certificate: "" });
+  };
+
+  const getStepTitle = () => {
+    const steps = ['Department', 'Discipline', 'Domain', 'Category'];
+    return steps[addFormStep];
   };
 
   const { type, data } = getCurrentDisplayData();
