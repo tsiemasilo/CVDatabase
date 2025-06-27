@@ -252,7 +252,7 @@ export default function PositionsRoles() {
   const { type, data } = getCurrentDisplayData();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold" style={{ color: 'rgb(0, 0, 83)' }}>
           Positions | Roles
