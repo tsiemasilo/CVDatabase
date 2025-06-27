@@ -190,8 +190,34 @@ export const ROLES: Role[] = [
   { id: 23, categoryId: 5, name: "SAP Enterprise Architect", description: "Strategic enterprise SAP architecture and governance", certificate: "SAP Enterprise Architecture", kLevel: "K5" },
   { id: 24, categoryId: 8, name: "SAP GRC Strategy Lead", description: "Leading Governance, Risk and Compliance strategy", certificate: "SAP GRC Master", kLevel: "K5" },
   { id: 25, categoryId: 5, name: "SAP Technical Architect (ABAP + BASIS + Integration)", description: "Master technical architect for complex SAP landscapes", certificate: "SAP Technical Master", kLevel: "K5" },
-  { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
-  { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" }
+  
+  // Non-SAP roles (ICT department examples)
+  { id: 26, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
+  { id: 27, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" },
+  { id: 28, categoryId: 11, name: "Software Developer", description: "Application development using various programming languages", certificate: "Programming Certification" },
+  { id: 29, categoryId: 11, name: "Full Stack Developer", description: "Frontend and backend web application development", certificate: "Full Stack Certification" },
+  { id: 30, categoryId: 12, name: "Security Analyst", description: "Information security monitoring and threat detection", certificate: "Security+ Certification" },
+  { id: 31, categoryId: 12, name: "Penetration Tester", description: "Ethical hacking and vulnerability assessment", certificate: "CEH Certification" },
+  { id: 32, categoryId: 13, name: "Database Administrator", description: "Database management and optimization", certificate: "DBA Certification" },
+  { id: 33, categoryId: 13, name: "Data Analyst", description: "Data analysis and business intelligence reporting", certificate: "Data Analytics Certification" },
+  
+  // HR department examples
+  { id: 34, categoryId: 14, name: "Talent Acquisition Specialist", description: "Recruitment and hiring processes", certificate: "HR Certification" },
+  { id: 35, categoryId: 14, name: "HR Business Partner", description: "Strategic HR support for business units", certificate: "SHRM Certification" },
+  { id: 36, categoryId: 15, name: "Employee Relations Manager", description: "Managing workplace relationships and conflicts", certificate: "Employee Relations Certification" },
+  { id: 37, categoryId: 15, name: "HR Policy Coordinator", description: "Development and implementation of HR policies", certificate: "HR Policy Certification" },
+  
+  // Project Management examples
+  { id: 38, categoryId: 16, name: "Project Manager", description: "Project planning and execution management", certificate: "PMP Certification" },
+  { id: 39, categoryId: 16, name: "Scrum Master", description: "Agile project management and team facilitation", certificate: "Scrum Master Certification" },
+  { id: 40, categoryId: 17, name: "Program Manager", description: "Multi-project portfolio management", certificate: "Program Management Certification" },
+  { id: 41, categoryId: 17, name: "Project Coordinator", description: "Project support and coordination activities", certificate: "Project Coordination Certification" },
+  
+  // Service Desk examples
+  { id: 42, categoryId: 18, name: "Service Desk Analyst", description: "First-line IT support and incident resolution", certificate: "ITIL Foundation" },
+  { id: 43, categoryId: 18, name: "Technical Support Specialist", description: "Advanced technical problem resolution", certificate: "Technical Support Certification" },
+  { id: 44, categoryId: 19, name: "Remote Support Technician", description: "Remote desktop and system support", certificate: "Remote Support Certification" },
+  { id: 45, categoryId: 19, name: "Field Service Technician", description: "On-site hardware and software support", certificate: "Field Service Certification" }
 ];
 
 export const LANGUAGES = [

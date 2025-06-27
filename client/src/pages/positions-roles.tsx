@@ -408,9 +408,7 @@ export default function PositionsRoles() {
       {/* Hierarchical Dropdown Filters */}
       <Card>
         <CardHeader className="pb-4" style={{ backgroundColor: 'rgb(0, 0, 83)', color: 'white' }}>
-          <CardTitle className="text-lg font-semibold">
-            {selectedDepartmentId === 1 ? 'SAP Navigation - Select K-Level First' : 'Navigation Filters'}
-          </CardTitle>
+          <CardTitle className="text-lg font-semibold">Navigation Filters</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
@@ -437,11 +435,9 @@ export default function PositionsRoles() {
             {/* K-Level Filter - Only show for SAP department */}
             {selectedDepartmentId === 1 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <span className="text-blue-600 font-semibold">Step 1: K-Level</span>
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">K-Level</label>
                 <Select value={selectedKLevel} onValueChange={handleKLevelChange}>
-                  <SelectTrigger className="border-blue-300 bg-blue-50">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select K-Level" />
                   </SelectTrigger>
                   <SelectContent>
@@ -478,19 +474,13 @@ export default function PositionsRoles() {
 
             {/* Domain Dropdown */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {selectedDepartmentId === 1 ? (
-                  <span className="text-purple-600 font-semibold">Step 3: Domain</span>
-                ) : (
-                  "Domain"
-                )}
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Domain</label>
               <Select 
                 value={selectedDomainId?.toString() || ""} 
                 onValueChange={handleDomainChange}
                 disabled={!selectedDisciplineId}
               >
-                <SelectTrigger className={selectedDepartmentId === 1 ? "border-purple-300 bg-purple-50" : ""}>
+                <SelectTrigger>
                   <SelectValue placeholder={selectedDisciplineId ? "Select domain" : "Select discipline first"} />
                 </SelectTrigger>
                 <SelectContent>
@@ -505,19 +495,13 @@ export default function PositionsRoles() {
 
             {/* Category Dropdown */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {selectedDepartmentId === 1 ? (
-                  <span className="text-orange-600 font-semibold">Step 4: Category</span>
-                ) : (
-                  "Category"
-                )}
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <Select 
                 value={selectedCategoryId?.toString() || ""} 
                 onValueChange={handleCategoryChange}
                 disabled={!selectedDomainId}
               >
-                <SelectTrigger className={selectedDepartmentId === 1 ? "border-orange-300 bg-orange-50" : ""}>
+                <SelectTrigger>
                   <SelectValue placeholder={selectedDomainId ? "Select category" : "Select domain first"} />
                 </SelectTrigger>
                 <SelectContent>
@@ -549,33 +533,17 @@ export default function PositionsRoles() {
         <CardHeader className="pb-4" style={{ backgroundColor: 'rgb(0, 0, 83)', color: 'white' }}>
           <CardTitle className="text-lg font-semibold">
             {selectedDepartmentId === 1 && !selectedKLevel ? (
-              <span className="text-yellow-200">⚠ Please select K-Level first to continue</span>
+              "Please select K-Level first to continue"
             ) : (
               `${getCurrentLevel()} (${data.length})`
             )}
             {selectedDepartmentId === 1 && selectedKLevel && (
-              <span className="text-green-200 ml-2">• K-Level: {selectedKLevel}</span>
+              <span className="ml-2">• K-Level: {selectedKLevel}</span>
             )}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          {selectedDepartmentId === 1 && !selectedKLevel ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🎯</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">SAP Career Path Navigation</h3>
-              <p className="text-gray-500 mb-4">Select your K-Level to explore SAP roles by experience level</p>
-              <div className="bg-blue-50 p-4 rounded-lg text-left max-w-md mx-auto">
-                <h4 className="font-semibold text-blue-800 mb-2">K-Level Guide:</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li><strong>K1:</strong> Entry-level (0-1 year)</li>
-                  <li><strong>K2:</strong> Junior consultant (1-2 years)</li>
-                  <li><strong>K3:</strong> Independent consultant (2-4 years)</li>
-                  <li><strong>K4:</strong> Senior lead (5-8+ years)</li>
-                  <li><strong>K5:</strong> Master architect (10+ years)</li>
-                </ul>
-              </div>
-            </div>
-          ) : data.length > 0 ? (
+          {data.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
