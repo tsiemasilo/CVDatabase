@@ -173,8 +173,8 @@ export default function PositionsRoles() {
   };
 
   const getAddButtonText = () => {
-    if (addFormStep === 3) return 'Complete';
-    return 'Next';
+    const steps = ['Add Department', 'Add Discipline', 'Add Domain', 'Add Category'];
+    return steps[addFormStep];
   };
 
   const getCurrentLevel = () => {
@@ -272,7 +272,7 @@ export default function PositionsRoles() {
             className="bg-orange-500 hover:bg-orange-600 text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
-            {getAddButtonText()}
+            Add New Structure
           </Button>
         </div>
       </div>
@@ -447,7 +447,7 @@ export default function PositionsRoles() {
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder={`Enter ${addFormType} name`}
+                  placeholder={`Enter ${getStepTitle().toLowerCase()} name`}
                 />
               </div>
               <div>
@@ -457,25 +457,15 @@ export default function PositionsRoles() {
                 <Input
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder={`Enter ${addFormType} description`}
+                  placeholder={`Enter ${getStepTitle().toLowerCase()} description`}
                 />
               </div>
-              {addFormType === 'role' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Required Certificate (Optional)
-                  </label>
-                  <Input
-                    value={formData.certificate}
-                    onChange={(e) => setFormData({ ...formData, certificate: e.target.value })}
-                    placeholder="Enter required certification"
-                  />
-                </div>
-              )}
+
               <div className="flex gap-3 pt-4">
                 <Button
-                  onClick={handleAddItem}
+                  onClick={handleAddStep}
                   className="flex-1 bg-orange-500 hover:bg-orange-600"
+                  disabled={!formData.name.trim()}
                 >
                   {getAddButtonText()}
                 </Button>
@@ -483,6 +473,10 @@ export default function PositionsRoles() {
                   variant="outline"
                   onClick={() => {
                     setShowAddForm(false);
+                    setAddFormStep(0);
+                    setNewDepartmentId(null);
+                    setNewDisciplineId(null);
+                    setNewDomainId(null);
                     setFormData({ name: "", description: "", certificate: "" });
                   }}
                   className="flex-1"
