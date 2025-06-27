@@ -21,18 +21,9 @@ interface Role {
 }
 
 export default function PositionsRoles() {
-  const [departments, setDepartments] = useState<Department[]>([
-    { id: 1, name: "Information Technology", description: "Technology and systems management" },
-    { id: 2, name: "Human Resources", description: "People and organizational development" },
-    { id: 3, name: "Finance", description: "Financial planning and management" }
-  ]);
+  const [departments, setDepartments] = useState<Department[]>([]);
 
-  const [roles, setRoles] = useState<Role[]>([
-    { id: 1, departmentId: 1, name: "Software Developer", description: "Application development and programming", level: "Mid-Level" },
-    { id: 2, departmentId: 1, name: "System Administrator", description: "System maintenance and support", level: "Senior" },
-    { id: 3, departmentId: 2, name: "HR Business Partner", description: "Strategic HR support", level: "Senior" },
-    { id: 4, departmentId: 3, name: "Financial Analyst", description: "Financial analysis and reporting", level: "Junior" }
-  ]);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const [newDept, setNewDept] = useState({ name: '', description: '' });
   const [newRole, setNewRole] = useState({ departmentId: 0, name: '', description: '', level: '' });
