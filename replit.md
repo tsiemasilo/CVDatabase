@@ -122,6 +122,7 @@ Changelog:
 - June 25, 2025. Implemented breadcrumb navigation and drill-down functionality for exploring organizational structure
 - June 25, 2025. Redesigned Positions|Roles page with cascading dropdown navigation instead of card-based drill-down for better user experience
 - June 25, 2025. Updated departments to specific business requirements: SAP, ICT, HR, PROJECT MANAGEMENT, SERVICE DESK with corresponding disciplines and domains
+- June 25, 2025. Added functionality to create new departments, disciplines, domains, categories, and roles through the Positions|Roles interface with proper hierarchical relationships
 ```
 
 ## User Preferences

@@ -22,25 +22,32 @@ export default function PositionsRoles() {
     certificate: ""
   });
 
+  // State for managing dynamic data
+  const [departments, setDepartments] = useState(DEPARTMENTS);
+  const [disciplines, setDisciplines] = useState(DISCIPLINES);
+  const [domains, setDomains] = useState(DOMAINS);
+  const [categories, setCategories] = useState(CATEGORIES);
+  const [roles, setRoles] = useState(ROLES);
+
   // Get filtered data based on selections
   const getAvailableDisciplines = () => {
     if (!selectedDepartmentId) return [];
-    return DISCIPLINES.filter(d => d.departmentId === selectedDepartmentId);
+    return disciplines.filter(d => d.departmentId === selectedDepartmentId);
   };
 
   const getAvailableDomains = () => {
     if (!selectedDisciplineId) return [];
-    return DOMAINS.filter(d => d.disciplineId === selectedDisciplineId);
+    return domains.filter(d => d.disciplineId === selectedDisciplineId);
   };
 
   const getAvailableCategories = () => {
     if (!selectedDomainId) return [];
-    return CATEGORIES.filter(c => c.domainId === selectedDomainId);
+    return categories.filter(c => c.domainId === selectedDomainId);
   };
 
   const getAvailableRoles = () => {
     if (!selectedCategoryId) return [];
-    return ROLES.filter(r => r.categoryId === selectedCategoryId);
+    return roles.filter(r => r.categoryId === selectedCategoryId);
   };
 
   // Get current display data based on deepest selection
@@ -80,7 +87,7 @@ export default function PositionsRoles() {
     } else {
       return {
         type: 'departments',
-        data: DEPARTMENTS.filter(dept =>
+        data: departments.filter(dept =>
           dept.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           dept.description.toLowerCase().includes(searchTerm.toLowerCase())
         )
@@ -179,6 +186,71 @@ export default function PositionsRoles() {
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
+  const handleAddItem = () => {
+    if (!formData.name.trim()) return;
+
+    const { type } = getCurrentDisplayData();
+    
+    switch (type) {
+      case 'departments':
+        const newDept: Department = {
+          id: Math.max(...departments.map(d => d.id)) + 1,
+          name: formData.name,
+          description: formData.description
+        };
+        setDepartments([...departments, newDept]);
+        break;
+
+      case 'disciplines':
+        if (!selectedDepartmentId) return;
+        const newDisc: Discipline = {
+          id: Math.max(...disciplines.map(d => d.id)) + 1,
+          departmentId: selectedDepartmentId,
+          name: formData.name,
+          description: formData.description
+        };
+        setDisciplines([...disciplines, newDisc]);
+        break;
+
+      case 'domains':
+        if (!selectedDisciplineId) return;
+        const newDomain: Domain = {
+          id: Math.max(...domains.map(d => d.id)) + 1,
+          disciplineId: selectedDisciplineId,
+          name: formData.name,
+          description: formData.description
+        };
+        setDomains([...domains, newDomain]);
+        break;
+
+      case 'categories':
+        if (!selectedDomainId) return;
+        const newCategory: Category = {
+          id: Math.max(...categories.map(c => c.id)) + 1,
+          domainId: selectedDomainId,
+          name: formData.name,
+          description: formData.description
+        };
+        setCategories([...categories, newCategory]);
+        break;
+
+      case 'roles':
+        if (!selectedCategoryId) return;
+        const newRole: Role = {
+          id: Math.max(...roles.map(r => r.id)) + 1,
+          categoryId: selectedCategoryId,
+          name: formData.name,
+          description: formData.description,
+          certificate: formData.certificate || undefined
+        };
+        setRoles([...roles, newRole]);
+        break;
+    }
+
+    setShowAddForm(false);
+    setFormData({ name: "", description: "", certificate: "" });
+  };
+
   const { type, data } = getCurrentDisplayData();
 
   return (
@@ -225,7 +297,7 @@ export default function PositionsRoles() {
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
                 <SelectContent>
-                  {DEPARTMENTS.map((dept) => (
+                  {departments.map((dept) => (
                     <SelectItem key={dept.id} value={dept.id.toString()}>
                       {dept.name}
                     </SelectItem>
@@ -404,11 +476,7 @@ export default function PositionsRoles() {
               )}
               <div className="flex gap-3 pt-4">
                 <Button
-                  onClick={() => {
-                    console.log(`Adding ${addFormType}:`, formData);
-                    setShowAddForm(false);
-                    setFormData({ name: "", description: "", certificate: "" });
-                  }}
+                  onClick={handleAddItem}
                   className="flex-1 bg-orange-500 hover:bg-orange-600"
                 >
                   {getAddButtonText()}
