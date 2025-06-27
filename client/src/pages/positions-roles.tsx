@@ -160,10 +160,21 @@ export default function PositionsRoles() {
         )}
         <TableCell className="text-center">
           <div className="flex justify-center gap-2">
-            <Button size="sm" variant="outline">
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => handleEdit(item, type)}
+              title="Edit"
+            >
               <Edit className="h-4 w-4" />
             </Button>
-            <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="text-red-600 hover:text-red-700"
+              onClick={() => handleDelete(item, type)}
+              title="Delete"
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -247,6 +258,49 @@ export default function PositionsRoles() {
   const getStepTitle = () => {
     const steps = ['Department', 'Discipline', 'Domain', 'Category'];
     return steps[addFormStep];
+  };
+
+  const handleEdit = (item: any, type: string) => {
+    setFormData({
+      name: item.name,
+      description: item.description,
+      certificate: item.certificate || ""
+    });
+    
+    // Set the form to edit mode for the specific item type
+    const typeToStep = {
+      'departments': 0,
+      'disciplines': 1,
+      'domains': 2,
+      'categories': 3
+    };
+    
+    if (type in typeToStep) {
+      setAddFormStep(typeToStep[type as keyof typeof typeToStep]);
+      setShowAddForm(true);
+    }
+  };
+
+  const handleDelete = (item: any, type: string) => {
+    if (confirm(`Are you sure you want to delete "${item.name}"?`)) {
+      switch (type) {
+        case 'departments':
+          setDepartments(departments.filter(d => d.id !== item.id));
+          break;
+        case 'disciplines':
+          setDisciplines(disciplines.filter(d => d.id !== item.id));
+          break;
+        case 'domains':
+          setDomains(domains.filter(d => d.id !== item.id));
+          break;
+        case 'categories':
+          setCategories(categories.filter(c => c.id !== item.id));
+          break;
+        case 'roles':
+          setRoles(roles.filter(r => r.id !== item.id));
+          break;
+      }
+    }
   };
 
   const { type, data } = getCurrentDisplayData();
