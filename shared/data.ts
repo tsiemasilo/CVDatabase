@@ -71,10 +71,143 @@ export const DEPARTMENTS: Department[] = [
   }
 ];
 
-export { Department, Discipline, Domain, Category, Role };
+// Export interfaces for use in other files
+export interface Department {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface Discipline {
+  id: number;
+  departmentId: number;
+  name: string;
+  description: string;
+}
+
+export interface Domain {
+  id: number;
+  disciplineId: number;
+  name: string;
+  description: string;
+}
+
+export interface Category {
+  id: number;
+  domainId: number;
+  name: string;
+  description: string;
+}
+
+export interface Role {
+  id: number;
+  categoryId: number;
+  name: string;
+  description: string;
+  certificate?: string;
+}
+
+export const DISCIPLINES: Discipline[] = [
+  { id: 1, departmentId: 1, name: "Software Development", description: "Application and system development" },
+  { id: 2, departmentId: 1, name: "Infrastructure", description: "IT infrastructure and networking" },
+  { id: 3, departmentId: 1, name: "Data Management", description: "Database and data analytics" },
+  { id: 4, departmentId: 2, name: "Corporate Finance", description: "Financial planning and analysis" },
+  { id: 5, departmentId: 2, name: "Accounting", description: "Financial reporting and bookkeeping" },
+  { id: 6, departmentId: 3, name: "Talent Management", description: "Recruitment and employee development" },
+  { id: 7, departmentId: 3, name: "Employee Relations", description: "HR policies and employee support" },
+  { id: 8, departmentId: 4, name: "Digital Marketing", description: "Online marketing and social media" },
+  { id: 9, departmentId: 4, name: "Brand Management", description: "Brand strategy and communications" },
+  { id: 10, departmentId: 5, name: "Supply Chain", description: "Logistics and procurement" },
+  { id: 11, departmentId: 5, name: "Quality Management", description: "Quality assurance and control" },
+  { id: 12, departmentId: 6, name: "Civil Engineering", description: "Construction and infrastructure" },
+  { id: 13, departmentId: 6, name: "Mechanical Engineering", description: "Mechanical systems design" },
+  { id: 14, departmentId: 6, name: "Electrical Engineering", description: "Electrical systems and power" },
+  { id: 15, departmentId: 7, name: "Corporate Law", description: "Legal compliance and contracts" },
+  { id: 16, departmentId: 8, name: "Occupational Safety", description: "Workplace safety and health" },
+  { id: 17, departmentId: 8, name: "Environmental Management", description: "Environmental compliance" },
+  { id: 18, departmentId: 9, name: "Corporate Training", description: "Employee training and development" },
+  { id: 19, departmentId: 10, name: "Clinical Services", description: "Patient care and medical services" },
+  { id: 20, departmentId: 10, name: "Healthcare Administration", description: "Healthcare management" }
+];
+
+export const DOMAINS: Domain[] = [
+  { id: 1, disciplineId: 1, name: "Web Development", description: "Frontend and backend web applications" },
+  { id: 2, disciplineId: 1, name: "Mobile Development", description: "iOS and Android applications" },
+  { id: 3, disciplineId: 1, name: "Enterprise Applications", description: "Large-scale business applications" },
+  { id: 4, disciplineId: 2, name: "Network Administration", description: "Network setup and maintenance" },
+  { id: 5, disciplineId: 2, name: "System Administration", description: "Server and system management" },
+  { id: 6, disciplineId: 3, name: "Database Administration", description: "Database management and optimization" },
+  { id: 7, disciplineId: 3, name: "Data Analytics", description: "Data analysis and business intelligence" },
+  { id: 8, disciplineId: 4, name: "Financial Planning", description: "Budget and financial forecasting" },
+  { id: 9, disciplineId: 4, name: "Investment Management", description: "Portfolio and investment analysis" },
+  { id: 10, disciplineId: 5, name: "Financial Reporting", description: "Statutory and management reporting" },
+  { id: 11, disciplineId: 5, name: "Tax Management", description: "Tax compliance and planning" },
+  { id: 12, disciplineId: 6, name: "Recruitment", description: "Talent acquisition and hiring" },
+  { id: 13, disciplineId: 6, name: "Performance Management", description: "Employee performance and development" },
+  { id: 14, disciplineId: 7, name: "Employee Benefits", description: "Benefits administration and support" },
+  { id: 15, disciplineId: 7, name: "Industrial Relations", description: "Labor relations and negotiations" },
+  { id: 16, disciplineId: 8, name: "Social Media Marketing", description: "Social media strategy and management" },
+  { id: 17, disciplineId: 8, name: "Search Engine Marketing", description: "SEO and SEM optimization" },
+  { id: 18, disciplineId: 9, name: "Corporate Communications", description: "Internal and external communications" },
+  { id: 19, disciplineId: 9, name: "Public Relations", description: "Media relations and publicity" },
+  { id: 20, disciplineId: 10, name: "Procurement", description: "Vendor management and purchasing" },
+  { id: 21, disciplineId: 10, name: "Inventory Management", description: "Stock control and warehousing" },
+  { id: 22, disciplineId: 11, name: "Quality Assurance", description: "Product and service quality control" },
+  { id: 23, disciplineId: 11, name: "Process Improvement", description: "Operational efficiency optimization" },
+  { id: 24, disciplineId: 12, name: "Structural Engineering", description: "Building and bridge design" },
+  { id: 25, disciplineId: 12, name: "Project Management", description: "Construction project oversight" },
+  { id: 26, disciplineId: 13, name: "HVAC Systems", description: "Heating, ventilation, and air conditioning" },
+  { id: 27, disciplineId: 13, name: "Manufacturing", description: "Production and manufacturing processes" },
+  { id: 28, disciplineId: 14, name: "Power Systems", description: "Electrical power generation and distribution" },
+  { id: 29, disciplineId: 14, name: "Electronics", description: "Electronic systems and components" },
+  { id: 30, disciplineId: 15, name: "Contract Management", description: "Legal agreements and compliance" },
+  { id: 31, disciplineId: 15, name: "Regulatory Compliance", description: "Legal and regulatory adherence" },
+  { id: 32, disciplineId: 16, name: "Workplace Safety", description: "Safety protocols and risk management" },
+  { id: 33, disciplineId: 16, name: "Health Programs", description: "Employee health and wellness" },
+  { id: 34, disciplineId: 17, name: "Environmental Compliance", description: "Environmental regulations and sustainability" },
+  { id: 35, disciplineId: 17, name: "Waste Management", description: "Waste reduction and recycling programs" },
+  { id: 36, disciplineId: 18, name: "Skills Development", description: "Technical and soft skills training" },
+  { id: 37, disciplineId: 18, name: "Leadership Development", description: "Management and leadership training" },
+  { id: 38, disciplineId: 19, name: "Patient Care", description: "Direct patient medical services" },
+  { id: 39, disciplineId: 19, name: "Medical Support", description: "Laboratory and diagnostic services" },
+  { id: 40, disciplineId: 20, name: "Healthcare Operations", description: "Hospital and clinic management" }
+];
+
+export const CATEGORIES: Category[] = [
+  { id: 1, domainId: 1, name: "Frontend Development", description: "User interface and experience design" },
+  { id: 2, domainId: 1, name: "Backend Development", description: "Server-side application logic" },
+  { id: 3, domainId: 2, name: "iOS Development", description: "Apple mobile application development" },
+  { id: 4, domainId: 2, name: "Android Development", description: "Google mobile application development" },
+  { id: 5, domainId: 3, name: "ERP Systems", description: "Enterprise resource planning systems" },
+  { id: 6, domainId: 3, name: "CRM Systems", description: "Customer relationship management systems" },
+  { id: 7, domainId: 4, name: "Network Security", description: "Network protection and security protocols" },
+  { id: 8, domainId: 4, name: "Network Design", description: "Network architecture and planning" },
+  { id: 9, domainId: 5, name: "Windows Administration", description: "Microsoft Windows server management" },
+  { id: 10, domainId: 5, name: "Linux Administration", description: "Linux server management" },
+  { id: 11, domainId: 6, name: "SQL Databases", description: "Relational database management" },
+  { id: 12, domainId: 6, name: "NoSQL Databases", description: "Non-relational database management" },
+  { id: 13, domainId: 7, name: "Business Intelligence", description: "Data warehousing and reporting" },
+  { id: 14, domainId: 7, name: "Predictive Analytics", description: "Statistical modeling and forecasting" },
+  { id: 15, domainId: 8, name: "Budget Analysis", description: "Financial budget planning and monitoring" },
+  { id: 16, domainId: 8, name: "Financial Forecasting", description: "Revenue and expense projections" },
+  { id: 17, domainId: 9, name: "Portfolio Management", description: "Investment portfolio optimization" },
+  { id: 18, domainId: 9, name: "Risk Assessment", description: "Financial risk analysis and mitigation" },
+  { id: 19, domainId: 10, name: "Financial Statements", description: "Income statements and balance sheets" },
+  { id: 20, domainId: 10, name: "Management Reporting", description: "Internal financial reporting" },
+  { id: 21, domainId: 11, name: "Corporate Tax", description: "Business tax compliance and planning" },
+  { id: 22, domainId: 11, name: "Personal Tax", description: "Individual tax preparation and advice" },
+  { id: 23, domainId: 12, name: "Executive Search", description: "Senior leadership recruitment" },
+  { id: 24, domainId: 12, name: "Graduate Recruitment", description: "Entry-level talent acquisition" },
+  { id: 25, domainId: 13, name: "Performance Reviews", description: "Employee evaluation and feedback" },
+  { id: 26, domainId: 13, name: "Career Development", description: "Employee growth and advancement" },
+  { id: 27, domainId: 14, name: "Medical Benefits", description: "Healthcare and medical coverage" },
+  { id: 28, domainId: 14, name: "Retirement Planning", description: "Pension and retirement benefits" },
+  { id: 29, domainId: 15, name: "Union Relations", description: "Trade union negotiations and agreements" },
+  { id: 30, domainId: 15, name: "Grievance Handling", description: "Employee complaint resolution" }
+];
 
 export const ROLES: Role[] = [
-  { id: 1, department: "Engineering and Technology", role: "Civil Engineer", description: "Design and oversee construction of infrastructure projects including roads, bridges, and water systems." },
+  { id: 1, categoryId: 1, name: "React Developer", description: "Frontend development using React framework", certificate: "React Certification" },
   { id: 2, department: "Engineering and Technology", role: "Mechanical Engineer", description: "Design, develop, and maintain mechanical systems and equipment across various industries." },
   { id: 3, department: "Engineering and Technology", role: "Electrical Engineer", description: "Design and implement electrical systems, power distribution, and electronic control systems." },
   { id: 4, department: "Healthcare and Medical Services", role: "Medical Doctor", description: "Provide comprehensive medical care, diagnosis, and treatment to patients across various specialties." },

@@ -120,6 +120,7 @@ Changelog:
 - June 25, 2025. Enhanced qualifications selection with dropdown menus using qualification types and names from Qualifications section
 - June 25, 2025. Restructured Positions|Roles section with hierarchical navigation: Department → Discipline → Domain → Category → Role
 - June 25, 2025. Implemented breadcrumb navigation and drill-down functionality for exploring organizational structure
+- June 25, 2025. Redesigned Positions|Roles page with cascading dropdown navigation instead of card-based drill-down for better user experience
 ```
 
 ## User Preferences
