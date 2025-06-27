@@ -19,7 +19,8 @@ export default function PositionsRoles() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    certificate: ""
+    certificate: "",
+    kLevel: ""
   });
   const [newDepartmentId, setNewDepartmentId] = useState<number | null>(null);
   const [newDisciplineId, setNewDisciplineId] = useState<number | null>(null);
@@ -136,7 +137,7 @@ export default function PositionsRoles() {
     const { type } = getCurrentDisplayData();
     switch (type) {
       case 'roles':
-        return ['Role Name', 'Description', 'Certificate Required', 'Actions'];
+        return ['Role Name', 'Description', 'Certificate Required', 'K-Level', 'Actions'];
       default:
         return ['Name', 'Description', 'Actions'];
     }
@@ -148,15 +149,26 @@ export default function PositionsRoles() {
         <TableCell className="font-medium">{item.name}</TableCell>
         <TableCell className="text-gray-600">{item.description}</TableCell>
         {type === 'roles' && (
-          <TableCell>
-            {item.certificate ? (
-              <Badge variant="outline" className="text-xs">
-                {item.certificate}
-              </Badge>
-            ) : (
-              <span className="text-gray-400 text-sm">No certificate required</span>
-            )}
-          </TableCell>
+          <>
+            <TableCell>
+              {item.certificate ? (
+                <Badge variant="outline" className="text-xs">
+                  {item.certificate}
+                </Badge>
+              ) : (
+                <span className="text-gray-400 text-sm">No certificate required</span>
+              )}
+            </TableCell>
+            <TableCell>
+              {item.kLevel ? (
+                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                  {item.kLevel}
+                </Badge>
+              ) : (
+                <span className="text-gray-400 text-sm">No K-level</span>
+              )}
+            </TableCell>
+          </>
         )}
         <TableCell className="text-center">
           <div className="flex justify-center gap-2">
@@ -264,7 +276,8 @@ export default function PositionsRoles() {
     setFormData({
       name: item.name,
       description: item.description,
-      certificate: item.certificate || ""
+      certificate: item.certificate || "",
+      kLevel: item.kLevel || ""
     });
     
     // Set the form to edit mode for the specific item type

@@ -55,6 +55,7 @@ export interface Role {
   name: string;
   description: string;
   certificate?: string;
+  kLevel?: string;
 }
 
 export const DISCIPLINES: Discipline[] = [
@@ -153,26 +154,26 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const ROLES: Role[] = [
-  { id: 1, categoryId: 1, name: "SAP FI Consultant", description: "SAP Financial Accounting module implementation and support", certificate: "SAP FI Certification" },
-  { id: 2, categoryId: 1, name: "SAP CO Consultant", description: "SAP Controlling module configuration and optimization", certificate: "SAP CO Certification" },
-  { id: 3, categoryId: 2, name: "SAP MM Consultant", description: "Materials Management module specialist", certificate: "SAP MM Certification" },
-  { id: 4, categoryId: 2, name: "SAP WM Consultant", description: "Warehouse Management module expert", certificate: "SAP WM Certification" },
-  { id: 5, categoryId: 3, name: "SAP SD Consultant", description: "Sales and Distribution module consultant", certificate: "SAP SD Certification" },
-  { id: 6, categoryId: 3, name: "SAP LE Consultant", description: "Logistics Execution specialist", certificate: "SAP LE Certification" },
-  { id: 7, categoryId: 4, name: "SAP HR Consultant", description: "Human Resources module implementation", certificate: "SAP HR Certification" },
-  { id: 8, categoryId: 4, name: "SAP HCM Consultant", description: "Human Capital Management specialist", certificate: "SAP HCM Certification" },
-  { id: 9, categoryId: 5, name: "ABAP Developer", description: "SAP ABAP programming and development", certificate: "SAP ABAP Certification" },
-  { id: 10, categoryId: 5, name: "SAP Technical Consultant", description: "Technical SAP configuration and customization", certificate: "SAP Technical Certification" },
-  { id: 11, categoryId: 6, name: "UI5 Developer", description: "SAP UI5 and Fiori application development", certificate: "SAP UI5 Certification" },
-  { id: 12, categoryId: 6, name: "Fiori Consultant", description: "SAP Fiori user experience specialist", certificate: "SAP Fiori Certification" },
-  { id: 13, categoryId: 7, name: "SAP Integration Specialist", description: "SAP system integration and middleware", certificate: "SAP PI/PO Certification" },
-  { id: 14, categoryId: 7, name: "SAP Cloud Consultant", description: "SAP cloud platform integration", certificate: "SAP Cloud Certification" },
-  { id: 15, categoryId: 8, name: "SAP Basis Administrator", description: "SAP system administration and monitoring", certificate: "SAP Basis Certification" },
-  { id: 16, categoryId: 8, name: "SAP System Administrator", description: "SAP landscape maintenance and support", certificate: "SAP Admin Certification" },
-  { id: 17, categoryId: 9, name: "SAP Database Administrator", description: "SAP database management and tuning", certificate: "SAP DBA Certification" },
-  { id: 18, categoryId: 9, name: "SAP Performance Analyst", description: "SAP system performance optimization", certificate: "SAP Performance Certification" },
-  { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
-  { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" }
+  { id: 1, categoryId: 1, name: "SAP FI Consultant", description: "SAP Financial Accounting module implementation and support", certificate: "SAP FI Certification", kLevel: "K5" },
+  { id: 2, categoryId: 1, name: "SAP CO Consultant", description: "SAP Controlling module configuration and optimization", certificate: "SAP CO Certification", kLevel: "K5" },
+  { id: 3, categoryId: 2, name: "SAP MM Consultant", description: "Materials Management module specialist", certificate: "SAP MM Certification", kLevel: "K4" },
+  { id: 4, categoryId: 2, name: "SAP WM Consultant", description: "Warehouse Management module expert", certificate: "SAP WM Certification", kLevel: "K4" },
+  { id: 5, categoryId: 3, name: "SAP SD Consultant", description: "Sales and Distribution module consultant", certificate: "SAP SD Certification", kLevel: "K5" },
+  { id: 6, categoryId: 3, name: "SAP LE Consultant", description: "Logistics Execution specialist", certificate: "SAP LE Certification", kLevel: "K4" },
+  { id: 7, categoryId: 4, name: "SAP HR Consultant", description: "Human Resources module implementation", certificate: "SAP HR Certification", kLevel: "K5" },
+  { id: 8, categoryId: 4, name: "SAP HCM Consultant", description: "Human Capital Management specialist", certificate: "SAP HCM Certification", kLevel: "K6" },
+  { id: 9, categoryId: 5, name: "ABAP Developer", description: "SAP ABAP programming and development", certificate: "SAP ABAP Certification", kLevel: "K6" },
+  { id: 10, categoryId: 5, name: "SAP Technical Consultant", description: "Technical SAP configuration and customization", certificate: "SAP Technical Certification", kLevel: "K7" },
+  { id: 11, categoryId: 6, name: "UI5 Developer", description: "SAP UI5 and Fiori application development", certificate: "SAP UI5 Certification", kLevel: "K5" },
+  { id: 12, categoryId: 6, name: "Fiori Consultant", description: "SAP Fiori user experience specialist", certificate: "SAP Fiori Certification", kLevel: "K5" },
+  { id: 13, categoryId: 7, name: "SAP Integration Specialist", description: "SAP system integration and middleware", certificate: "SAP PI/PO Certification", kLevel: "K7" },
+  { id: 14, categoryId: 7, name: "SAP Cloud Consultant", description: "SAP cloud platform integration", certificate: "SAP Cloud Certification", kLevel: "K6" },
+  { id: 15, categoryId: 8, name: "SAP Basis Administrator", description: "SAP system administration and monitoring", certificate: "SAP Basis Certification", kLevel: "K6" },
+  { id: 16, categoryId: 8, name: "SAP System Administrator", description: "SAP landscape maintenance and support", certificate: "SAP Admin Certification", kLevel: "K5" },
+  { id: 17, categoryId: 9, name: "SAP Database Administrator", description: "SAP database management and tuning", certificate: "SAP DBA Certification", kLevel: "K7" },
+  { id: 18, categoryId: 9, name: "SAP Performance Analyst", description: "SAP system performance optimization", certificate: "SAP Performance Certification", kLevel: "K6" },
+  { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification", kLevel: "K4" },
+  { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification", kLevel: "K7" }
 ];
 
 export const LANGUAGES = [
