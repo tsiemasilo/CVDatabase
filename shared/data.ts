@@ -134,29 +134,27 @@ export const CATEGORIES: Category[] = [
   { id: 8, domainId: 8, name: "SAP Basis System Administration and Infrastructure for Cloud and On-Premise", description: "System administration for hybrid South African enterprise environments" },
   { id: 9, domainId: 9, name: "SAP Database Administration and Performance Systems for High-Volume Transactions", description: "Database optimization for high-volume South African business transactions" },
   
-  // Non-SAP Categories
-  { id: 10, domainId: 10, name: "Network Infrastructure", description: "Network design and IT infrastructure" },
-  { id: 10, domainId: 5, name: "Linux Administration", description: "Linux server management" },
-  { id: 11, domainId: 6, name: "SQL Databases", description: "Relational database management" },
-  { id: 12, domainId: 6, name: "NoSQL Databases", description: "Non-relational database management" },
-  { id: 13, domainId: 7, name: "Business Intelligence", description: "Data warehousing and reporting" },
-  { id: 14, domainId: 7, name: "Predictive Analytics", description: "Statistical modeling and forecasting" },
-  { id: 15, domainId: 8, name: "Budget Analysis", description: "Financial budget planning and monitoring" },
-  { id: 16, domainId: 8, name: "Financial Forecasting", description: "Revenue and expense projections" },
-  { id: 17, domainId: 9, name: "Portfolio Management", description: "Investment portfolio optimization" },
-  { id: 18, domainId: 9, name: "Risk Assessment", description: "Financial risk analysis and mitigation" },
-  { id: 19, domainId: 10, name: "Financial Statements", description: "Income statements and balance sheets" },
-  { id: 20, domainId: 10, name: "Management Reporting", description: "Internal financial reporting" },
-  { id: 21, domainId: 11, name: "Corporate Tax", description: "Business tax compliance and planning" },
-  { id: 22, domainId: 11, name: "Personal Tax", description: "Individual tax preparation and advice" },
-  { id: 23, domainId: 12, name: "Executive Search", description: "Senior leadership recruitment" },
-  { id: 24, domainId: 12, name: "Graduate Recruitment", description: "Entry-level talent acquisition" },
-  { id: 25, domainId: 13, name: "Performance Reviews", description: "Employee evaluation and feedback" },
-  { id: 26, domainId: 13, name: "Career Development", description: "Employee growth and advancement" },
-  { id: 27, domainId: 14, name: "Medical Benefits", description: "Healthcare and medical coverage" },
-  { id: 28, domainId: 14, name: "Retirement Planning", description: "Pension and retirement benefits" },
-  { id: 29, domainId: 15, name: "Union Relations", description: "Trade union negotiations and agreements" },
-  { id: 30, domainId: 15, name: "Grievance Handling", description: "Employee complaint resolution" }
+  // ICT Department Categories (domains 10-13)
+  { id: 10, domainId: 10, name: "Network Infrastructure Management", description: "Network design and IT infrastructure" },
+  { id: 11, domainId: 11, name: "Software Development and Programming", description: "Application development and programming" },
+  { id: 12, domainId: 12, name: "Cybersecurity and Information Protection", description: "Information security and threat management" },
+  { id: 13, domainId: 13, name: "Data Management and Analytics", description: "Database administration and data analytics" },
+  
+  // HR Department Categories (domains 22-27)
+  { id: 14, domainId: 22, name: "Talent Acquisition and Recruitment", description: "Recruitment and staffing processes" },
+  { id: 15, domainId: 23, name: "Employee Learning and Development", description: "Training and performance management" },
+  { id: 16, domainId: 24, name: "Employee Relations and Support", description: "HR policy and employee support" },
+  { id: 17, domainId: 26, name: "Compensation and Benefits Administration", description: "Salary management and employee benefits" },
+  
+  // Project Management Categories (domains 28-32)
+  { id: 18, domainId: 28, name: "Project Planning and Initiation", description: "Project initiation and resource planning" },
+  { id: 19, domainId: 30, name: "Project Execution and Delivery", description: "Project delivery and quality management" },
+  { id: 20, domainId: 32, name: "Portfolio and Program Management", description: "Strategic portfolio and program management" },
+  
+  // Service Desk Categories (domains 34-38)
+  { id: 21, domainId: 34, name: "Service Desk Operations and Support", description: "First-line support and incident management" },
+  { id: 22, domainId: 36, name: "Technical Support and Troubleshooting", description: "Advanced troubleshooting and application support" },
+  { id: 23, domainId: 38, name: "IT Service Management and SLA", description: "ITIL service management and SLA monitoring" }
 ];
 
 export const ROLES: Role[] = [
@@ -215,33 +213,55 @@ export const ROLES: Role[] = [
   { id: 44, categoryId: 8, name: "SAP Basis Administration Master Architect for Zero-Downtime Operations", description: "Enterprise system architecture for zero-downtime operations and resilient infrastructure", certificate: "SAP BASIS Master Architect Certificate for Zero-Downtime Operations", kLevel: "Knowledge Level Five" },
   { id: 45, categoryId: 9, name: "SAP Database Administration Master Architect for Intelligent Enterprise", description: "Enterprise database architecture for intelligent enterprise and real-time analytics", certificate: "SAP Database Master Architect Certificate for Intelligent Enterprise", kLevel: "Knowledge Level Five" },
   
-  // Non-SAP roles (ICT department examples)
-  { id: 46, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
-  { id: 47, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" },
-  { id: 48, categoryId: 11, name: "Software Developer", description: "Application development using various programming languages", certificate: "Programming Certification" },
-  { id: 49, categoryId: 11, name: "Full Stack Developer", description: "Frontend and backend web application development", certificate: "Full Stack Certification" },
-  { id: 50, categoryId: 12, name: "Security Analyst", description: "Information security monitoring and threat detection", certificate: "Security+ Certification" },
-  { id: 51, categoryId: 12, name: "Penetration Tester", description: "Ethical hacking and vulnerability assessment", certificate: "CEH Certification" },
-  { id: 52, categoryId: 13, name: "Database Administrator", description: "Database management and optimization", certificate: "DBA Certification" },
-  { id: 53, categoryId: 13, name: "Data Analyst", description: "Data analysis and business intelligence reporting", certificate: "Data Analytics Certification" },
+  // ICT Department Roles
+  { id: 46, categoryId: 10, name: "Network Infrastructure Engineer", description: "Enterprise network design and implementation for South African businesses", certificate: "CCNA Certification" },
+  { id: 47, categoryId: 10, name: "Network Solutions Architect", description: "Network architecture planning and design for multi-site operations", certificate: "CCIE Certification" },
+  { id: 48, categoryId: 10, name: "Infrastructure Systems Administrator", description: "Server and infrastructure management for enterprise environments", certificate: "Infrastructure Management Certification" },
+  { id: 49, categoryId: 11, name: "Software Developer", description: "Application development using various programming languages", certificate: "Programming Certification" },
+  { id: 50, categoryId: 11, name: "Full Stack Developer", description: "Frontend and backend web application development", certificate: "Full Stack Development Certification" },
+  { id: 51, categoryId: 11, name: "Mobile Application Developer", description: "iOS and Android application development", certificate: "Mobile Development Certification" },
+  { id: 52, categoryId: 12, name: "Cybersecurity Analyst", description: "Information security monitoring and threat detection", certificate: "Security+ Certification" },
+  { id: 53, categoryId: 12, name: "Penetration Testing Specialist", description: "Ethical hacking and vulnerability assessment", certificate: "CEH Certification" },
+  { id: 54, categoryId: 12, name: "Information Security Manager", description: "Security policy development and compliance management", certificate: "CISSP Certification" },
+  { id: 55, categoryId: 13, name: "Database Administrator", description: "Database management and optimization", certificate: "DBA Certification" },
+  { id: 56, categoryId: 13, name: "Data Analyst", description: "Data analysis and business intelligence reporting", certificate: "Data Analytics Certification" },
+  { id: 57, categoryId: 13, name: "Business Intelligence Developer", description: "BI solutions development and data warehousing", certificate: "BI Development Certification" },
   
-  // HR department examples
-  { id: 54, categoryId: 14, name: "Talent Acquisition Specialist", description: "Recruitment and hiring processes", certificate: "HR Certification" },
-  { id: 55, categoryId: 14, name: "HR Business Partner", description: "Strategic HR support for business units", certificate: "SHRM Certification" },
-  { id: 56, categoryId: 15, name: "Employee Relations Manager", description: "Managing workplace relationships and conflicts", certificate: "Employee Relations Certification" },
-  { id: 57, categoryId: 15, name: "HR Policy Coordinator", description: "Development and implementation of HR policies", certificate: "HR Policy Certification" },
+  // HR Department Roles
+  { id: 58, categoryId: 14, name: "Talent Acquisition Specialist", description: "Recruitment and hiring processes for South African market", certificate: "HR Certification" },
+  { id: 59, categoryId: 14, name: "HR Business Partner", description: "Strategic HR support for business units", certificate: "SHRM Certification" },
+  { id: 60, categoryId: 14, name: "Recruitment Consultant", description: "Specialized recruitment for technical and executive roles", certificate: "Recruitment Professional Certification" },
+  { id: 61, categoryId: 15, name: "Learning and Development Specialist", description: "Employee training and development programs", certificate: "L&D Professional Certification" },
+  { id: 62, categoryId: 15, name: "Performance Management Coordinator", description: "Performance evaluation and improvement processes", certificate: "Performance Management Certification" },
+  { id: 63, categoryId: 15, name: "Skills Development Facilitator", description: "Skills Development Act compliance and SETA coordination", certificate: "Skills Development Certification" },
+  { id: 64, categoryId: 16, name: "Employee Relations Manager", description: "Managing workplace relationships and Employment Equity compliance", certificate: "Employee Relations Certification" },
+  { id: 65, categoryId: 16, name: "HR Policy Coordinator", description: "Development and implementation of HR policies", certificate: "HR Policy Certification" },
+  { id: 66, categoryId: 16, name: "Workplace Wellness Coordinator", description: "Employee wellness and mental health programs", certificate: "Wellness Program Certification" },
+  { id: 67, categoryId: 17, name: "Compensation and Benefits Analyst", description: "Salary benchmarking and benefits administration", certificate: "Compensation Management Certification" },
+  { id: 68, categoryId: 17, name: "Payroll Administrator", description: "Payroll processing and tax compliance", certificate: "Payroll Management Certification" },
+  { id: 69, categoryId: 17, name: "Benefits Administration Specialist", description: "Medical aid, provident fund, and employee benefits management", certificate: "Benefits Administration Certification" },
   
-  // Project Management examples
-  { id: 58, categoryId: 16, name: "Project Manager", description: "Project planning and execution management", certificate: "PMP Certification" },
-  { id: 59, categoryId: 16, name: "Scrum Master", description: "Agile project management and team facilitation", certificate: "Scrum Master Certification" },
-  { id: 60, categoryId: 17, name: "Program Manager", description: "Multi-project portfolio management", certificate: "Program Management Certification" },
-  { id: 61, categoryId: 17, name: "Project Coordinator", description: "Project support and coordination activities", certificate: "Project Coordination Certification" },
+  // Project Management Roles
+  { id: 70, categoryId: 18, name: "Project Manager", description: "Project planning and execution management using PMI methodology", certificate: "PMP Certification" },
+  { id: 71, categoryId: 18, name: "Agile Project Manager", description: "Agile project management and team facilitation", certificate: "Agile Project Management Certification" },
+  { id: 72, categoryId: 18, name: "Project Coordinator", description: "Project support and coordination activities", certificate: "Project Coordination Certification" },
+  { id: 73, categoryId: 19, name: "Project Delivery Manager", description: "End-to-end project delivery and stakeholder management", certificate: "Project Delivery Certification" },
+  { id: 74, categoryId: 19, name: "Change Management Specialist", description: "Organizational change management and transformation", certificate: "Change Management Certification" },
+  { id: 75, categoryId: 19, name: "Quality Assurance Manager", description: "Project quality control and process improvement", certificate: "Quality Management Certification" },
+  { id: 76, categoryId: 20, name: "Program Manager", description: "Multi-project portfolio management and strategic alignment", certificate: "Program Management Professional Certification" },
+  { id: 77, categoryId: 20, name: "Portfolio Manager", description: "Strategic portfolio planning and governance", certificate: "Portfolio Management Certification" },
+  { id: 78, categoryId: 20, name: "Project Management Office Lead", description: "PMO setup, governance, and methodology standardization", certificate: "PMO Leadership Certification" },
   
-  // Service Desk examples
-  { id: 62, categoryId: 18, name: "Service Desk Analyst", description: "First-line IT support and incident resolution", certificate: "ITIL Foundation" },
-  { id: 63, categoryId: 18, name: "Technical Support Specialist", description: "Advanced technical problem resolution", certificate: "Technical Support Certification" },
-  { id: 64, categoryId: 19, name: "Remote Support Technician", description: "Remote desktop and system support", certificate: "Remote Support Certification" },
-  { id: 65, categoryId: 19, name: "Field Service Technician", description: "On-site hardware and software support", certificate: "Field Service Certification" }
+  // Service Desk Roles
+  { id: 79, categoryId: 21, name: "Service Desk Analyst Level 1", description: "First-line IT support and incident logging", certificate: "ITIL Foundation" },
+  { id: 80, categoryId: 21, name: "Service Desk Team Leader", description: "Service desk team management and escalation coordination", certificate: "ITIL Service Operation" },
+  { id: 81, categoryId: 21, name: "Incident Management Specialist", description: "Incident resolution and SLA management", certificate: "Incident Management Certification" },
+  { id: 82, categoryId: 22, name: "Technical Support Specialist Level 2", description: "Advanced technical problem resolution and system troubleshooting", certificate: "Technical Support Professional Certification" },
+  { id: 83, categoryId: 22, name: "Application Support Analyst", description: "Business application maintenance and user support", certificate: "Application Support Certification" },
+  { id: 84, categoryId: 22, name: "Desktop Support Technician", description: "End-user hardware and software support", certificate: "Desktop Support Certification" },
+  { id: 85, categoryId: 23, name: "IT Service Manager", description: "ITIL service management and continuous improvement", certificate: "ITIL Expert" },
+  { id: 86, categoryId: 23, name: "SLA Management Coordinator", description: "Service level agreement monitoring and reporting", certificate: "SLA Management Certification" },
+  { id: 87, categoryId: 23, name: "IT Service Delivery Manager", description: "Service delivery oversight and vendor management", certificate: "Service Delivery Management Certification" }
 ];
 
 export const LANGUAGES = [
