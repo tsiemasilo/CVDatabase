@@ -14,61 +14,11 @@ export interface Role {
 }
 
 export const DEPARTMENTS: Department[] = [
-  {
-    id: 1,
-    name: "Engineering and Technology",
-    description: "Technical engineering roles across various specializations including civil, mechanical, electrical, and software engineering disciplines."
-  },
-  {
-    id: 2,
-    name: "Healthcare and Medical Services",
-    description: "Medical professionals, healthcare practitioners, and allied health services supporting South Africa's healthcare system."
-  },
-  {
-    id: 3,
-    name: "Education and Training",
-    description: "Educational professionals from early childhood development through higher education and vocational training sectors."
-  },
-  {
-    id: 4,
-    name: "Finance and Accounting",
-    description: "Financial services professionals including accountants, auditors, financial analysts, and banking specialists."
-  },
-  {
-    id: 5,
-    name: "Legal and Compliance",
-    description: "Legal practitioners, paralegals, compliance officers, and regulatory affairs professionals."
-  },
-  {
-    id: 6,
-    name: "Mining and Natural Resources",
-    description: "Mining engineers, geologists, environmental specialists, and natural resource management professionals."
-  },
-  {
-    id: 7,
-    name: "Agriculture and Food Security",
-    description: "Agricultural specialists, food technologists, veterinarians, and sustainable farming professionals."
-  },
-  {
-    id: 8,
-    name: "Information Technology",
-    description: "IT professionals, software developers, cybersecurity specialists, and digital transformation experts."
-  },
-  {
-    id: 9,
-    name: "Human Resources and Development",
-    description: "HR professionals, talent acquisition specialists, and organizational development experts."
-  },
-  {
-    id: 10,
-    name: "Communications and Media",
-    description: "Communications professionals, journalists, media specialists, and public relations experts."
-  },
-  {
-    id: 11,
-    name: "Construction and Built Environment",
-    description: "Construction professionals, architects, quantity surveyors, and built environment specialists."
-  }
+  { id: 1, name: "SAP", description: "SAP systems implementation, support, and management" },
+  { id: 2, name: "ICT", description: "Information and Communications Technology services" },
+  { id: 3, name: "HR", description: "Human Resources and people management" },
+  { id: 4, name: "PROJECT MANAGEMENT", description: "Project planning, execution, and delivery" },
+  { id: 5, name: "SERVICE DESK", description: "IT support and helpdesk services" }
 ];
 
 // Export interfaces for use in other files
