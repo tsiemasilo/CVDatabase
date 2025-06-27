@@ -370,9 +370,9 @@ export default function PositionsRoles() {
   const { type, data } = getCurrentDisplayData();
 
   return (
-    <div className="space-y-6 pt-6">
+    <div className="space-y-8 pt-8 px-2">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold" style={{ color: 'rgb(0, 0, 83)' }}>
+        <h1 className="text-3xl font-bold" style={{ color: 'rgb(0, 0, 83)' }}>
           Positions | Roles
         </h1>
         <div className="flex gap-3">
@@ -410,8 +410,8 @@ export default function PositionsRoles() {
         <CardHeader className="pb-4" style={{ backgroundColor: 'rgb(0, 0, 83)', color: 'white' }}>
           <CardTitle className="text-lg font-semibold">Navigation Filters</CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <CardContent className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             {/* Department Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
@@ -542,7 +542,7 @@ export default function PositionsRoles() {
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-8">
           {data.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
