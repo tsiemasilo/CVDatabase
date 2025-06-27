@@ -14,6 +14,7 @@ export default function PositionsRoles() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState<number | null>(null);
   const [selectedDomainId, setSelectedDomainId] = useState<number | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedKLevel, setSelectedKLevel] = useState<string>("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [addFormStep, setAddFormStep] = useState(0); // 0: department, 1: discipline, 2: domain, 3: category
   const [showAddRoleForm, setShowAddRoleForm] = useState(false);
@@ -124,6 +125,7 @@ export default function PositionsRoles() {
   const handleCategoryChange = (value: string) => {
     const categoryId = parseInt(value);
     setSelectedCategoryId(categoryId);
+    setSelectedKLevel(""); // Reset K-level when category changes
   };
 
   const resetSelections = () => {
@@ -131,6 +133,7 @@ export default function PositionsRoles() {
     setSelectedDisciplineId(null);
     setSelectedDomainId(null);
     setSelectedCategoryId(null);
+    setSelectedKLevel("");
     setSearchTerm("");
   };
 
