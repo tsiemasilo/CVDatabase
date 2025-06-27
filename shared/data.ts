@@ -253,6 +253,6 @@ export const QUALIFICATION_TYPES = QUALIFICATION_MAPPINGS.map(q => q.type);
 
 export const NQF_LEVELS = ["5", "6", "7", "8", "9", "10"];
 
-export const SAP_K_LEVELS = ["---n/a---", "K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8"];
+export const SAP_K_LEVELS = ["K1", "K2", "K3", "K4", "K5", "K6", "K7"];
 
 export const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];

@@ -61,10 +61,12 @@ export default function PositionsRoles() {
     if (selectedCategoryId) {
       return {
         type: 'roles',
-        data: getAvailableRoles().filter(role =>
-          role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          role.description.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        data: getAvailableRoles().filter(role => {
+          const matchesSearch = role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               role.description.toLowerCase().includes(searchTerm.toLowerCase());
+          const matchesKLevel = !selectedKLevel || role.kLevel === selectedKLevel;
+          return matchesSearch && matchesKLevel;
+        })
       };
     } else if (selectedDomainId) {
       return {
@@ -107,6 +109,7 @@ export default function PositionsRoles() {
     setSelectedDisciplineId(null);
     setSelectedDomainId(null);
     setSelectedCategoryId(null);
+    setSelectedKLevel(""); // Reset K-level when department changes
   };
 
   const handleDisciplineChange = (value: string) => {
@@ -483,6 +486,28 @@ export default function PositionsRoles() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* K-Level Filter - Only show for SAP department */}
+            {selectedDepartmentId === 1 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">K-Level</label>
+                <Select value={selectedKLevel} onValueChange={setSelectedKLevel}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select K-Level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All K-Levels</SelectItem>
+                    <SelectItem value="K1">K1 - Entry Level</SelectItem>
+                    <SelectItem value="K2">K2 - Basic Level</SelectItem>
+                    <SelectItem value="K3">K3 - Foundation Level</SelectItem>
+                    <SelectItem value="K4">K4 - Intermediate Level</SelectItem>
+                    <SelectItem value="K5">K5 - Advanced Level</SelectItem>
+                    <SelectItem value="K6">K6 - Expert Level</SelectItem>
+                    <SelectItem value="K7">K7 - Master Level</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           {/* Search */}
