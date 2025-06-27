@@ -172,8 +172,8 @@ export const ROLES: Role[] = [
   { id: 16, categoryId: 8, name: "SAP System Administrator", description: "SAP landscape maintenance and support", certificate: "SAP Admin Certification", kLevel: "K5" },
   { id: 17, categoryId: 9, name: "SAP Database Administrator", description: "SAP database management and tuning", certificate: "SAP DBA Certification", kLevel: "K7" },
   { id: 18, categoryId: 9, name: "SAP Performance Analyst", description: "SAP system performance optimization", certificate: "SAP Performance Certification", kLevel: "K6" },
-  { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification", kLevel: "K4" },
-  { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification", kLevel: "K7" }
+  { id: 19, categoryId: 10, name: "Network Engineer", description: "Enterprise network design and implementation", certificate: "CCNA Certification" },
+  { id: 20, categoryId: 10, name: "Network Architect", description: "Network architecture planning and design", certificate: "CCIE Certification" }
 ];
 
 export const LANGUAGES = [

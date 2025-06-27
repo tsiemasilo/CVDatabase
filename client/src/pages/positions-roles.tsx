@@ -143,7 +143,14 @@ export default function PositionsRoles() {
     }
   };
 
+  const isSAPRole = (item: any) => {
+    // SAP roles are in categories 1-9 (based on the data structure)
+    return item.categoryId && item.categoryId <= 9;
+  };
+
   const renderTableRow = (item: any, type: string) => {
+    const showKLevel = type === 'roles' && isSAPRole(item);
+    
     return (
       <TableRow key={item.id} className="hover:bg-gray-50">
         <TableCell className="font-medium">{item.name}</TableCell>
@@ -160,12 +167,14 @@ export default function PositionsRoles() {
               )}
             </TableCell>
             <TableCell>
-              {item.kLevel ? (
+              {showKLevel && item.kLevel ? (
                 <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
                   {item.kLevel}
                 </Badge>
-              ) : (
+              ) : showKLevel ? (
                 <span className="text-gray-400 text-sm">No K-level</span>
+              ) : (
+                <span className="text-gray-400 text-sm">N/A</span>
               )}
             </TableCell>
           </>
@@ -264,7 +273,7 @@ export default function PositionsRoles() {
         break;
     }
 
-    setFormData({ name: "", description: "", certificate: "" });
+    setFormData({ name: "", description: "", certificate: "", kLevel: "" });
   };
 
   const getStepTitle = () => {
@@ -498,7 +507,7 @@ export default function PositionsRoles() {
                   size="sm"
                   onClick={() => {
                     setShowAddForm(false);
-                    setFormData({ name: "", description: "", certificate: "" });
+                    setFormData({ name: "", description: "", certificate: "", kLevel: "" });
                   }}
                   className="text-white hover:bg-white hover:bg-opacity-20"
                 >
@@ -544,7 +553,7 @@ export default function PositionsRoles() {
                     setNewDepartmentId(null);
                     setNewDisciplineId(null);
                     setNewDomainId(null);
-                    setFormData({ name: "", description: "", certificate: "" });
+                    setFormData({ name: "", description: "", certificate: "", kLevel: "" });
                   }}
                   className="flex-1"
                 >
