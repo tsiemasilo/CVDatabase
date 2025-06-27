@@ -14,7 +14,7 @@ export default function PositionsRoles() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState<number | null>(null);
   const [selectedDomainId, setSelectedDomainId] = useState<number | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  const [selectedKLevel, setSelectedKLevel] = useState<string>("");
+  const [selectedKLevel, setSelectedKLevel] = useState<string>("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [addFormStep, setAddFormStep] = useState(0); // 0: department, 1: discipline, 2: domain, 3: category
   const [showAddRoleForm, setShowAddRoleForm] = useState(false);
@@ -64,7 +64,7 @@ export default function PositionsRoles() {
         data: getAvailableRoles().filter(role => {
           const matchesSearch = role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                role.description.toLowerCase().includes(searchTerm.toLowerCase());
-          const matchesKLevel = !selectedKLevel || role.kLevel === selectedKLevel;
+          const matchesKLevel = !selectedKLevel || selectedKLevel === "all" || role.kLevel === selectedKLevel;
           return matchesSearch && matchesKLevel;
         })
       };
@@ -109,7 +109,7 @@ export default function PositionsRoles() {
     setSelectedDisciplineId(null);
     setSelectedDomainId(null);
     setSelectedCategoryId(null);
-    setSelectedKLevel(""); // Reset K-level when department changes
+    setSelectedKLevel("all"); // Reset K-level when department changes
   };
 
   const handleDisciplineChange = (value: string) => {
@@ -128,7 +128,7 @@ export default function PositionsRoles() {
   const handleCategoryChange = (value: string) => {
     const categoryId = parseInt(value);
     setSelectedCategoryId(categoryId);
-    setSelectedKLevel(""); // Reset K-level when category changes
+    setSelectedKLevel("all"); // Reset K-level when category changes
   };
 
   const resetSelections = () => {
@@ -136,7 +136,7 @@ export default function PositionsRoles() {
     setSelectedDisciplineId(null);
     setSelectedDomainId(null);
     setSelectedCategoryId(null);
-    setSelectedKLevel("");
+    setSelectedKLevel("all");
     setSearchTerm("");
   };
 
@@ -496,7 +496,7 @@ export default function PositionsRoles() {
                     <SelectValue placeholder="Select K-Level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All K-Levels</SelectItem>
+                    <SelectItem value="all">All K-Levels</SelectItem>
                     <SelectItem value="K1">K1 - Entry Level</SelectItem>
                     <SelectItem value="K2">K2 - Basic Level</SelectItem>
                     <SelectItem value="K3">K3 - Foundation Level</SelectItem>
