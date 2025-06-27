@@ -14,7 +14,7 @@ export interface Role {
 }
 
 export const DEPARTMENTS: Department[] = [
-  { id: 1, name: "Systems Applications and Products Enterprise Resource Planning", description: "SAP systems implementation, support, and management" },
+  { id: 1, name: "SAP", description: "SAP systems implementation, support, and management" },
   { id: 2, name: "Information and Communications Technology", description: "Information and Communications Technology services" },
   { id: 3, name: "Human Resources", description: "Human Resources and people management" },
   { id: 4, name: "Project Management", description: "Project planning, execution, and delivery" },
