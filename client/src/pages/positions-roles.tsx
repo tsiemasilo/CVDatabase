@@ -62,6 +62,8 @@ export default function PositionsRoles() {
   const [newRecord, setNewRecord] = useState({ department: '', role: '', description: '', kLevel: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [addStep, setAddStep] = useState<'department' | 'role'>('department');
+  const [editingRecord, setEditingRecord] = useState<DepartmentRole | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
   const kLevels = ["K1", "K2", "K3", "K4", "K5"];
@@ -80,6 +82,43 @@ export default function PositionsRoles() {
       setShowAddForm(false);
       setAddStep('department');
     }
+  };
+
+  const updateRecord = () => {
+    if (editingRecord && newRecord.department && newRecord.role && newRecord.description && newRecord.kLevel) {
+      const updatedRecords = records.map(r => 
+        r.id === editingRecord.id 
+          ? { ...r, department: newRecord.department, role: newRecord.role, description: newRecord.description, kLevel: newRecord.kLevel }
+          : r
+      );
+      setRecords(updatedRecords);
+      setEditingRecord(null);
+      setIsEditing(false);
+      setNewRecord({ department: '', role: '', description: '', kLevel: '' });
+      setShowAddForm(false);
+      setAddStep('department');
+    }
+  };
+
+  const startEdit = (record: DepartmentRole) => {
+    setEditingRecord(record);
+    setIsEditing(true);
+    setNewRecord({
+      department: record.department,
+      role: record.role,
+      description: record.description,
+      kLevel: record.kLevel
+    });
+    setShowAddForm(true);
+    setAddStep('role'); // Skip department selection for editing
+  };
+
+  const cancelEdit = () => {
+    setEditingRecord(null);
+    setIsEditing(false);
+    setNewRecord({ department: '', role: '', description: '', kLevel: '' });
+    setShowAddForm(false);
+    setAddStep('department');
   };
 
   const deleteRecord = (id: number) => {
@@ -123,10 +162,15 @@ export default function PositionsRoles() {
           {showAddForm && (
             <div className="mb-6 p-4 border rounded-lg bg-gray-50">
               <h3 className="font-semibold mb-4">
-                {addStep === 'department' ? 'Step 1: Select Department' : 'Step 2: Add Role Details'}
+                {isEditing 
+                  ? 'Edit Role' 
+                  : addStep === 'department' 
+                    ? 'Step 1: Select Department' 
+                    : 'Step 2: Add Role Details'
+                }
               </h3>
               
-              {addStep === 'department' && (
+              {!isEditing && addStep === 'department' && (
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
@@ -156,12 +200,29 @@ export default function PositionsRoles() {
                 </div>
               )}
 
-              {addStep === 'role' && (
+              {(addStep === 'role' || isEditing) && (
                 <div className="space-y-4">
-                  <div className="p-3 bg-blue-50 rounded-md">
-                    <p className="text-sm text-blue-800">Selected Department: <strong>{newRecord.department}</strong></p>
-                  </div>
+                  {!isEditing && (
+                    <div className="p-3 bg-blue-50 rounded-md">
+                      <p className="text-sm text-blue-800">Selected Department: <strong>{newRecord.department}</strong></p>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isEditing && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                        <select
+                          className="w-full px-3 py-2 border rounded-md"
+                          value={newRecord.department}
+                          onChange={(e) => setNewRecord({ ...newRecord, department: e.target.value })}
+                        >
+                          <option value="">Select Department</option>
+                          {departments.map((dept) => (
+                            <option key={dept} value={dept}>{dept}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
                       <Input
@@ -193,13 +254,18 @@ export default function PositionsRoles() {
                     />
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={addRecord} style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
-                      Save Role
+                    <Button 
+                      onClick={isEditing ? updateRecord : addRecord} 
+                      style={{ backgroundColor: 'rgb(0, 0, 83)' }}
+                    >
+                      {isEditing ? 'Update Role' : 'Save Role'}
                     </Button>
-                    <Button variant="outline" onClick={handleBackStep}>
-                      Back
-                    </Button>
-                    <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                    {!isEditing && (
+                      <Button variant="outline" onClick={handleBackStep}>
+                        Back
+                      </Button>
+                    )}
+                    <Button variant="outline" onClick={isEditing ? cancelEdit : () => setShowAddForm(false)}>
                       Cancel
                     </Button>
                   </div>
@@ -232,7 +298,11 @@ export default function PositionsRoles() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => startEdit(record)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button 
