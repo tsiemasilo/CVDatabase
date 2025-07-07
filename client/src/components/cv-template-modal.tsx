@@ -35,203 +35,142 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           </DialogTitle>
         </DialogHeader>
         
-        <div className="bg-white p-8 space-y-8">
-          {/* Header Section */}
-          <div className="border-b-4 border-blue-600 pb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {record.name} {record.surname || ''}
-                </h1>
-                <p className="text-xl text-blue-600 font-semibold mt-2">
-                  {record.position || record.roleTitle || 'Professional'}
-                </p>
-                <p className="text-lg text-gray-600 mt-1">
-                  {record.department} Department
-                </p>
-              </div>
-              <div className="text-right space-y-2">
-                <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {record.name.charAt(0)}{(record.surname || record.name.split(' ')[1] || '').charAt(0)}
-                </div>
-              </div>
-            </div>
+        <div className="bg-white p-8 space-y-6 font-sans">
+          {/* Role */}
+          <div className="mb-4">
+            <p className="text-lg font-medium text-gray-800">
+              <span className="font-bold">Role:</span> {record.position || record.roleTitle || ''}
+            </p>
           </div>
 
-          {/* Contact Information */}
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <User className="w-5 h-5 mr-2 text-blue-600" />
-                Personal Information
-              </h2>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <Mail className="w-4 h-4 mr-3 text-gray-600" />
-                  <span>{record.email}</span>
-                </div>
-                {record.phone && (
-                  <div className="flex items-center">
-                    <Phone className="w-4 h-4 mr-3 text-gray-600" />
-                    <span>{record.phone}</span>
-                  </div>
-                )}
-                {record.idPassport && (
-                  <div className="flex items-center">
-                    <User className="w-4 h-4 mr-3 text-gray-600" />
-                    <span>ID: {record.idPassport}</span>
-                  </div>
-                )}
-                {record.gender && (
-                  <div className="flex items-center">
-                    <User className="w-4 h-4 mr-3 text-gray-600" />
-                    <span>Gender: {record.gender}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <Award className="w-5 h-5 mr-2 text-blue-600" />
-                Professional Summary
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <span className="font-semibold">Years of Experience:</span>
-                  <span className="ml-2">{totalExperience} years</span>
-                </div>
-                <div>
-                  <span className="font-semibold">Status:</span>
-                  <Badge className={`ml-2 ${
-                    record.status === 'active' ? 'bg-green-100 text-green-800' :
-                    record.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {record.status}
-                  </Badge>
-                </div>
-                {record.sapKLevel && (
-                  <div>
-                    <span className="font-semibold">SAP K-Level:</span>
-                    <Badge className="ml-2 bg-blue-100 text-blue-800">
-                      {record.sapKLevel}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-            </div>
+          {/* Name and ID Section */}
+          <div className="space-y-2 mb-6">
+            <p className="text-lg">
+              <span className="font-bold">Name and Surname:</span> {record.name} {record.surname || ''}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Id/Passport:</span> {record.idPassport || ''}
+            </p>
           </div>
 
-          {/* Languages */}
+          {/* Experience Table */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Experience</h2>
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Position</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Company</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-4 py-2">{exp.position || ''}</td>
+                    <td className="border border-gray-300 px-4 py-2">{exp.company || ''}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {exp.startDate ? 
+                        `${new Date(exp.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} - ${
+                          exp.isCurrentRole ? 'Present' : 
+                          (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present')
+                        }` : ''
+                      }
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2" colSpan={3}>No work experience recorded</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Qualification Table */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Qualification</h2>
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Qualifications</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Institution</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-bold">Year Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {record.qualifications ? (
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2">{record.qualifications}</td>
+                    <td className="border border-gray-300 px-4 py-2">-</td>
+                    <td className="border border-gray-300 px-4 py-2">-</td>
+                  </tr>
+                ) : null}
+                {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-4 py-2">{qual.name || qual.type}</td>
+                    <td className="border border-gray-300 px-4 py-2">-</td>
+                    <td className="border border-gray-300 px-4 py-2">-</td>
+                  </tr>
+                ))}
+                {!record.qualifications && otherQualifications.length === 0 && (
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2" colSpan={3}>No qualifications recorded</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Professional Summary/Description */}
+          {record.qualifications && (
+            <div className="mb-8">
+              <p className="text-gray-700 leading-relaxed text-justify">
+                A highly motivated professional with experience in {record.department || 'various areas'}, 
+                demonstrating strong skills in {record.position || 'their field'}. 
+                {record.experience ? `With ${record.experience} years of experience, ` : ''}
+                committed to delivering high-quality solutions and contributing to organizational success.
+                {record.sapKLevel ? ` Certified at SAP ${record.sapKLevel} level.` : ''}
+              </p>
+            </div>
+          )}
+
+          {/* Skills Section */}
           {languages.length > 0 && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <Globe className="w-5 h-5 mr-2 text-blue-600" />
-                Languages
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {languages.map((language, index) => (
-                  <Badge key={index} className="bg-blue-100 text-blue-800">
-                    {language.trim()}
-                  </Badge>
-                ))}
-              </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Skills</h2>
+              <p className="text-gray-700">
+                <span className="font-semibold">Languages:</span> {languages.join(', ')}
+                {record.sapKLevel && <span>. <span className="font-semibold">SAP Knowledge Level:</span> {record.sapKLevel}</span>}
+              </p>
             </div>
           )}
 
-          {/* Work Experience */}
+          {/* Experience Details Section */}
           {workExperiences.length > 0 && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
-                Work Experience
-              </h2>
-              <div className="space-y-6">
-                {workExperiences.map((exp: any, index: number) => (
-                  <div key={index} className="border-l-4 border-blue-200 pl-6 pb-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {exp.position || 'Position'}
-                        </h3>
-                        <p className="text-blue-600 font-medium">
-                          {exp.company || 'Company'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center text-gray-600">
-                          <CalendarDays className="w-4 h-4 mr-1" />
-                          <span className="text-sm">
-                            {exp.startDate ? new Date(exp.startDate).getFullYear() : 'Start'} - 
-                            {exp.isCurrentRole ? ' Present' : (exp.endDate ? ` ${new Date(exp.endDate).getFullYear()}` : ' End')}
-                          </span>
-                        </div>
-                        <div className="text-sm text-gray-500 mt-1">
-                          Duration: {exp.startDate && (exp.endDate || exp.isCurrentRole) ? 
-                            (() => {
-                              const start = new Date(exp.startDate);
-                              const end = exp.isCurrentRole ? new Date() : new Date(exp.endDate);
-                              const years = end.getFullYear() - start.getFullYear();
-                              const months = end.getMonth() - start.getMonth();
-                              const totalMonths = years * 12 + months;
-                              return totalMonths >= 12 ? 
-                                `${Math.floor(totalMonths / 12)} years ${totalMonths % 12} months` :
-                                `${totalMonths} months`;
-                            })() : 'N/A'
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    {exp.description && (
-                      <p className="text-gray-700 text-sm leading-relaxed">
-                        {exp.description}
-                      </p>
-                    )}
-                    {exp.isCurrentRole && (
-                      <Badge className="mt-2 bg-green-100 text-green-800">
-                        Current Position
-                      </Badge>
-                    )}
-                  </div>
-                ))}
-              </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Experience</h2>
+              {workExperiences.map((exp: any, index: number) => (
+                <div key={index} className="mb-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{exp.company || 'Company'}</h3>
+                  <p className="font-semibold text-gray-800">{exp.position || 'Position'}</p>
+                  <p className="text-gray-600 mb-3">
+                    {exp.startDate ? 
+                      `${new Date(exp.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – ${
+                        exp.isCurrentRole ? 'Present' : 
+                        (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present')
+                      }` : ''
+                    }
+                  </p>
+                  {exp.description && (
+                    <p className="text-gray-700 leading-relaxed text-justify">
+                      {exp.description}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
-
-          {/* Qualifications */}
-          <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <GraduationCap className="w-5 h-5 mr-2 text-blue-600" />
-              Qualifications
-            </h2>
-            <div className="space-y-4">
-              {record.qualifications && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-2">Primary Qualifications</h3>
-                  <p className="text-gray-700">{record.qualifications}</p>
-                </div>
-              )}
-              
-              {otherQualifications.length > 0 && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-2">Additional Qualifications</h3>
-                  <div className="space-y-2">
-                    {otherQualifications.map((qual: any, index: number) => (
-                      <div key={index} className="border-l-2 border-blue-300 pl-3">
-                        <p className="font-medium text-gray-800">
-                          {qual.type}: {qual.name}
-                        </p>
-                        {qual.description && (
-                          <p className="text-sm text-gray-600">{qual.description}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
 
           {/* Footer */}
           <div className="text-center pt-6 border-t border-gray-200">

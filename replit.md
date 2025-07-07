@@ -128,6 +128,9 @@ Changelog:
 - July 7, 2025. Enhanced checkbox styling in capture record form with custom visual feedback - replaced emoji indicators with professional checkbox design featuring blue background and white checkmark
 - July 7, 2025. Fixed "All Status" filter functionality to properly display all records (active, pending, archived) when selected - removed filter requirement for showing records
 - July 7, 2025. Implemented creative CV viewing feature - clicking eye icon now displays a professional CV template styled for Alteram Solutions with comprehensive candidate information including work experience, qualifications, languages, and duration calculations
+- July 7, 2025. Fixed department filtering system - replaced hardcoded role mappings with dynamic filtering using hierarchical data structure (Department → Discipline → Domain → Category → Role)
+- July 7, 2025. Fixed K-level filter display to show proper K1-K5 format and ensured filter appears consistently when SAP department is selected
+- July 7, 2025. Redesigned CV template to match exact Alteram Solutions format with structured tables for Experience and Qualifications, professional summary paragraph, and detailed experience descriptions
 ```
 
 ## User Preferences
