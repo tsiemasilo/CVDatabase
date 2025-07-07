@@ -9,8 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Download, X } from "lucide-react";
 import { DEPARTMENTS, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS, SAP_K_LEVELS } from "@shared/data";
+import { useAppContext } from "@/contexts/AppContext";
 
 export default function CVDatabase() {
+  const { setActiveTab } = useAppContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -171,13 +173,7 @@ export default function CVDatabase() {
                 <p className="text-sm text-gray-600">Find and manage CV records using the filters below</p>
               </div>
               <div className="flex items-center space-x-3">
-                <Button 
-                  onClick={handleExport}
-                  className="bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 hover:shadow-lg"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Export
-                </Button>
+                {/* Export button removed as requested */}
               </div>
             </div>
           </div>
@@ -194,14 +190,7 @@ export default function CVDatabase() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Button 
-                    onClick={handleExport}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-medium"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Export CSV
-                  </Button>
-                  <Button 
-                    onClick={() => setIsAddModalOpen(true)}
+                    onClick={() => setActiveTab("Capture record")}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
                   >
                     <Plus className="w-4 h-4 mr-2" />
