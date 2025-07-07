@@ -97,7 +97,240 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   };
 
   const handleView = (record: CVRecord) => {
-    setViewingRecord(record);
+    // Open CV template in new tab
+    const newWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>CV - ${record.name} ${record.surname || ''}</title>
+          <meta charset="UTF-8">
+          <script src="https://cdn.tailwindcss.com"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+          <style>
+            @media print {
+              body { margin: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body class="bg-gray-50 p-4">
+          <div id="cv-content" class="max-w-4xl mx-auto bg-white shadow-lg">
+            <!-- CV content will be inserted here -->
+          </div>
+          <div class="no-print text-center mt-6">
+            <button onclick="downloadPDF()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium mr-4">
+              Download as PDF
+            </button>
+            <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">
+              Print CV
+            </button>
+          </div>
+          <script>
+            function downloadPDF() {
+              const element = document.getElementById('cv-content');
+              const opt = {
+                margin: 0.5,
+                filename: 'CV_${record.name}_${record.surname || ''}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              };
+              html2pdf().set(opt).from(element).save();
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      
+      // Generate CV content and insert it
+      setTimeout(() => {
+        const cvContent = generateCVHTML(record);
+        if (newWindow.document.getElementById('cv-content')) {
+          newWindow.document.getElementById('cv-content').innerHTML = cvContent;
+        }
+      }, 100);
+    }
+  };
+
+  const generateCVHTML = (record: CVRecord) => {
+    const languages = record.languages ? record.languages.split(',').map(l => l.trim()).filter(Boolean) : [];
+    const workExperiences = record.workExperience ? record.workExperience.split(';').map(exp => {
+      const parts = exp.split('|');
+      return {
+        company: parts[0]?.trim() || '',
+        position: parts[1]?.trim() || '',
+        duration: parts[2]?.trim() || '',
+        description: parts[3]?.trim() || ''
+      };
+    }).filter(exp => exp.company || exp.position) : [];
+
+    const otherQualifications = record.qualifications ? record.qualifications.split(',').map(q => q.trim()).filter(Boolean) : [];
+
+    // Build experience table rows
+    const experienceRows = workExperiences.length > 0 
+      ? workExperiences.map(exp => 
+          '<tr class="hover:bg-blue-50">' +
+          '<td class="border border-blue-300 px-4 py-2">' + (exp.position || '') + '</td>' +
+          '<td class="border border-blue-300 px-4 py-2">' + (exp.company || '') + '</td>' +
+          '<td class="border border-blue-300 px-4 py-2">' + (exp.duration || '') + '</td>' +
+          '</tr>'
+        ).join('')
+      : '<tr><td class="border border-blue-300 px-4 py-2" colspan="3">No work experience recorded</td></tr>';
+
+    // Build qualification table rows
+    const qualificationRows = otherQualifications.length > 0
+      ? otherQualifications.map(qual =>
+          '<tr class="hover:bg-blue-50">' +
+          '<td class="border border-blue-300 px-4 py-2">' + qual + '</td>' +
+          '<td class="border border-blue-300 px-4 py-2">-</td>' +
+          '<td class="border border-blue-300 px-4 py-2">-</td>' +
+          '</tr>'
+        ).join('')
+      : '<tr><td class="border border-blue-300 px-4 py-2" colspan="3">No qualifications recorded</td></tr>';
+
+    // Build experience details section
+    const experienceDetails = workExperiences.length > 0
+      ? '<div class="mb-8">' +
+        '<h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience Details</h2>' +
+        workExperiences.map(exp =>
+          '<div class="mb-6">' +
+          '<h3 class="text-lg font-bold text-gray-900 mb-2">' + (exp.company || 'Company') + '</h3>' +
+          '<p class="text-md font-semibold text-blue-700 mb-1">' + (exp.position || 'Position') + '</p>' +
+          '<p class="text-sm text-gray-600 mb-2">' + (exp.duration || 'Duration not specified') + '</p>' +
+          (exp.description ? '<p class="text-gray-700">' + exp.description + '</p>' : '') +
+          '</div>'
+        ).join('') +
+        '</div>'
+      : '';
+
+    // Build skills section
+    const skillsSection = languages.length > 0
+      ? '<div class="mb-8">' +
+        '<h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>' +
+        '<p class="text-gray-700">' +
+        '<span class="font-semibold text-blue-700">Languages:</span> ' + languages.join(', ') +
+        (record.sapKLevel ? '. <span class="font-semibold text-blue-700">SAP Knowledge Level:</span> ' + record.sapKLevel : '') +
+        '</p>' +
+        '</div>'
+      : '';
+
+    // Build professional summary
+    const professionalSummary = record.qualifications
+      ? '<div class="mb-8">' +
+        '<p class="text-gray-700 leading-relaxed text-justify">' +
+        'A highly motivated professional with experience in ' + (record.department || 'various areas') + ', ' +
+        'demonstrating strong skills in ' + (record.position || 'their field') + '. ' +
+        (record.experience ? 'With ' + record.experience + ' years of experience, ' : '') +
+        'committed to delivering high-quality solutions and contributing to organizational success.' +
+        (record.sapKLevel ? ' Certified at SAP ' + record.sapKLevel + ' level.' : '') +
+        '</p>' +
+        '</div>'
+      : '';
+
+    return (
+      '<!-- Header with Alteram Logo and Branding -->' +
+      '<div class="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">' +
+        '<div class="flex items-center justify-between">' +
+          '<div class="flex items-center space-x-4">' +
+            '<div class="h-16 w-32 bg-white bg-opacity-20 rounded flex items-center justify-center">' +
+              '<span class="text-white font-bold text-lg">ALTERAM</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="text-right text-white">' +
+            '<div class="text-sm font-medium">' +
+              '<p>1144, 16th Road Randjespark Midrand</p>' +
+              '<p>Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>' +
+            '</div>' +
+            '<div class="text-sm mt-1">' +
+              '<span class="font-semibold">T</span> 010 900 4075 | <span class="font-semibold">F</span> 086 665 2021 | info@alteram.co.za' +
+            '</div>' +
+            '<p class="text-sm font-medium mt-1">www.alteram.co.za</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="mt-2 border-t border-orange-200 pt-2">' +
+          '<p class="text-sm text-white font-medium">' +
+            'Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07' +
+          '</p>' +
+        '</div>' +
+      '</div>' +
+
+      '<!-- CV Content -->' +
+      '<div class="p-8">' +
+        '<!-- Role -->' +
+        '<div class="mb-4">' +
+          '<p class="text-lg font-medium text-gray-800">' +
+            '<span class="font-bold text-blue-700">Role:</span> ' + (record.position || record.roleTitle || '') +
+          '</p>' +
+        '</div>' +
+
+        '<!-- Name and ID Section -->' +
+        '<div class="space-y-2 mb-6">' +
+          '<p class="text-lg">' +
+            '<span class="font-bold text-blue-700">Name and Surname:</span> ' + record.name + ' ' + (record.surname || '') +
+          '</p>' +
+          '<p class="text-lg">' +
+            '<span class="font-bold text-blue-700">Id/Passport:</span> ' + (record.idPassport || '') +
+          '</p>' +
+        '</div>' +
+
+        '<!-- Experience Table -->' +
+        '<div class="mb-8">' +
+          '<h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>' +
+          '<table class="w-full border-collapse border border-blue-300">' +
+            '<thead>' +
+              '<tr class="bg-gradient-to-r from-blue-600 to-blue-700">' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Position</th>' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Company</th>' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Duration</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              experienceRows +
+            '</tbody>' +
+          '</table>' +
+        '</div>' +
+
+        '<!-- Qualification Table -->' +
+        '<div class="mb-8">' +
+          '<h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Qualification</h2>' +
+          '<table class="w-full border-collapse border border-blue-300">' +
+            '<thead>' +
+              '<tr class="bg-gradient-to-r from-blue-600 to-blue-700">' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Qualifications</th>' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Institution</th>' +
+                '<th class="border border-blue-300 px-4 py-3 text-left font-bold text-white">Year Completed</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              qualificationRows +
+            '</tbody>' +
+          '</table>' +
+        '</div>' +
+
+        professionalSummary +
+        skillsSection +
+        experienceDetails +
+
+        '<!-- Footer -->' +
+        '<div class="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">' +
+          '<div class="flex items-center justify-center space-x-4">' +
+            '<div class="h-8 w-16 bg-orange-200 rounded flex items-center justify-center">' +
+              '<span class="text-orange-600 font-bold text-xs">ALTERAM</span>' +
+            '</div>' +
+            '<div class="text-center">' +
+              '<p class="text-sm font-semibold text-orange-600">' +
+                'CV Generated by Alteram Solutions' +
+              '</p>' +
+              '<p class="text-xs text-gray-600 mt-1">' +
+                'Philip Henry Arnold | Garth Solomon Madella' +
+              '</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
   };
 
   const handleEdit = (record: CVRecord) => {
