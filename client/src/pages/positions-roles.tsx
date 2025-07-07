@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,50 +14,52 @@ interface DepartmentRole {
   kLevel: string;
 }
 
+const getDefaultRecords = (): DepartmentRole[] => [
+  // SAP Department
+  { id: 1, department: "SAP", role: "SAP ABAP Developer", description: "Entry-level ABAP programming and development", kLevel: "K1" },
+  { id: 2, department: "SAP", role: "SAP Functional Consultant", description: "Junior consultant for SAP modules implementation", kLevel: "K2" },
+  { id: 3, department: "SAP", role: "SAP Technical Consultant", description: "Independent technical implementation specialist", kLevel: "K3" },
+  { id: 4, department: "SAP", role: "SAP Solution Architect", description: "Senior lead for enterprise SAP solutions", kLevel: "K4" },
+  { id: 5, department: "SAP", role: "SAP Master Architect", description: "Master-level SAP enterprise architect", kLevel: "K5" },
+  
+  // ICT Department
+  { id: 6, department: "ICT", role: "IT Support Technician", description: "Entry-level technical support and maintenance", kLevel: "K1" },
+  { id: 7, department: "ICT", role: "Network Administrator", description: "Junior network management and configuration", kLevel: "K2" },
+  { id: 8, department: "ICT", role: "Systems Analyst", description: "Independent systems analysis and design", kLevel: "K3" },
+  { id: 9, department: "ICT", role: "IT Infrastructure Manager", description: "Senior lead for IT infrastructure operations", kLevel: "K4" },
+  { id: 10, department: "ICT", role: "Chief Technology Officer", description: "Master-level technology strategy leadership", kLevel: "K5" },
+  
+  // HR Department
+  { id: 11, department: "HR", role: "HR Assistant", description: "Entry-level human resources administration", kLevel: "K1" },
+  { id: 12, department: "HR", role: "Recruitment Coordinator", description: "Junior talent acquisition and recruitment", kLevel: "K2" },
+  { id: 13, department: "HR", role: "HR Business Partner", description: "Independent strategic HR partnership", kLevel: "K3" },
+  { id: 14, department: "HR", role: "HR Director", description: "Senior lead for organizational development", kLevel: "K4" },
+  { id: 15, department: "HR", role: "Chief People Officer", description: "Master-level people strategy leadership", kLevel: "K5" },
+  
+  // DEVELOPMENT Department
+  { id: 16, department: "DEVELOPMENT", role: "Junior Developer", description: "Entry-level software development and coding", kLevel: "K1" },
+  { id: 17, department: "DEVELOPMENT", role: "Software Developer", description: "Junior application development specialist", kLevel: "K2" },
+  { id: 18, department: "DEVELOPMENT", role: "Senior Developer", description: "Independent full-stack development expert", kLevel: "K3" },
+  { id: 19, department: "DEVELOPMENT", role: "Development Team Lead", description: "Senior lead for development teams", kLevel: "K4" },
+  { id: 20, department: "DEVELOPMENT", role: "Chief Technology Architect", description: "Master-level software architecture leadership", kLevel: "K5" },
+  
+  // Project Management Department
+  { id: 21, department: "Project Management", role: "Project Coordinator", description: "Entry-level project coordination and support", kLevel: "K1" },
+  { id: 22, department: "Project Management", role: "Project Officer", description: "Junior project execution and monitoring", kLevel: "K2" },
+  { id: 23, department: "Project Management", role: "Project Manager", description: "Independent project lifecycle management", kLevel: "K3" },
+  { id: 24, department: "Project Management", role: "Senior Project Manager", description: "Senior lead for complex project portfolios", kLevel: "K4" },
+  { id: 25, department: "Project Management", role: "Program Director", description: "Master-level strategic program leadership", kLevel: "K5" },
+  
+  // Service Desk Department
+  { id: 26, department: "Service Desk", role: "Service Desk Agent", description: "Entry-level user support and incident logging", kLevel: "K1" },
+  { id: 27, department: "Service Desk", role: "Technical Support Specialist", description: "Junior technical troubleshooting and resolution", kLevel: "K2" },
+  { id: 28, department: "Service Desk", role: "Service Desk Analyst", description: "Independent incident and problem management", kLevel: "K3" },
+  { id: 29, department: "Service Desk", role: "Service Desk Team Lead", description: "Senior lead for service desk operations", kLevel: "K4" },
+  { id: 30, department: "Service Desk", role: "Service Desk Manager", description: "Master-level service delivery management", kLevel: "K5" }
+];
+
 export default function PositionsRoles() {
-  const [records, setRecords] = useState<DepartmentRole[]>([
-    // SAP Department
-    { id: 1, department: "SAP", role: "SAP ABAP Developer", description: "Entry-level ABAP programming and development", kLevel: "K1" },
-    { id: 2, department: "SAP", role: "SAP Functional Consultant", description: "Junior consultant for SAP modules implementation", kLevel: "K2" },
-    { id: 3, department: "SAP", role: "SAP Technical Consultant", description: "Independent technical implementation specialist", kLevel: "K3" },
-    { id: 4, department: "SAP", role: "SAP Solution Architect", description: "Senior lead for enterprise SAP solutions", kLevel: "K4" },
-    { id: 5, department: "SAP", role: "SAP Master Architect", description: "Master-level SAP enterprise architect", kLevel: "K5" },
-    
-    // ICT Department
-    { id: 6, department: "ICT", role: "IT Support Technician", description: "Entry-level technical support and maintenance", kLevel: "K1" },
-    { id: 7, department: "ICT", role: "Network Administrator", description: "Junior network management and configuration", kLevel: "K2" },
-    { id: 8, department: "ICT", role: "Systems Analyst", description: "Independent systems analysis and design", kLevel: "K3" },
-    { id: 9, department: "ICT", role: "IT Infrastructure Manager", description: "Senior lead for IT infrastructure operations", kLevel: "K4" },
-    { id: 10, department: "ICT", role: "Chief Technology Officer", description: "Master-level technology strategy leadership", kLevel: "K5" },
-    
-    // HR Department
-    { id: 11, department: "HR", role: "HR Assistant", description: "Entry-level human resources administration", kLevel: "K1" },
-    { id: 12, department: "HR", role: "Recruitment Coordinator", description: "Junior talent acquisition and recruitment", kLevel: "K2" },
-    { id: 13, department: "HR", role: "HR Business Partner", description: "Independent strategic HR partnership", kLevel: "K3" },
-    { id: 14, department: "HR", role: "HR Director", description: "Senior lead for organizational development", kLevel: "K4" },
-    { id: 15, department: "HR", role: "Chief People Officer", description: "Master-level people strategy leadership", kLevel: "K5" },
-    
-    // DEVELOPMENT Department
-    { id: 16, department: "DEVELOPMENT", role: "Junior Developer", description: "Entry-level software development and coding", kLevel: "K1" },
-    { id: 17, department: "DEVELOPMENT", role: "Software Developer", description: "Junior application development specialist", kLevel: "K2" },
-    { id: 18, department: "DEVELOPMENT", role: "Senior Developer", description: "Independent full-stack development expert", kLevel: "K3" },
-    { id: 19, department: "DEVELOPMENT", role: "Development Team Lead", description: "Senior lead for development teams", kLevel: "K4" },
-    { id: 20, department: "DEVELOPMENT", role: "Chief Technology Architect", description: "Master-level software architecture leadership", kLevel: "K5" },
-    
-    // Project Management Department
-    { id: 21, department: "Project Management", role: "Project Coordinator", description: "Entry-level project coordination and support", kLevel: "K1" },
-    { id: 22, department: "Project Management", role: "Project Officer", description: "Junior project execution and monitoring", kLevel: "K2" },
-    { id: 23, department: "Project Management", role: "Project Manager", description: "Independent project lifecycle management", kLevel: "K3" },
-    { id: 24, department: "Project Management", role: "Senior Project Manager", description: "Senior lead for complex project portfolios", kLevel: "K4" },
-    { id: 25, department: "Project Management", role: "Program Director", description: "Master-level strategic program leadership", kLevel: "K5" },
-    
-    // Service Desk Department
-    { id: 26, department: "Service Desk", role: "Service Desk Agent", description: "Entry-level user support and incident logging", kLevel: "K1" },
-    { id: 27, department: "Service Desk", role: "Technical Support Specialist", description: "Junior technical troubleshooting and resolution", kLevel: "K2" },
-    { id: 28, department: "Service Desk", role: "Service Desk Analyst", description: "Independent incident and problem management", kLevel: "K3" },
-    { id: 29, department: "Service Desk", role: "Service Desk Team Lead", description: "Senior lead for service desk operations", kLevel: "K4" },
-    { id: 30, department: "Service Desk", role: "Service Desk Manager", description: "Master-level service delivery management", kLevel: "K5" }
-  ]);
+  const [records, setRecords] = useState<DepartmentRole[]>([]);
 
   const [newRecord, setNewRecord] = useState({ department: '', role: '', description: '', kLevel: '' });
   const [showAddForm, setShowAddForm] = useState(false);
@@ -67,6 +69,29 @@ export default function PositionsRoles() {
 
   const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
   const kLevels = ["K1", "K2", "K3", "K4", "K5"];
+
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    const savedRecords = localStorage.getItem('departmentRoles');
+    if (savedRecords) {
+      try {
+        const parsedRecords = JSON.parse(savedRecords);
+        setRecords(parsedRecords);
+      } catch (error) {
+        console.error('Error parsing saved records:', error);
+        setRecords(getDefaultRecords());
+      }
+    } else {
+      setRecords(getDefaultRecords());
+    }
+  }, []);
+
+  // Save data to localStorage whenever records change
+  useEffect(() => {
+    if (records.length > 0) {
+      localStorage.setItem('departmentRoles', JSON.stringify(records));
+    }
+  }, [records]);
 
   const addRecord = () => {
     if (newRecord.department && newRecord.role && newRecord.description && newRecord.kLevel) {
