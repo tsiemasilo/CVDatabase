@@ -70,6 +70,15 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     }
   });
 
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const getRandomColor = (index: number) => {
+    const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-teal-500'];
+    return colors[index % colors.length];
+  };
+
   const getStatusColor = (status: string) => {
     const colors = {
       active: 'bg-green-100 text-green-800',
@@ -149,59 +158,121 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
         <h2 className="text-lg font-medium text-gray-900">Records</h2>
       </div>
       
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow style={{ backgroundColor: '#4A5568' }}>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">Surname</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">First name</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">Years experience</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">Contact number</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">E-mail</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">Qualifications</TableHead>
-              <TableHead className="text-white font-medium py-3 px-4 text-left">Actions</TableHead>
+            <TableRow className="hover:bg-slate-600" style={{ backgroundColor: 'rgb(0, 0, 83)' }}>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('name')}
+              >
+                Surname
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('name')}
+              >
+                Name
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('department')}
+              >
+                Department
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('position')}
+              >
+                Role
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('roleTitle')}
+              >
+                Role Title
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('status')}
+              >
+                Status
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('experience')}
+              >
+                Experience
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">
+                SAP K-Level
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">
+                Phone
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">
+                Languages
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6 text-center">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedRecords.map((record, index) => (
-              <TableRow key={record.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                <TableCell className="py-3 px-4 text-sm text-gray-900">
-                  {record.surname || 'N/A'}
-                </TableCell>
-                <TableCell className="py-3 px-4 text-sm text-gray-900">
-                  {record.name}
-                </TableCell>
-                <TableCell className="py-3 px-4 text-sm text-gray-900">
-                  {record.experience || 0}
-                </TableCell>
-                <TableCell className="py-3 px-4 text-sm text-gray-900">
-                  {record.phone || 'N/A'}
-                </TableCell>
-                <TableCell className="py-3 px-4 text-sm text-gray-900">
-                  {record.email}
-                </TableCell>
-                <TableCell className="py-3 px-4 text-sm text-gray-900 max-w-md">
-                  <div className="flex items-center space-x-2">
-                    <div className="truncate" title={record.qualifications || 'No qualifications listed'}>
-                      {record.qualifications || 'No qualifications listed'}
+              <TableRow key={record.id} className="hover:bg-gray-50">
+                <TableCell className="py-4 px-6">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full ${getRandomColor(index)} flex items-center justify-center text-white text-sm font-medium`}>
+                      {getInitials(record.name)}
                     </div>
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {record.name.split(' ')[0] || record.name}
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="py-3 px-4">
-                  <div className="flex items-center space-x-1">
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.surname || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.department || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.position || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.roleTitle || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <Badge className={`${getStatusColor(record.status)} border-0`}>
+                    {record.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.experience || 0} years</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.sapKLevel || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.phone || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6 max-w-xs">
+                  <div className="text-sm text-gray-900 truncate" title={record.languages || 'No languages listed'}>
+                    {record.languages || 'No languages listed'}
+                  </div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="flex items-center space-x-2">
                     <Button 
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleView(record)}
-                      className="text-gray-600 hover:text-gray-900 p-1"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
@@ -209,7 +280,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleEdit(record)}
-                      className="text-gray-600 hover:text-gray-900 p-1"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -218,7 +289,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                         <Button 
                           variant="ghost" 
                           size="sm"
-                          className="text-gray-600 hover:text-red-600 p-1"
+                          className="text-gray-600 hover:text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -247,95 +318,117 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+      <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between">
           <div className="text-sm text-gray-700">
-            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, sortedRecords.length)} of {sortedRecords.length} results
+            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, sortedRecords.length)} of {sortedRecords.length} records
           </div>
-          <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
+              className="btn-icon"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            <div className="flex items-center space-x-1">
+              {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                const page = i + 1;
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page)}
+                    className={currentPage === page ? "bg-primary-500 text-white" : ""}
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
+              {totalPages > 5 && (
+                <>
+                  <span className="px-2 text-gray-500">...</span>
+                  <Button
+                    variant={currentPage === totalPages ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(totalPages)}
+                    className={currentPage === totalPages ? "bg-primary-500 text-white" : ""}
+                  >
+                    {totalPages}
+                  </Button>
+                </>
+              )}
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
+              className="btn-icon"
             >
               Next
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      )}
+      </div>
 
       {/* View Record Modal */}
-      <Dialog open={!!viewingRecord} onOpenChange={() => setViewingRecord(null)}>
+      <Dialog open={viewingRecord !== null} onOpenChange={() => setViewingRecord(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>CV Record Details</DialogTitle>
           </DialogHeader>
           {viewingRecord && (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">Name</label>
-                <p className="text-sm text-gray-900">{viewingRecord.name}</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.name}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.email}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.phone || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Position</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.position || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Department</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.department || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Experience</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.experience || 0} years</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <p className="mt-1 text-sm text-gray-900 capitalize">{viewingRecord.status}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Submitted</label>
+                  <p className="mt-1 text-sm text-gray-900">
+                    {new Date(viewingRecord.submittedAt).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700">Surname</label>
-                <p className="text-sm text-gray-900">{viewingRecord.surname || 'N/A'}</p>
+                <label className="block text-sm font-medium text-gray-700">Qualifications</label>
+                <p className="mt-1 text-sm text-gray-900">{viewingRecord.qualifications || 'No qualifications listed'}</p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Email</label>
-                <p className="text-sm text-gray-900">{viewingRecord.email}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Phone</label>
-                <p className="text-sm text-gray-900">{viewingRecord.phone || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Department</label>
-                <p className="text-sm text-gray-900">{viewingRecord.department || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Role</label>
-                <p className="text-sm text-gray-900">{viewingRecord.position || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Role Title</label>
-                <p className="text-sm text-gray-900">{viewingRecord.roleTitle || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">SAP K-Level</label>
-                <p className="text-sm text-gray-900">{viewingRecord.sapKLevel || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Experience</label>
-                <p className="text-sm text-gray-900">{viewingRecord.experience || 0} years</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Languages</label>
-                <p className="text-sm text-gray-900">{viewingRecord.languages || 'N/A'}</p>
-              </div>
-              <div className="col-span-2">
-                <label className="text-sm font-medium text-gray-700">Qualifications</label>
-                <p className="text-sm text-gray-900">{viewingRecord.qualifications || 'No qualifications listed'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Status</label>
-                <Badge className={`${getStatusColor(viewingRecord.status)} border-0`}>
-                  {viewingRecord.status}
-                </Badge>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Submitted</label>
-                <p className="text-sm text-gray-900">{new Date(viewingRecord.submittedAt).toLocaleDateString()}</p>
+              <div className="flex justify-end">
+                <Button variant="outline" onClick={() => setViewingRecord(null)}>
+                  Close
+                </Button>
               </div>
             </div>
           )}
@@ -343,123 +436,98 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       </Dialog>
 
       {/* Edit Record Modal */}
-      <Dialog open={!!editingRecord} onOpenChange={() => setEditingRecord(null)}>
+      <Dialog open={editingRecord !== null} onOpenChange={() => setEditingRecord(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit CV Record</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700">Name</label>
-              <Input
-                value={editFormData.name}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
-              />
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <Input
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                  placeholder="Enter full name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <Input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  placeholder="Enter email address"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <Input
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  placeholder="Enter phone number"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                <Input
+                  value={editFormData.position}
+                  onChange={(e) => setEditFormData({...editFormData, position: e.target.value})}
+                  placeholder="Enter position applied for"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                <Input
+                  value={editFormData.department}
+                  onChange={(e) => setEditFormData({...editFormData, department: e.target.value})}
+                  placeholder="Enter department"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Experience (years)</label>
+                <Input
+                  type="number"
+                  value={editFormData.experience}
+                  onChange={(e) => setEditFormData({...editFormData, experience: e.target.value})}
+                  placeholder="Enter years of experience"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <Select value={editFormData.status} onValueChange={(value) => setEditFormData({...editFormData, status: value as any})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Surname</label>
-              <Input
-                value={editFormData.surname}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, surname: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Email</label>
-              <Input
-                type="email"
-                value={editFormData.email}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Phone</label>
-              <Input
-                value={editFormData.phone}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, phone: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Department</label>
-              <Select value={editFormData.department} onValueChange={(value) => setEditFormData(prev => ({ ...prev, department: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SAP">SAP</SelectItem>
-                  <SelectItem value="ICT">ICT</SelectItem>
-                  <SelectItem value="HR">HR</SelectItem>
-                  <SelectItem value="PROJECT MANAGEMENT">PROJECT MANAGEMENT</SelectItem>
-                  <SelectItem value="SERVICE DESK">SERVICE DESK</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Role</label>
-              <Input
-                value={editFormData.position}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, position: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Role Title</label>
-              <Input
-                value={editFormData.roleTitle}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, roleTitle: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">SAP K-Level</label>
-              <Select value={editFormData.sapKLevel} onValueChange={(value) => setEditFormData(prev => ({ ...prev, sapKLevel: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select K-Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">None</SelectItem>
-                  <SelectItem value="K1">K1 (Entry Level)</SelectItem>
-                  <SelectItem value="K2">K2 (Junior)</SelectItem>
-                  <SelectItem value="K3">K3 (Independent)</SelectItem>
-                  <SelectItem value="K4">K4 (Senior Lead)</SelectItem>
-                  <SelectItem value="K5">K5 (Master Architect)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Experience (years)</label>
-              <Input
-                type="number"
-                value={editFormData.experience}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, experience: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">Status</label>
-              <Select value={editFormData.status} onValueChange={(value) => setEditFormData(prev => ({ ...prev, status: value as "active" | "pending" | "archived" }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-700">Qualifications</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Qualifications</label>
               <Textarea
                 value={editFormData.qualifications}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, qualifications: e.target.value }))}
+                onChange={(e) => setEditFormData({...editFormData, qualifications: e.target.value})}
+                placeholder="Enter qualifications"
                 rows={3}
               />
             </div>
-          </div>
-          <div className="flex justify-end space-x-3 mt-6">
-            <Button variant="outline" onClick={() => setEditingRecord(null)}>
-              Cancel
-            </Button>
-            <Button onClick={handleUpdate} disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? "Updating..." : "Update Record"}
-            </Button>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setEditingRecord(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleUpdate}
+                disabled={updateMutation.isPending}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                {updateMutation.isPending ? "Updating..." : "Update"}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
