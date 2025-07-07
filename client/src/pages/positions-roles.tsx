@@ -126,6 +126,7 @@ export default function PositionsRoles() {
   };
 
   const startEdit = (record: DepartmentRole) => {
+    console.log('Starting edit for record:', record);
     setEditingRecord(record);
     setIsEditing(true);
     setNewRecord({
@@ -136,6 +137,7 @@ export default function PositionsRoles() {
     });
     setShowAddForm(true);
     setAddStep('role'); // Skip department selection for editing
+    console.log('Edit form should now be visible');
   };
 
   const cancelEdit = () => {
