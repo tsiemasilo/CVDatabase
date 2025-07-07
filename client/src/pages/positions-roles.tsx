@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 
 interface DepartmentRole {
@@ -66,6 +67,8 @@ export default function PositionsRoles() {
   const [addStep, setAddStep] = useState<'department' | 'role'>('department');
   const [editingRecord, setEditingRecord] = useState<DepartmentRole | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({ department: '', role: '', description: '', kLevel: '' });
 
   const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
   const kLevels = ["K1", "K2", "K3", "K4", "K5"];
@@ -109,44 +112,40 @@ export default function PositionsRoles() {
     }
   };
 
-  const updateRecord = () => {
-    if (editingRecord && newRecord.department && newRecord.role && newRecord.description && newRecord.kLevel) {
-      const updatedRecords = records.map(r => 
-        r.id === editingRecord.id 
-          ? { ...r, department: newRecord.department, role: newRecord.role, description: newRecord.description, kLevel: newRecord.kLevel }
-          : r
-      );
-      setRecords(updatedRecords);
-      setEditingRecord(null);
-      setIsEditing(false);
-      setNewRecord({ department: '', role: '', description: '', kLevel: '' });
-      setShowAddForm(false);
-      setAddStep('department');
-    }
-  };
+
 
   const startEdit = (record: DepartmentRole) => {
-    console.log('Starting edit for record:', record);
     setEditingRecord(record);
-    setIsEditing(true);
-    setNewRecord({
+    setEditFormData({
       department: record.department,
       role: record.role,
       description: record.description,
       kLevel: record.kLevel
     });
-    setShowAddForm(true);
-    setAddStep('role'); // Skip department selection for editing
-    console.log('Edit form should now be visible');
+    setShowEditModal(true);
+  };
+
+  const saveEdit = () => {
+    if (editingRecord && editFormData.department && editFormData.role && editFormData.description && editFormData.kLevel) {
+      const updatedRecords = records.map(r => 
+        r.id === editingRecord.id 
+          ? { ...r, department: editFormData.department, role: editFormData.role, description: editFormData.description, kLevel: editFormData.kLevel }
+          : r
+      );
+      setRecords(updatedRecords);
+      setShowEditModal(false);
+      setEditingRecord(null);
+      setEditFormData({ department: '', role: '', description: '', kLevel: '' });
+    }
   };
 
   const cancelEdit = () => {
+    setShowEditModal(false);
     setEditingRecord(null);
-    setIsEditing(false);
-    setNewRecord({ department: '', role: '', description: '', kLevel: '' });
-    setShowAddForm(false);
-    setAddStep('department');
+    setEditFormData({ department: '', role: '', description: '', kLevel: '' });
   };
+
+
 
   const deleteRecord = (id: number) => {
     setRecords(records.filter(r => r.id !== id));
@@ -348,6 +347,75 @@ export default function PositionsRoles() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle style={{ color: 'rgb(0, 0, 83)' }}>Edit Role</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+              <select
+                className="w-full px-3 py-2 border rounded-md"
+                value={editFormData.department}
+                onChange={(e) => setEditFormData({ ...editFormData, department: e.target.value })}
+              >
+                <option value="">Select Department</option>
+                {departments.map((dept) => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+              <Input
+                placeholder="Enter role name"
+                value={editFormData.role}
+                onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <Input
+                placeholder="Enter role description"
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">K-Level</label>
+              <select
+                className="w-full px-3 py-2 border rounded-md"
+                value={editFormData.kLevel}
+                onChange={(e) => setEditFormData({ ...editFormData, kLevel: e.target.value })}
+              >
+                <option value="">Select K-Level</option>
+                {kLevels.map((level) => (
+                  <option key={level} value={level}>{level}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-2 pt-4">
+              <Button 
+                onClick={saveEdit} 
+                style={{ backgroundColor: 'rgb(0, 0, 83)', color: 'white' }}
+                className="flex-1"
+              >
+                Save Changes
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={cancelEdit}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
