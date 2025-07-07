@@ -3,6 +3,7 @@ import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, MapPin, Phone, Mail, User, Award, Briefcase, GraduationCap, Globe } from "lucide-react";
 import alteramLogoPath from "@assets/alteram1_1_600x197_1750838676214.png";
+import footerImagePath from "@assets/image_1751895895280.png";
 
 interface CVTemplateModalProps {
   record: CVRecord | null;
@@ -32,8 +33,16 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         <div className="bg-white">
           {/* Header with Alteram Logo and Branding */}
-          <div className="bg-gradient-to-r from-orange-400 to-orange-500 px-8 py-4">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4 relative">
+            {/* Background logo with low opacity */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+              <img 
+                src={alteramLogoPath} 
+                alt="Alteram Solutions Background" 
+                className="h-24 w-auto"
+              />
+            </div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="flex items-center space-x-4">
                 <img 
                   src={alteramLogoPath} 
@@ -52,7 +61,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 <p className="text-sm font-medium mt-1">www.alteram.co.za</p>
               </div>
             </div>
-            <div className="mt-2 border-t border-orange-300 pt-2">
+            <div className="mt-2 border-t border-orange-200 pt-2 relative z-10">
               <p className="text-sm text-white font-medium">
                 Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07
               </p>
@@ -73,26 +82,26 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               {/* Role */}
               <div className="mb-4">
                 <p className="text-lg font-medium text-gray-800">
-                  <span className="font-bold text-blue-900">Role:</span> {record.position || record.roleTitle || ''}
+                  <span className="font-bold text-blue-700">Role:</span> {record.position || record.roleTitle || ''}
                 </p>
               </div>
 
               {/* Name and ID Section */}
               <div className="space-y-2 mb-6">
                 <p className="text-lg">
-                  <span className="font-bold text-blue-900">Name and Surname:</span> {record.name} {record.surname || ''}
+                  <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold text-blue-900">Id/Passport:</span> {record.idPassport || ''}
+                  <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
 
               {/* Experience Table */}
               <div className="mb-8">
-                <h2 className="text-xl font-bold text-blue-900 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
                 <table className="w-full border-collapse border border-blue-300">
                   <thead>
-                    <tr className="bg-gradient-to-r from-blue-900 to-blue-800">
+                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Position</th>
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Company</th>
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Duration</th>
@@ -123,10 +132,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Qualification Table */}
               <div className="mb-8">
-                <h2 className="text-xl font-bold text-blue-900 mb-4 border-b-2 border-orange-400 pb-2">Qualification</h2>
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Qualification</h2>
                 <table className="w-full border-collapse border border-blue-300">
                   <thead>
-                    <tr className="bg-gradient-to-r from-blue-900 to-blue-800">
+                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Qualifications</th>
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Institution</th>
                       <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Year Completed</th>
@@ -172,10 +181,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               {/* Skills Section */}
               {languages.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-bold text-blue-900 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>
+                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>
                   <p className="text-gray-700">
-                    <span className="font-semibold text-blue-900">Languages:</span> {languages.join(', ')}
-                    {record.sapKLevel && <span>. <span className="font-semibold text-blue-900">SAP Knowledge Level:</span> {record.sapKLevel}</span>}
+                    <span className="font-semibold text-blue-700">Languages:</span> {languages.join(', ')}
+                    {record.sapKLevel && <span>. <span className="font-semibold text-blue-700">SAP Knowledge Level:</span> {record.sapKLevel}</span>}
                   </p>
                 </div>
               )}
@@ -183,7 +192,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-bold text-blue-900 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
+                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{exp.company || 'Company'}</h3>
@@ -218,9 +227,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     <p className="text-sm font-semibold text-orange-600">
                       CV Generated by Alteram Solutions
                     </p>
-                    <p className="text-xs text-gray-600">
-                      {new Date().toLocaleDateString()} • Professional Services
-                    </p>
+                    <img 
+                      src={footerImagePath} 
+                      alt="Philip Henry Arnold | Garth Solomon Madella" 
+                      className="mt-2 h-4 w-auto mx-auto"
+                    />
                   </div>
                 </div>
               </div>
