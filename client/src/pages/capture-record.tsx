@@ -43,7 +43,8 @@ export default function CaptureRecord() {
     qualificationType: "",
     qualificationName: "",
     experienceInSimilarRole: "",
-    experienceWithITSMTools: ""
+    experienceWithITSMTools: "",
+    workExperiences: [{ companyName: "", position: "", duration: "" }]
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -197,6 +198,32 @@ export default function CaptureRecord() {
     }
   };
 
+  const handleWorkExperienceChange = (index: number, field: string, value: string) => {
+    const newWorkExperiences = [...formData.workExperiences];
+    newWorkExperiences[index] = { ...newWorkExperiences[index], [field]: value };
+    setFormData(prev => ({
+      ...prev,
+      workExperiences: newWorkExperiences
+    }));
+  };
+
+  const addWorkExperience = () => {
+    setFormData(prev => ({
+      ...prev,
+      workExperiences: [...prev.workExperiences, { companyName: "", position: "", duration: "" }]
+    }));
+  };
+
+  const removeWorkExperience = (index: number) => {
+    if (formData.workExperiences.length > 1) {
+      const newWorkExperiences = formData.workExperiences.filter((_, i) => i !== index);
+      setFormData(prev => ({
+        ...prev,
+        workExperiences: newWorkExperiences
+      }));
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -212,6 +239,13 @@ export default function CaptureRecord() {
     if (!formData.department) newErrors.department = "Department is required";
     if (!formData.experienceInSimilarRole.trim()) newErrors.experienceInSimilarRole = "Experience in similar role is required";
     if (!formData.experienceWithITSMTools.trim()) newErrors.experienceWithITSMTools = "Experience with ITSM tools is required";
+    
+    // Validate work experiences
+    formData.workExperiences.forEach((exp, index) => {
+      if (!exp.companyName.trim()) newErrors[`workExperience${index}Company`] = "Company name is required";
+      if (!exp.position.trim()) newErrors[`workExperience${index}Position`] = "Position is required";
+      if (!exp.duration.trim()) newErrors[`workExperience${index}Duration`] = "Duration is required";
+    });
 
     // Validate email format
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -560,6 +594,93 @@ export default function CaptureRecord() {
                   {errors.experienceWithITSMTools && <p className="text-red-500 text-sm mt-1">{errors.experienceWithITSMTools}</p>}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Summary of Work Experience */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
+                Summary of Work Experience
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">
+                Add your work history timeline from most recent to earliest experience.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {formData.workExperiences.map((experience, index) => (
+                <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="font-medium text-gray-800">
+                      Work Experience {index + 1}
+                      {index === 0 && " (Most Recent)"}
+                    </h4>
+                    {formData.workExperiences.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeWorkExperience(index)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor={`company-${index}`}>Company Name *</Label>
+                      <Input
+                        id={`company-${index}`}
+                        placeholder="Enter company name"
+                        value={experience.companyName}
+                        onChange={(e) => handleWorkExperienceChange(index, "companyName", e.target.value)}
+                        className={errors[`workExperience${index}Company`] ? "border-red-500" : ""}
+                      />
+                      {errors[`workExperience${index}Company`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Company`]}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor={`position-${index}`}>Position *</Label>
+                      <Input
+                        id={`position-${index}`}
+                        placeholder="Enter position/role"
+                        value={experience.position}
+                        onChange={(e) => handleWorkExperienceChange(index, "position", e.target.value)}
+                        className={errors[`workExperience${index}Position`] ? "border-red-500" : ""}
+                      />
+                      {errors[`workExperience${index}Position`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Position`]}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor={`duration-${index}`}>Duration *</Label>
+                      <Input
+                        id={`duration-${index}`}
+                        placeholder="e.g., Jan 2020 - Present"
+                        value={experience.duration}
+                        onChange={(e) => handleWorkExperienceChange(index, "duration", e.target.value)}
+                        className={errors[`workExperience${index}Duration`] ? "border-red-500" : ""}
+                      />
+                      {errors[`workExperience${index}Duration`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Duration`]}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addWorkExperience}
+                className="w-full"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Another Work Experience
+              </Button>
             </CardContent>
           </Card>
 
