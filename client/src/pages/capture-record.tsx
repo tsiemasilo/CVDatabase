@@ -46,7 +46,7 @@ export default function CaptureRecord() {
     otherQualifications: [{ name: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
-    workExperiences: [{ companyName: "", position: "", duration: "" }]
+    workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -200,7 +200,7 @@ export default function CaptureRecord() {
     }
   };
 
-  const handleWorkExperienceChange = (index: number, field: string, value: string) => {
+  const handleWorkExperienceChange = (index: number, field: string, value: string | boolean) => {
     const newWorkExperiences = [...formData.workExperiences];
     newWorkExperiences[index] = { ...newWorkExperiences[index], [field]: value };
     setFormData(prev => ({
@@ -212,7 +212,7 @@ export default function CaptureRecord() {
   const addWorkExperience = () => {
     setFormData(prev => ({
       ...prev,
-      workExperiences: [...prev.workExperiences, { companyName: "", position: "", duration: "" }]
+      workExperiences: [...prev.workExperiences, { companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
     }));
   };
 
@@ -283,7 +283,8 @@ export default function CaptureRecord() {
     formData.workExperiences.forEach((exp, index) => {
       if (!exp.companyName.trim()) newErrors[`workExperience${index}Company`] = "Company name is required";
       if (!exp.position.trim()) newErrors[`workExperience${index}Position`] = "Position is required";
-      if (!exp.duration.trim()) newErrors[`workExperience${index}Duration`] = "Duration is required";
+      if (!exp.startDate.trim()) newErrors[`workExperience${index}StartDate`] = "Start date is required";
+      if (!exp.isCurrentRole && !exp.endDate.trim()) newErrors[`workExperience${index}EndDate`] = "End date is required";
     });
 
     // Validate email format
@@ -667,7 +668,7 @@ export default function CaptureRecord() {
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                       <Label htmlFor={`company-${index}`}>Company Name *</Label>
                       <Input
@@ -694,18 +695,52 @@ export default function CaptureRecord() {
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Position`]}</p>
                       )}
                     </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor={`duration-${index}`}>Duration *</Label>
+                      <Label htmlFor={`startDate-${index}`}>Start Date *</Label>
                       <Input
-                        id={`duration-${index}`}
-                        placeholder="e.g., Jan 2020 - Present"
-                        value={experience.duration}
-                        onChange={(e) => handleWorkExperienceChange(index, "duration", e.target.value)}
-                        className={errors[`workExperience${index}Duration`] ? "border-red-500" : ""}
+                        id={`startDate-${index}`}
+                        type="month"
+                        value={experience.startDate}
+                        onChange={(e) => handleWorkExperienceChange(index, "startDate", e.target.value)}
+                        className={errors[`workExperience${index}StartDate`] ? "border-red-500" : ""}
                       />
-                      {errors[`workExperience${index}Duration`] && (
-                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Duration`]}</p>
+                      {errors[`workExperience${index}StartDate`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}StartDate`]}</p>
                       )}
+                    </div>
+                    <div>
+                      <Label htmlFor={`endDate-${index}`}>End Date {!experience.isCurrentRole ? "*" : ""}</Label>
+                      <Input
+                        id={`endDate-${index}`}
+                        type="month"
+                        value={experience.endDate}
+                        onChange={(e) => handleWorkExperienceChange(index, "endDate", e.target.value)}
+                        disabled={experience.isCurrentRole}
+                        className={errors[`workExperience${index}EndDate`] ? "border-red-500" : ""}
+                      />
+                      {errors[`workExperience${index}EndDate`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}EndDate`]}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2 mt-6">
+                      <input
+                        type="checkbox"
+                        id={`currentRole-${index}`}
+                        checked={experience.isCurrentRole}
+                        onChange={(e) => {
+                          handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
+                          if (e.target.checked) {
+                            handleWorkExperienceChange(index, "endDate", "");
+                          }
+                        }}
+                        className="rounded"
+                      />
+                      <Label htmlFor={`currentRole-${index}`} className="text-sm">
+                        Current Role
+                      </Label>
                     </div>
                   </div>
                 </div>
@@ -766,7 +801,7 @@ export default function CaptureRecord() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Primary Qualification */}
-              <div className="border rounded-lg p-4 bg-blue-50">
+              <div className="border rounded-lg p-4 bg-gray-50">
                 <h4 className="font-medium text-gray-800 mb-3">Primary Qualification</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
