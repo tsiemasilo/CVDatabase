@@ -125,6 +125,9 @@ Changelog:
 - June 25, 2025. Added functionality to create new departments, disciplines, domains, categories, and roles through the Positions|Roles interface with proper hierarchical relationships
 - June 27, 2025. Implemented K-level filtering system for SAP department with dropdown appearing when SAP is selected
 - June 27, 2025. Restructured SAP roles into authentic K1-K5 knowledge levels based on experience: K1 (0-1 year entry-level), K2 (1-2 years junior), K3 (2-4 years independent), K4 (5-8+ years senior lead), K5 (10+ years master architect)
+- July 7, 2025. Enhanced checkbox styling in capture record form with custom visual feedback - replaced emoji indicators with professional checkbox design featuring blue background and white checkmark
+- July 7, 2025. Fixed "All Status" filter functionality to properly display all records (active, pending, archived) when selected - removed filter requirement for showing records
+- July 7, 2025. Implemented creative CV viewing feature - clicking eye icon now displays a professional CV template styled for Alteram Solutions with comprehensive candidate information including work experience, qualifications, languages, and duration calculations
 ```
 
 ## User Preferences

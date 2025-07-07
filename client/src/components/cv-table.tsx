@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import CVTemplateModal from "./cv-template-modal";
 
 interface CVTableProps {
   records: CVRecord[];
@@ -390,63 +391,11 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
         </div>
       </div>
 
-      {/* View Record Modal */}
-      <Dialog open={viewingRecord !== null} onOpenChange={() => setViewingRecord(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>CV Record Details</DialogTitle>
-          </DialogHeader>
-          {viewingRecord && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.name}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.email}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.phone || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Position</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.position || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Department</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.department || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Experience</label>
-                  <p className="mt-1 text-sm text-gray-900">{viewingRecord.experience || 0} years</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Status</label>
-                  <p className="mt-1 text-sm text-gray-900 capitalize">{viewingRecord.status}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Submitted</label>
-                  <p className="mt-1 text-sm text-gray-900">
-                    {new Date(viewingRecord.submittedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Qualifications</label>
-                <p className="mt-1 text-sm text-gray-900">{viewingRecord.qualifications || 'No qualifications listed'}</p>
-              </div>
-              <div className="flex justify-end">
-                <Button variant="outline" onClick={() => setViewingRecord(null)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* CV Template Modal */}
+      <CVTemplateModal 
+        record={viewingRecord} 
+        onClose={() => setViewingRecord(null)} 
+      />
 
       {/* Edit Record Modal */}
       <Dialog open={editingRecord !== null} onOpenChange={() => setEditingRecord(null)}>
