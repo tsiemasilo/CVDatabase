@@ -184,7 +184,127 @@ export default function CVDatabase() {
 
           {/* Filter Content */}
           <div className="p-6">
-            {/* This section is empty - ready for new filter content */}
+            {/* CV Database Management Table */}
+            <div className="bg-white">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">CV Database Management</h3>
+                  <p className="text-sm text-gray-500 mt-1">Showing {cvRecords.length} of {allCVRecords.length} records</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Button 
+                    onClick={handleExport}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-medium"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export CSV
+                  </Button>
+                  <Button 
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New CV
+                  </Button>
+                </div>
+              </div>
+
+              {/* Search and Filter Row */}
+              <div className="flex items-center space-x-4 mb-6">
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="Search by name, email, phone, role..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-full"
+                  />
+                </div>
+
+                {/* Status Filter */}
+                <div className="w-40">
+                  <Select value={statusFilter || "all"} onValueChange={(value) => setStatusFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger className="border-orange-300 focus:border-orange-500 focus:ring-orange-500">
+                      <SelectValue placeholder="All Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Department Filter */}
+                <div className="w-48">
+                  <Select value={departmentFilter || "all"} onValueChange={(value) => setDepartmentFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Departments" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Departments</SelectItem>
+                      <SelectItem value="SAP">SAP</SelectItem>
+                      <SelectItem value="ICT">ICT</SelectItem>
+                      <SelectItem value="HR">HR</SelectItem>
+                      <SelectItem value="PROJECT MANAGEMENT">PROJECT MANAGEMENT</SelectItem>
+                      <SelectItem value="SERVICE DESK">SERVICE DESK</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Role Filter */}
+                <div className="w-48">
+                  <Select value={roleFilter || "all"} onValueChange={(value) => setRoleFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Roles" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="Developer">Developer</SelectItem>
+                      <SelectItem value="SAP Technical Consultant">SAP Technical Consultant</SelectItem>
+                      <SelectItem value="SAP Functional Consultant">SAP Functional Consultant</SelectItem>
+                      <SelectItem value="Technical Support Specialist">Technical Support Specialist</SelectItem>
+                      <SelectItem value="System Administrator">System Administrator</SelectItem>
+                      <SelectItem value="Network Engineer">Network Engineer</SelectItem>
+                      <SelectItem value="HR Specialist">HR Specialist</SelectItem>
+                      <SelectItem value="Recruitment Specialist">Recruitment Specialist</SelectItem>
+                      <SelectItem value="Training Coordinator">Training Coordinator</SelectItem>
+                      <SelectItem value="Project Manager">Project Manager</SelectItem>
+                      <SelectItem value="Project Coordinator">Project Coordinator</SelectItem>
+                      <SelectItem value="Business Analyst">Business Analyst</SelectItem>
+                      <SelectItem value="Help Desk Technician">Help Desk Technician</SelectItem>
+                      <SelectItem value="IT Support Specialist">IT Support Specialist</SelectItem>
+                      <SelectItem value="Service Desk Manager">Service Desk Manager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* K-Level Filter */}
+                <div className="w-40">
+                  <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All K-Levels" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All K-Levels</SelectItem>
+                      <SelectItem value="K1">K1</SelectItem>
+                      <SelectItem value="K2">K2</SelectItem>
+                      <SelectItem value="K3">K3</SelectItem>
+                      <SelectItem value="K4">K4</SelectItem>
+                      <SelectItem value="K5">K5</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -192,6 +312,15 @@ export default function CVDatabase() {
           records={cvRecords} 
           isLoading={isLoading} 
           onRefetch={refetch}
+        />
+
+        <AddCVModal 
+          open={isAddModalOpen}
+          onOpenChange={setIsAddModalOpen}
+          onSuccess={() => {
+            setIsAddModalOpen(false);
+            refetch();
+          }}
         />
       </main>
     </div>
