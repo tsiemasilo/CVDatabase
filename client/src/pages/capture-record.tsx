@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { DEPARTMENTS, ROLES, LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
+
+// Interface matching the positions-roles page structure
+interface DepartmentRole {
+  id: number;
+  department: string;
+  role: string;
+  description: string;
+  kLevel: string;
+}
 
 export default function CaptureRecord() {
   const { toast } = useToast();
@@ -34,19 +43,51 @@ export default function CaptureRecord() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [departmentRoles, setDepartmentRoles] = useState<DepartmentRole[]>([]);
 
-  // Get unique role names for the selected department (simplified for new structure)
+  // Load departments and roles from localStorage (same source as positions|roles page)
+  useEffect(() => {
+    const savedRecords = localStorage.getItem('departmentRoles');
+    if (savedRecords) {
+      try {
+        const parsed = JSON.parse(savedRecords);
+        setDepartmentRoles(parsed);
+      } catch (error) {
+        console.error('Error loading department roles:', error);
+        setDepartmentRoles([]);
+      }
+    }
+  }, []);
+
+  // Get unique departments from the positions|roles data
+  const getAvailableDepartments = () => {
+    if (departmentRoles.length === 0) {
+      // Fallback to default departments if no data is loaded yet
+      return ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
+    }
+    const uniqueDepartments = [...new Set(departmentRoles.map(role => role.department))];
+    return uniqueDepartments.sort();
+  };
+
+  // Get roles for the selected department from the positions|roles data
   const getAvailableRoles = () => {
     if (!formData.department) return [];
-    // For now, return sample roles based on department
-    const rolesByDept: Record<string, string[]> = {
-      "SAP": ["SAP Consultant", "ABAP Developer", "SAP Basis Administrator"],
-      "ICT": ["Network Engineer", "Software Developer", "System Administrator"],
-      "HR": ["HR Specialist", "Recruiter", "Training Coordinator"],
-      "PROJECT MANAGEMENT": ["Project Manager", "Scrum Master", "Business Analyst"],
-      "SERVICE DESK": ["Level 1 Support", "Level 2 Support", "Service Manager"]
-    };
-    return rolesByDept[formData.department] || [];
+    if (departmentRoles.length === 0) {
+      // Fallback roles if no data is loaded yet
+      const fallbackRoles: Record<string, string[]> = {
+        "SAP": ["SAP ABAP Developer", "SAP Functional Consultant", "SAP Technical Consultant"],
+        "ICT": ["IT Support Technician", "Network Administrator", "Systems Analyst"],
+        "HR": ["HR Assistant", "Recruitment Coordinator", "HR Business Partner"],
+        "DEVELOPMENT": ["Junior Developer", "Software Developer", "Senior Developer"],
+        "Project Management": ["Project Coordinator", "Project Officer", "Project Manager"],
+        "Service Desk": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
+      };
+      return fallbackRoles[formData.department] || [];
+    }
+    return departmentRoles
+      .filter(role => role.department === formData.department)
+      .map(role => role.role)
+      .sort();
   };
 
   // Get qualification names for the selected qualification type
@@ -306,6 +347,10 @@ export default function CaptureRecord() {
               <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
                 Position | Role & Department
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">
+                Departments and roles are synchronized with the Positions | Roles section. 
+                Visit the Positions | Roles tab to add or modify available options.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -323,9 +368,9 @@ export default function CaptureRecord() {
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
                     <SelectContent>
-                      {DEPARTMENTS.map((dept) => (
-                        <SelectItem key={dept.id} value={dept.name}>
-                          {dept.name}
+                      {getAvailableDepartments().map((dept) => (
+                        <SelectItem key={dept} value={dept}>
+                          {dept}
                         </SelectItem>
                       ))}
                     </SelectContent>
