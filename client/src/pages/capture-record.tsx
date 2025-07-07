@@ -90,6 +90,27 @@ export default function CaptureRecord() {
       .sort();
   };
 
+  // Get K-level for the selected role from the positions|roles data
+  const getKLevelForRole = (roleName: string) => {
+    if (!roleName || departmentRoles.length === 0) return "";
+    const roleData = departmentRoles.find(role => role.role === roleName && role.department === formData.department);
+    return roleData?.kLevel || "";
+  };
+
+  // Get available K-levels for the selected department
+  const getAvailableKLevels = () => {
+    if (!formData.department) return [];
+    if (departmentRoles.length === 0) {
+      return ["K1", "K2", "K3", "K4", "K5"]; // Fallback
+    }
+    const departmentKLevels = departmentRoles
+      .filter(role => role.department === formData.department)
+      .map(role => role.kLevel)
+      .filter((kLevel, index, self) => self.indexOf(kLevel) === index) // Remove duplicates
+      .sort();
+    return departmentKLevels;
+  };
+
   // Get qualification names for the selected qualification type
   const getAvailableQualificationNames = () => {
     if (!formData.qualificationType) return [];
@@ -98,10 +119,22 @@ export default function CaptureRecord() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [field]: value
+      };
+      
+      // Auto-set K-level when role is selected
+      if (field === "position" && value) {
+        const kLevel = getKLevelForRole(value);
+        if (kLevel) {
+          updated.sapKLevel = kLevel;
+        }
+      }
+      
+      return updated;
+    });
     
     // Clear error when user starts typing
     if (errors[field]) {
@@ -360,8 +393,13 @@ export default function CaptureRecord() {
                     value={formData.department}
                     onValueChange={(value) => {
                       handleInputChange("department", value);
-                      // Clear position when department changes
-                      handleInputChange("position", "");
+                      // Clear position and K-level when department changes
+                      setFormData(prev => ({
+                        ...prev,
+                        department: value,
+                        position: "",
+                        sapKLevel: ""
+                      }));
                     }}
                   >
                     <SelectTrigger className={errors.department ? "border-red-500" : ""}>
@@ -413,22 +451,28 @@ export default function CaptureRecord() {
                   {errors.yearsOfExperience && <p className="text-red-500 text-sm mt-1">{errors.yearsOfExperience}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="sapKLevel">SAP K Level</Label>
+                  <Label htmlFor="sapKLevel">K-Level (Auto-populated from role)</Label>
                   <Select
                     value={formData.sapKLevel}
                     onValueChange={(value) => handleInputChange("sapKLevel", value)}
+                    disabled={!formData.position}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select SAP K Level" />
+                    <SelectTrigger className={formData.position && formData.sapKLevel ? "bg-green-50" : ""}>
+                      <SelectValue placeholder={formData.position ? "K-Level auto-set from role" : "Select role first"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {SAP_K_LEVELS.map((level) => (
+                      {getAvailableKLevels().map((level) => (
                         <SelectItem key={level} value={level}>
                           {level}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.position && formData.sapKLevel && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ✓ K-Level {formData.sapKLevel} automatically set for {formData.position}
+                    </p>
+                  )}
                 </div>
               </div>
             </CardContent>
