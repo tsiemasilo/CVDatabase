@@ -16,6 +16,7 @@ interface DepartmentRole {
   id: number;
   department: string;
   role: string;
+  roleTitle: string;
   description: string;
   kLevel: string;
 }
@@ -36,6 +37,7 @@ export default function CaptureRecord() {
     contactNumber: "",
     email: "",
     position: "",
+    roleTitle: "",
     department: "",
     languages: [""],
     qualificationType: "",
@@ -87,6 +89,17 @@ export default function CaptureRecord() {
     return departmentRoles
       .filter(role => role.department === formData.department)
       .map(role => role.role)
+      .filter((role, index, self) => self.indexOf(role) === index) // Remove duplicates
+      .sort();
+  };
+
+  // Get role titles for the selected role from the positions|roles data
+  const getAvailableRoleTitles = () => {
+    if (!formData.position) return [];
+    if (departmentRoles.length === 0) return [];
+    return departmentRoles
+      .filter(role => role.role === formData.position && role.department === formData.department)
+      .map(role => role.roleTitle)
       .sort();
   };
 
@@ -125,12 +138,14 @@ export default function CaptureRecord() {
         [field]: value
       };
       
-      // Auto-set K-level when role is selected
+      // Auto-set K-level when role is selected and clear role title
       if (field === "position" && value) {
         const kLevel = getKLevelForRole(value);
         if (kLevel) {
           updated.sapKLevel = kLevel;
         }
+        // Clear role title when role changes
+        updated.roleTitle = "";
       }
       
       return updated;
@@ -183,6 +198,7 @@ export default function CaptureRecord() {
     if (!formData.contactNumber.trim()) newErrors.contactNumber = "Contact number is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     if (!formData.position.trim()) newErrors.position = "Position/Role is required";
+    if (!formData.roleTitle.trim()) newErrors.roleTitle = "Role title is required";
     if (!formData.department) newErrors.department = "Department is required";
 
     // Validate email format
@@ -392,12 +408,12 @@ export default function CaptureRecord() {
                   <Select
                     value={formData.department}
                     onValueChange={(value) => {
-                      handleInputChange("department", value);
-                      // Clear position and K-level when department changes
+                      // Clear position, role title, and K-level when department changes
                       setFormData(prev => ({
                         ...prev,
                         department: value,
                         position: "",
+                        roleTitle: "",
                         sapKLevel: ""
                       }));
                     }}
@@ -435,6 +451,30 @@ export default function CaptureRecord() {
                   </Select>
                   {errors.position && <p className="text-red-500 text-sm mt-1">{errors.position}</p>}
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="roleTitle">Role Title *</Label>
+                  <Select
+                    value={formData.roleTitle}
+                    onValueChange={(value) => handleInputChange("roleTitle", value)}
+                    disabled={!formData.position}
+                  >
+                    <SelectTrigger className={errors.roleTitle ? "border-red-500" : ""}>
+                      <SelectValue placeholder={formData.position ? "Select role title" : "Select role first"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAvailableRoleTitles().map((title) => (
+                        <SelectItem key={title} value={title}>
+                          {title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.roleTitle && <p className="text-red-500 text-sm mt-1">{errors.roleTitle}</p>}
+                </div>
+                <div></div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

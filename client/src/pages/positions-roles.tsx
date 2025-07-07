@@ -517,7 +517,7 @@ export default function PositionsRoles() {
                       <Badge variant="outline">{record.department}</Badge>
                     </TableCell>
                     <TableCell className="font-medium">{record.role}</TableCell>
-                    <TableCell className="text-blue-600 font-medium">{record.roleTitle}</TableCell>
+                    <TableCell className="text-black font-medium">{record.roleTitle}</TableCell>
                     <TableCell>{record.description}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">{record.kLevel}</Badge>
