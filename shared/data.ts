@@ -18,7 +18,8 @@ export const DEPARTMENTS: Department[] = [
   { id: 2, name: "Information and Communications Technology", description: "Information and Communications Technology services" },
   { id: 3, name: "Human Resources", description: "Human Resources and people management" },
   { id: 4, name: "Project Management", description: "Project planning, execution, and delivery" },
-  { id: 5, name: "Service Desk", description: "IT support and helpdesk services" }
+  { id: 5, name: "Service Desk", description: "IT support and helpdesk services" },
+  { id: 6, name: "Development", description: "Software development and programming services" }
 ];
 
 // Export interfaces for use in other files

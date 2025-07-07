@@ -31,6 +31,72 @@ export default function CVDatabase() {
   const [qualification1Filter, setQualification1Filter] = useState("");
   const [qualification2Filter, setQualification2Filter] = useState("");
 
+  // Get roles filtered by department
+  const getFilteredRoles = () => {
+    if (!departmentFilter) return ROLES;
+    
+    // Map department names to their corresponding roles
+    const departmentRoleMap: { [key: string]: string[] } = {
+      "SAP": ROLES.filter(role => role.kLevel).map(role => role.name), // SAP roles have K-levels
+      "Information and Communications Technology": [
+        "Network Infrastructure Specialist",
+        "Software Developer", 
+        "Cybersecurity Analyst",
+        "Database Administrator",
+        "System Administrator",
+        "Technical Support Specialist"
+      ],
+      "Human Resources": [
+        "HR Specialist",
+        "Recruitment Specialist", 
+        "Training Coordinator",
+        "Employee Relations Specialist",
+        "Payroll Administrator",
+        "Benefits Coordinator"
+      ],
+      "Project Management": [
+        "Project Manager",
+        "Project Coordinator", 
+        "Business Analyst",
+        "Program Manager",
+        "Scrum Master",
+        "Portfolio Manager"
+      ],
+      "Service Desk": [
+        "Help Desk Technician",
+        "IT Support Specialist",
+        "Service Desk Manager",
+        "Technical Support Lead",
+        "IT Operations Specialist"
+      ],
+      "Development": [
+        "Full Stack Developer",
+        "Frontend Developer",
+        "Backend Developer",
+        "Mobile Developer",
+        "DevOps Engineer",
+        "Software Architect"
+      ]
+    };
+    
+    const roleNames = departmentRoleMap[departmentFilter] || [];
+    return ROLES.filter(role => roleNames.includes(role.name));
+  };
+
+  // Get K-levels filtered by department
+  const getFilteredKLevels = () => {
+    if (departmentFilter === "SAP") {
+      return [
+        "Knowledge Level One",
+        "Knowledge Level Two", 
+        "Knowledge Level Three",
+        "Knowledge Level Four",
+        "Knowledge Level Five"
+      ];
+    }
+    return []; // Only SAP has K-levels
+  };
+
   const { data: allCVRecords = [], isLoading, refetch } = useQuery<CVRecord[]>({
     queryKey: ["/api/cv-records"],
     queryFn: async () => {
@@ -160,6 +226,13 @@ export default function CVDatabase() {
     setQualification2Filter("");
   };
 
+  // Handle department change - reset role and K-level filters
+  const handleDepartmentChange = (value: string) => {
+    setDepartmentFilter(value === "all" ? "" : value);
+    setRoleFilter(""); // Reset role filter when department changes
+    setSapLevelFilter(""); // Reset K-level filter when department changes
+  };
+
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -234,7 +307,7 @@ export default function CVDatabase() {
 
                 {/* Department Filter */}
                 <div className="w-48">
-                  <Select value={departmentFilter || "all"} onValueChange={(value) => setDepartmentFilter(value === "all" ? "" : value)}>
+                  <Select value={departmentFilter || "all"} onValueChange={handleDepartmentChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
@@ -255,29 +328,29 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Roles</SelectItem>
-                      {ROLES.map((role) => (
+                      {getFilteredRoles().map((role) => (
                         <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {/* K-Level Filter */}
-                <div className="w-40">
-                  <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All K-Levels" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All K-Levels</SelectItem>
-                      <SelectItem value="Knowledge Level One">K1</SelectItem>
-                      <SelectItem value="Knowledge Level Two">K2</SelectItem>
-                      <SelectItem value="Knowledge Level Three">K3</SelectItem>
-                      <SelectItem value="Knowledge Level Four">K4</SelectItem>
-                      <SelectItem value="Knowledge Level Five">K5</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* K-Level Filter - Only show when SAP is selected */}
+                {departmentFilter === "SAP" && (
+                  <div className="w-40">
+                    <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All K-Levels" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All K-Levels</SelectItem>
+                        {getFilteredKLevels().map((level, index) => (
+                          <SelectItem key={level} value={level}>K{index + 1}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </div>
           </div>
