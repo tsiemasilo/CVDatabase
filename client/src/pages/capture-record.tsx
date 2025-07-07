@@ -867,6 +867,9 @@ export default function CaptureRecord() {
                     </div>
                     <div className="flex items-center space-x-3 mt-6">
                       <label className="flex items-center space-x-3 cursor-pointer">
+                        <span className="text-sm font-medium text-gray-700 select-none">
+                          Current Role
+                        </span>
                         <div className="relative">
                           <input 
                             type="checkbox" 
@@ -899,9 +902,6 @@ export default function CaptureRecord() {
                             )}
                           </div>
                         </div>
-                        <span className="text-sm font-medium text-gray-700 select-none">
-                          Current Role
-                        </span>
                       </label>
                     </div>
                   </div>
