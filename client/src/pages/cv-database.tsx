@@ -108,13 +108,14 @@ export default function CVDatabase() {
 
   // Apply all filters to the data
   const cvRecords = allCVRecords.filter(record => {
-    // If no filters are applied, return empty results
-    const hasFilters = searchTerm || statusFilter || departmentFilter || nameFilter || surnameFilter || 
+    // Show all records when only "All Status" is selected or no filters applied
+    const hasSpecificFilters = searchTerm || departmentFilter || nameFilter || surnameFilter || 
                       idPassportFilter || languageFilter || roleFilter || roleTitleFilter || sapLevelFilter ||
                       qualificationType1Filter || qualificationType2Filter || qualification1Filter || qualification2Filter;
     
-    if (!hasFilters) {
-      return false; // Return empty results when no filters are applied
+    // If no specific filters are applied (including when "All Status" is selected), show all records
+    if (!hasSpecificFilters && !statusFilter) {
+      return true; // Show all records
     }
 
     // Search term filter
