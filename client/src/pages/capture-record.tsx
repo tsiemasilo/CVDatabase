@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -763,17 +762,19 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     <div className="flex items-center space-x-2 mt-6">
-                      <Checkbox
+                      <input
+                        type="checkbox"
                         id={`currentRole-${index}`}
                         checked={experience.isCurrentRole}
-                        onCheckedChange={(checked) => {
-                          handleWorkExperienceChange(index, "isCurrentRole", checked);
-                          if (checked) {
+                        onChange={(e) => {
+                          handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
+                          if (e.target.checked) {
                             handleWorkExperienceChange(index, "endDate", "");
                           }
                         }}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer accent-blue-600"
                       />
-                      <Label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer">
+                      <Label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer select-none">
                         Current Role
                       </Label>
                     </div>
