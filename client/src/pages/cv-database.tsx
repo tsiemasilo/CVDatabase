@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Download, X } from "lucide-react";
-import { DEPARTMENTS, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS, SAP_K_LEVELS } from "@shared/data";
+import { DEPARTMENTS, DISCIPLINES, DOMAINS, CATEGORIES, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS, SAP_K_LEVELS } from "@shared/data";
 import { useAppContext } from "@/contexts/AppContext";
 
 export default function CVDatabase() {
@@ -35,64 +35,32 @@ export default function CVDatabase() {
   const getFilteredRoles = () => {
     if (!departmentFilter) return ROLES;
     
-    // Map department names to their corresponding roles
-    const departmentRoleMap: { [key: string]: string[] } = {
-      "SAP": ROLES.filter(role => role.kLevel).map(role => role.name), // SAP roles have K-levels
-      "Information and Communications Technology": [
-        "Network Infrastructure Specialist",
-        "Software Developer", 
-        "Cybersecurity Analyst",
-        "Database Administrator",
-        "System Administrator",
-        "Technical Support Specialist"
-      ],
-      "Human Resources": [
-        "HR Specialist",
-        "Recruitment Specialist", 
-        "Training Coordinator",
-        "Employee Relations Specialist",
-        "Payroll Administrator",
-        "Benefits Coordinator"
-      ],
-      "Project Management": [
-        "Project Manager",
-        "Project Coordinator", 
-        "Business Analyst",
-        "Program Manager",
-        "Scrum Master",
-        "Portfolio Manager"
-      ],
-      "Service Desk": [
-        "Help Desk Technician",
-        "IT Support Specialist",
-        "Service Desk Manager",
-        "Technical Support Lead",
-        "IT Operations Specialist"
-      ],
-      "Development": [
-        "Full Stack Developer",
-        "Frontend Developer",
-        "Backend Developer",
-        "Mobile Developer",
-        "DevOps Engineer",
-        "Software Architect"
-      ]
-    };
+    // Get categories that belong to the selected department
+    const departmentData = DEPARTMENTS.find(dept => dept.name === departmentFilter);
+    if (!departmentData) return [];
+
+    // Get disciplines for this department
+    const departmentDisciplines = DISCIPLINES.filter(disc => disc.departmentId === departmentData.id);
     
-    const roleNames = departmentRoleMap[departmentFilter] || [];
-    return ROLES.filter(role => roleNames.includes(role.name));
+    // Get domains for these disciplines
+    const disciplineIds = departmentDisciplines.map(disc => disc.id);
+    const departmentDomains = DOMAINS.filter(domain => disciplineIds.includes(domain.disciplineId));
+    
+    // Get categories for these domains
+    const domainIds = departmentDomains.map(domain => domain.id);
+    const departmentCategories = CATEGORIES.filter(cat => domainIds.includes(cat.domainId));
+    
+    // Get roles for these categories
+    const categoryIds = departmentCategories.map(cat => cat.id);
+    const departmentRoles = ROLES.filter(role => categoryIds.includes(role.categoryId));
+    
+    return departmentRoles;
   };
 
   // Get K-levels filtered by department
   const getFilteredKLevels = () => {
     if (departmentFilter === "SAP") {
-      return [
-        "Knowledge Level One",
-        "Knowledge Level Two", 
-        "Knowledge Level Three",
-        "Knowledge Level Four",
-        "Knowledge Level Five"
-      ];
+      return SAP_K_LEVELS; // Returns ["K1", "K2", "K3", "K4", "K5"]
     }
     return []; // Only SAP has K-levels
   };
@@ -345,8 +313,8 @@ export default function CVDatabase() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All K-Levels</SelectItem>
-                        {getFilteredKLevels().map((level, index) => (
-                          <SelectItem key={level} value={level}>K{index + 1}</SelectItem>
+                        {getFilteredKLevels().map((level) => (
+                          <SelectItem key={level} value={level}>{level}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
