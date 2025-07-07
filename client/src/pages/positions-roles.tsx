@@ -245,16 +245,34 @@ export default function PositionsRoles() {
   // Load data from localStorage on component mount
   useEffect(() => {
     const savedRecords = localStorage.getItem('departmentRoles');
-    if (savedRecords) {
+    const dataVersion = localStorage.getItem('departmentRolesVersion');
+    const currentVersion = "2.0"; // Updated version for roleTitle feature
+    
+    if (savedRecords && dataVersion === currentVersion) {
       try {
         const parsedRecords = JSON.parse(savedRecords);
-        setRecords(parsedRecords);
+        // Check if the first record has roleTitle field to ensure data structure compatibility
+        if (parsedRecords.length > 0 && parsedRecords[0].roleTitle !== undefined) {
+          setRecords(parsedRecords);
+        } else {
+          // Old data structure, reload with new structure
+          console.log('Updating to new data structure with role titles');
+          const newRecords = getDefaultRecords();
+          setRecords(newRecords);
+          localStorage.setItem('departmentRolesVersion', currentVersion);
+        }
       } catch (error) {
         console.error('Error parsing saved records:', error);
-        setRecords(getDefaultRecords());
+        const newRecords = getDefaultRecords();
+        setRecords(newRecords);
+        localStorage.setItem('departmentRolesVersion', currentVersion);
       }
     } else {
-      setRecords(getDefaultRecords());
+      // No saved data or version mismatch, use default records
+      console.log('Loading new role title data structure');
+      const newRecords = getDefaultRecords();
+      setRecords(newRecords);
+      localStorage.setItem('departmentRolesVersion', currentVersion);
     }
   }, []);
 
@@ -262,6 +280,7 @@ export default function PositionsRoles() {
   useEffect(() => {
     if (records.length > 0) {
       localStorage.setItem('departmentRoles', JSON.stringify(records));
+      localStorage.setItem('departmentRolesVersion', "2.0");
     }
   }, [records]);
 
