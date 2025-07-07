@@ -28,12 +28,15 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   const [editingRecord, setEditingRecord] = useState<CVRecord | null>(null);
   const [editFormData, setEditFormData] = useState({
     name: "",
+    surname: "",
     email: "",
     phone: "",
     position: "",
+    roleTitle: "",
     department: "",
     qualifications: "",
     experience: "",
+    sapKLevel: "",
     status: "active" as const
   });
   const queryClient = useQueryClient();
@@ -100,12 +103,15 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     setEditingRecord(record);
     setEditFormData({
       name: record.name,
+      surname: record.surname || "",
       email: record.email,
       phone: record.phone || "",
       position: record.position || "",
+      roleTitle: record.roleTitle || "",
       department: record.department || "",
       qualifications: record.qualifications || "",
       experience: record.experience?.toString() || "",
+      sapKLevel: record.sapKLevel || "",
       status: record.status
     });
   };
@@ -182,7 +188,13 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 className="cursor-pointer text-white font-medium py-4 px-6"
                 onClick={() => handleSort('position')}
               >
-                Position
+                Role
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer text-white font-medium py-4 px-6"
+                onClick={() => handleSort('roleTitle')}
+              >
+                Role Title
               </TableHead>
               <TableHead 
                 className="cursor-pointer text-white font-medium py-4 px-6"
@@ -197,13 +209,10 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 Experience
               </TableHead>
               <TableHead className="text-white font-medium py-4 px-6">
+                SAP K-Level
+              </TableHead>
+              <TableHead className="text-white font-medium py-4 px-6">
                 Phone
-              </TableHead>
-              <TableHead className="text-white font-medium py-4 px-6">
-                Email
-              </TableHead>
-              <TableHead className="text-white font-medium py-4 px-6">
-                Qualifications
               </TableHead>
               <TableHead className="text-white font-medium py-4 px-6">
                 Languages
@@ -227,7 +236,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.name.split(' ').slice(1).join(' ') || record.name}</div>
+                  <div className="text-sm text-gray-900">{record.surname || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.department || 'N/A'}</div>
@@ -236,36 +245,21 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   <div className="text-sm text-gray-900">{record.position || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.roleTitle || 'N/A'}</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
                   <Badge className={`${getStatusColor(record.status)} border-0`}>
                     {record.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.experience || 0}</div>
+                  <div className="text-sm text-gray-900">{record.experience || 0} years</div>
+                </TableCell>
+                <TableCell className="py-4 px-6">
+                  <div className="text-sm text-gray-900">{record.sapKLevel || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.phone || 'N/A'}</div>
-                </TableCell>
-                <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.email}</div>
-                </TableCell>
-                <TableCell className="py-4 px-6 max-w-xs">
-                  <div className="flex items-center space-x-2">
-                    <div className="text-sm text-gray-900 truncate flex-1" title={record.qualifications || 'No qualifications listed'}>
-                      {record.qualifications || 'No qualifications listed'}
-                    </div>
-                    {record.cvFile && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(`/api/cv-records/${record.id}/download`, '_blank')}
-                        className="text-blue-600 hover:text-blue-800 flex-shrink-0"
-                        title="Download CV"
-                      >
-                        <Download className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
                 </TableCell>
                 <TableCell className="py-4 px-6 max-w-xs">
                   <div className="text-sm text-gray-900 truncate" title={record.languages || 'No languages listed'}>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Download, X } from "lucide-react";
-import { DEPARTMENTS, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS } from "@shared/data";
+import { DEPARTMENTS, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS, SAP_K_LEVELS } from "@shared/data";
 
 export default function CVDatabase() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +22,7 @@ export default function CVDatabase() {
   const [idPassportFilter, setIdPassportFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  const [roleTitleFilter, setRoleTitleFilter] = useState("");
   const [sapLevelFilter, setSapLevelFilter] = useState("");
   const [qualificationType1Filter, setQualificationType1Filter] = useState("");
   const [qualificationType2Filter, setQualificationType2Filter] = useState("");
@@ -44,9 +45,11 @@ export default function CVDatabase() {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = 
         record.name.toLowerCase().includes(searchLower) ||
+        (record.surname && record.surname.toLowerCase().includes(searchLower)) ||
         record.email.toLowerCase().includes(searchLower) ||
         (record.phone && record.phone.toLowerCase().includes(searchLower)) ||
         (record.position && record.position.toLowerCase().includes(searchLower)) ||
+        (record.roleTitle && record.roleTitle.toLowerCase().includes(searchLower)) ||
         (record.department && record.department.toLowerCase().includes(searchLower)) ||
         (record.qualifications && record.qualifications.toLowerCase().includes(searchLower));
       
@@ -60,20 +63,25 @@ export default function CVDatabase() {
     if (departmentFilter && record.department !== departmentFilter) return false;
 
     // Name filter
-    if (nameFilter) {
-      const nameParts = record.name.split(' ');
-      const firstName = nameParts.slice(1).join(' ') || record.name;
-      if (!firstName.toLowerCase().includes(nameFilter.toLowerCase())) return false;
-    }
+    if (nameFilter && !record.name.toLowerCase().includes(nameFilter.toLowerCase())) return false;
 
     // Surname filter
-    if (surnameFilter) {
-      const surname = record.name.split(' ')[0] || record.name;
-      if (!surname.toLowerCase().includes(surnameFilter.toLowerCase())) return false;
-    }
+    if (surnameFilter && record.surname && !record.surname.toLowerCase().includes(surnameFilter.toLowerCase())) return false;
+
+    // ID/Passport filter
+    if (idPassportFilter && record.idPassport && !record.idPassport.includes(idPassportFilter)) return false;
 
     // Role filter (checking position field)
     if (roleFilter && record.position !== roleFilter) return false;
+
+    // Role Title filter
+    if (roleTitleFilter && record.roleTitle !== roleTitleFilter) return false;
+
+    // SAP K-Level filter
+    if (sapLevelFilter && record.sapKLevel !== sapLevelFilter) return false;
+
+    // Language filter
+    if (languageFilter && (!record.languages || !record.languages.toLowerCase().includes(languageFilter.toLowerCase()))) return false;
 
     // Qualification filters
     if (qualification1Filter || qualification2Filter) {
@@ -93,7 +101,11 @@ export default function CVDatabase() {
       if (departmentFilter) params.append("department", departmentFilter);
       if (nameFilter) params.append("name", nameFilter);
       if (surnameFilter) params.append("surname", surnameFilter);
+      if (idPassportFilter) params.append("idPassport", idPassportFilter);
       if (roleFilter) params.append("role", roleFilter);
+      if (roleTitleFilter) params.append("roleTitle", roleTitleFilter);
+      if (sapLevelFilter) params.append("sapLevel", sapLevelFilter);
+      if (languageFilter) params.append("language", languageFilter);
       if (qualification1Filter) params.append("qualification1", qualification1Filter);
       if (qualification2Filter) params.append("qualification2", qualification2Filter);
       
@@ -123,6 +135,7 @@ export default function CVDatabase() {
     setIdPassportFilter("");
     setLanguageFilter("");
     setRoleFilter("");
+    setRoleTitleFilter("");
     setSapLevelFilter("");
     setQualificationType1Filter("");
     setQualificationType2Filter("");
@@ -187,16 +200,11 @@ export default function CVDatabase() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Departments</SelectItem>
-                    <SelectItem value="Engineering and Technology">Engineering and Technology</SelectItem>
-                    <SelectItem value="Healthcare and Medical Services">Healthcare and Medical Services</SelectItem>
-                    <SelectItem value="Education and Training">Education and Training</SelectItem>
-                    <SelectItem value="Finance and Accounting">Finance and Accounting</SelectItem>
-                    <SelectItem value="Legal and Compliance">Legal and Compliance</SelectItem>
-                    <SelectItem value="Mining and Natural Resources">Mining and Natural Resources</SelectItem>
-                    <SelectItem value="Agriculture and Food Security">Agriculture and Food Security</SelectItem>
-                    <SelectItem value="Human Resources and Development">Human Resources and Development</SelectItem>
-                    <SelectItem value="Communications and Media">Communications and Media</SelectItem>
-                    <SelectItem value="Construction and Built Environment">Construction and Built Environment</SelectItem>
+                    <SelectItem value="SAP">SAP</SelectItem>
+                    <SelectItem value="ICT">ICT</SelectItem>
+                    <SelectItem value="HR">HR</SelectItem>
+                    <SelectItem value="PROJECT MANAGEMENT">PROJECT MANAGEMENT</SelectItem>
+                    <SelectItem value="SERVICE DESK">SERVICE DESK</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -273,52 +281,60 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Roles</SelectItem>
-                      <SelectItem value="Software Engineer">Software Engineer</SelectItem>
-                      <SelectItem value="Civil Engineer">Civil Engineer</SelectItem>
-                      <SelectItem value="Electrical Engineer">Electrical Engineer</SelectItem>
-                      <SelectItem value="Registered Nurse">Registered Nurse</SelectItem>
-                      <SelectItem value="Medical Doctor">Medical Doctor</SelectItem>
-                      <SelectItem value="Physiotherapist">Physiotherapist</SelectItem>
-                      <SelectItem value="Primary School Teacher">Primary School Teacher</SelectItem>
-                      <SelectItem value="Mathematics Teacher">Mathematics Teacher</SelectItem>
-                      <SelectItem value="TVET Lecturer">TVET Lecturer</SelectItem>
-                      <SelectItem value="Chartered Accountant (CA)">Chartered Accountant (CA)</SelectItem>
-                      <SelectItem value="Financial Analyst">Financial Analyst</SelectItem>
-                      <SelectItem value="Tax Practitioner">Tax Practitioner</SelectItem>
-                      <SelectItem value="Attorney">Attorney</SelectItem>
-                      <SelectItem value="Advocate">Advocate</SelectItem>
-                      <SelectItem value="Legal Advisor">Legal Advisor</SelectItem>
-                      <SelectItem value="Mining Engineer">Mining Engineer</SelectItem>
-                      <SelectItem value="Geologist">Geologist</SelectItem>
-                      <SelectItem value="Environmental Officer">Environmental Officer</SelectItem>
-                      <SelectItem value="Agricultural Extension Officer">Agricultural Extension Officer</SelectItem>
-                      <SelectItem value="Veterinarian">Veterinarian</SelectItem>
-                      <SelectItem value="Food Technologist">Food Technologist</SelectItem>
-                      <SelectItem value="HR Manager">HR Manager</SelectItem>
-                      <SelectItem value="Training and Development Specialist">Training and Development Specialist</SelectItem>
-                      <SelectItem value="Skills Development Facilitator">Skills Development Facilitator</SelectItem>
-                      <SelectItem value="Digital Marketing Specialist">Digital Marketing Specialist</SelectItem>
-                      <SelectItem value="Public Relations Officer">Public Relations Officer</SelectItem>
-                      <SelectItem value="Content Creator">Content Creator</SelectItem>
-                      <SelectItem value="Architect">Architect</SelectItem>
-                      <SelectItem value="Quantity Surveyor">Quantity Surveyor</SelectItem>
+                      <SelectItem value="Developer">Developer</SelectItem>
+                      <SelectItem value="SAP Technical Consultant">SAP Technical Consultant</SelectItem>
+                      <SelectItem value="SAP Functional Consultant">SAP Functional Consultant</SelectItem>
+                      <SelectItem value="Technical Support Specialist">Technical Support Specialist</SelectItem>
+                      <SelectItem value="System Administrator">System Administrator</SelectItem>
+                      <SelectItem value="Network Engineer">Network Engineer</SelectItem>
+                      <SelectItem value="HR Specialist">HR Specialist</SelectItem>
+                      <SelectItem value="Recruitment Specialist">Recruitment Specialist</SelectItem>
+                      <SelectItem value="Training Coordinator">Training Coordinator</SelectItem>
                       <SelectItem value="Project Manager">Project Manager</SelectItem>
+                      <SelectItem value="Project Coordinator">Project Coordinator</SelectItem>
+                      <SelectItem value="Business Analyst">Business Analyst</SelectItem>
+                      <SelectItem value="Help Desk Technician">Help Desk Technician</SelectItem>
+                      <SelectItem value="IT Support Specialist">IT Support Specialist</SelectItem>
+                      <SelectItem value="Service Desk Manager">Service Desk Manager</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role Title</label>
+                  <Select value={roleTitleFilter || "all"} onValueChange={(value) => setRoleTitleFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="All Role Titles" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Role Titles</SelectItem>
+                      <SelectItem value="Software Developer">Software Developer</SelectItem>
+                      <SelectItem value="Junior Web Developer">Junior Web Developer</SelectItem>
+                      <SelectItem value="Senior Developer">Senior Developer</SelectItem>
+                      <SelectItem value="SAP ABAP Developer">SAP ABAP Developer</SelectItem>
+                      <SelectItem value="SAP Basis Administrator">SAP Basis Administrator</SelectItem>
+                      <SelectItem value="SAP Functional Consultant - FI">SAP Functional Consultant - FI</SelectItem>
+                      <SelectItem value="Senior Project Manager">Senior Project Manager</SelectItem>
+                      <SelectItem value="IT Project Manager">IT Project Manager</SelectItem>
+                      <SelectItem value="HR Business Partner">HR Business Partner</SelectItem>
+                      <SelectItem value="Talent Acquisition Specialist">Talent Acquisition Specialist</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">SAP K-Level</label>
                   <Select value={sapLevelFilter || "all"} onValueChange={(value) => setSapLevelFilter(value === "all" ? "" : value)}>
                     <SelectTrigger className="bg-white">
                       <SelectValue placeholder="All Levels" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Levels</SelectItem>
-                      <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
-                      <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
-                      <SelectItem value="advanced">Advanced (6-10 years)</SelectItem>
-                      <SelectItem value="expert">Expert (10+ years)</SelectItem>
+                      <SelectItem value="all">All K-Levels</SelectItem>
+                      <SelectItem value="K1">K1 (Entry Level)</SelectItem>
+                      <SelectItem value="K2">K2 (Junior)</SelectItem>
+                      <SelectItem value="K3">K3 (Independent)</SelectItem>
+                      <SelectItem value="K4">K4 (Senior Lead)</SelectItem>
+                      <SelectItem value="K5">K5 (Master Architect)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
