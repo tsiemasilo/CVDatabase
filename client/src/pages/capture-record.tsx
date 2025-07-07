@@ -765,18 +765,20 @@ export default function CaptureRecord() {
                       <input
                         type="checkbox"
                         id={`currentRole-${index}`}
-                        checked={experience.isCurrentRole}
+                        checked={!!experience.isCurrentRole}
                         onChange={(e) => {
+                          console.log('Checkbox changed:', e.target.checked, 'for index:', index);
                           handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
                           if (e.target.checked) {
                             handleWorkExperienceChange(index, "endDate", "");
                           }
                         }}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer accent-blue-600"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                        style={{ accentColor: '#2563eb' }}
                       />
-                      <Label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer select-none">
-                        Current Role
-                      </Label>
+                      <label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer select-none font-medium">
+                        Current Role {experience.isCurrentRole ? '✓' : '○'}
+                      </label>
                     </div>
                   </div>
                 </div>
