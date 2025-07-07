@@ -219,7 +219,7 @@ export default function CaptureRecord() {
       processedValue = formatDateInput(value);
     }
     
-    const newWorkExperiences = [...formData.workExperiences];
+    const newWorkExperiences = [...(formData.workExperiences || [])];
     newWorkExperiences[index] = { ...newWorkExperiences[index], [field]: processedValue };
     setFormData(prev => ({
       ...prev,
@@ -230,13 +230,13 @@ export default function CaptureRecord() {
   const addWorkExperience = () => {
     setFormData(prev => ({
       ...prev,
-      workExperiences: [...prev.workExperiences, { companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
+      workExperiences: [...(prev.workExperiences || []), { companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
     }));
   };
 
   const removeWorkExperience = (index: number) => {
-    if (formData.workExperiences.length > 1) {
-      const newWorkExperiences = formData.workExperiences.filter((_, i) => i !== index);
+    if ((formData.workExperiences || []).length > 1) {
+      const newWorkExperiences = (formData.workExperiences || []).filter((_, i) => i !== index);
       setFormData(prev => ({
         ...prev,
         workExperiences: newWorkExperiences
@@ -298,7 +298,7 @@ export default function CaptureRecord() {
     if (!formData.experienceWithITSMTools.trim()) newErrors.experienceWithITSMTools = "Experience with ITSM tools is required";
     
     // Validate work experiences
-    formData.workExperiences.forEach((exp, index) => {
+    (formData.workExperiences || []).forEach((exp, index) => {
       if (!exp.companyName.trim()) newErrors[`workExperience${index}Company`] = "Company name is required";
       if (!exp.position.trim()) newErrors[`workExperience${index}Position`] = "Position is required";
       if (!exp.startDate.trim()) {
@@ -674,14 +674,14 @@ export default function CaptureRecord() {
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              {formData.workExperiences.map((experience, index) => (
+              {(formData.workExperiences || []).map((experience, index) => (
                 <div key={index} className="border rounded-lg p-4 bg-gray-50">
                   <div className="flex justify-between items-center mb-3">
                     <h4 className="font-medium text-gray-800">
                       Work Experience {index + 1}
                       {index === 0 && " (Most Recent)"}
                     </h4>
-                    {formData.workExperiences.length > 1 && (
+                    {(formData.workExperiences || []).length > 1 && (
                       <Button
                         type="button"
                         variant="outline"
