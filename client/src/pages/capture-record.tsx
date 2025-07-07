@@ -11,6 +11,102 @@ import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
 import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
 
+// Custom checkbox styles
+const checkboxStyles = `
+  .checkbox-container {
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    background: transparent;
+    border-radius: 12px;
+  }
+
+  .ios-checkbox {
+    --checkbox-size: 24px;
+    --checkbox-color: #3b82f6;
+    --checkbox-bg: #dbeafe;
+    --checkbox-border: #93c5fd;
+
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ios-checkbox input {
+    display: none;
+  }
+
+  .checkbox-wrapper {
+    position: relative;
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+  }
+
+  .checkbox-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    border: 2px solid var(--checkbox-border);
+    background: white;
+    transition: all 0.2s ease;
+  }
+
+  .checkbox-icon {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    color: white;
+    transform: scale(0);
+    transition: all 0.2s ease;
+  }
+
+  .check-path {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    transition: stroke-dashoffset 0.3s ease 0.1s;
+  }
+
+  .ios-checkbox input:checked + .checkbox-wrapper .checkbox-bg {
+    background: var(--checkbox-color);
+    border-color: var(--checkbox-color);
+  }
+
+  .ios-checkbox input:checked + .checkbox-wrapper .checkbox-icon {
+    transform: scale(1);
+  }
+
+  .ios-checkbox input:checked + .checkbox-wrapper .check-path {
+    stroke-dashoffset: 0;
+  }
+
+  .ios-checkbox:hover .checkbox-wrapper {
+    transform: scale(1.05);
+  }
+
+  .ios-checkbox:active .checkbox-wrapper {
+    transform: scale(0.95);
+  }
+
+  .ios-checkbox input:focus + .checkbox-wrapper .checkbox-bg {
+    box-shadow: 0 0 0 4px var(--checkbox-bg);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .ios-checkbox input:checked + .checkbox-wrapper {
+    animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+`;
+
 // Interface matching the positions-roles page structure
 interface DepartmentRole {
   id: number;
@@ -24,6 +120,14 @@ interface DepartmentRole {
 export default function CaptureRecord() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Inject custom checkbox styles
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = checkboxStyles;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -761,24 +865,30 @@ export default function CaptureRecord() {
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}EndDate`]}</p>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2 mt-6">
-                      <input
-                        type="checkbox"
-                        id={`currentRole-${index}`}
-                        checked={!!experience.isCurrentRole}
-                        onChange={(e) => {
-                          console.log('Checkbox changed:', e.target.checked, 'for index:', index);
-                          handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
-                          if (e.target.checked) {
-                            handleWorkExperienceChange(index, "endDate", "");
-                          }
-                        }}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
-                        style={{ accentColor: '#2563eb' }}
-                      />
-                      <label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer select-none font-medium">
-                        Current Role {experience.isCurrentRole ? '✓' : '○'}
-                      </label>
+                    <div className="flex items-center space-x-3 mt-6">
+                      <div className="checkbox-container">
+                        <label className="ios-checkbox">
+                          <input 
+                            type="checkbox" 
+                            checked={!!experience.isCurrentRole}
+                            onChange={(e) => {
+                              handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
+                              if (e.target.checked) {
+                                handleWorkExperienceChange(index, "endDate", "");
+                              }
+                            }}
+                          />
+                          <div className="checkbox-wrapper">
+                            <div className="checkbox-bg" />
+                            <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
+                              <path className="check-path" d="M4 12L10 18L20 6" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                        </label>
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 select-none">
+                        Current Role
+                      </span>
                     </div>
                   </div>
                 </div>
