@@ -866,28 +866,41 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     <div className="flex items-center space-x-3 mt-6">
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={experience.isCurrentRole === true}
-                          onChange={(e) => {
-                            console.log('Before change:', experience.isCurrentRole, 'New value:', e.target.checked);
-                            const newWorkExperiences = [...(formData.workExperiences || [])];
-                            newWorkExperiences[index] = { 
-                              ...newWorkExperiences[index], 
-                              isCurrentRole: e.target.checked,
-                              endDate: e.target.checked ? "" : newWorkExperiences[index].endDate
-                            };
-                            setFormData(prev => ({
-                              ...prev,
-                              workExperiences: newWorkExperiences
-                            }));
-                            console.log('After change should be:', e.target.checked);
-                          }}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          Current Role {experience.isCurrentRole ? ' ✅' : ' ⬜'}
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <div className="relative">
+                          <input 
+                            type="checkbox" 
+                            checked={experience.isCurrentRole === true}
+                            onChange={(e) => {
+                              console.log('Before change:', experience.isCurrentRole, 'New value:', e.target.checked);
+                              const newWorkExperiences = [...(formData.workExperiences || [])];
+                              newWorkExperiences[index] = { 
+                                ...newWorkExperiences[index], 
+                                isCurrentRole: e.target.checked,
+                                endDate: e.target.checked ? "" : newWorkExperiences[index].endDate
+                              };
+                              setFormData(prev => ({
+                                ...prev,
+                                workExperiences: newWorkExperiences
+                              }));
+                              console.log('After change should be:', e.target.checked);
+                            }}
+                            className="sr-only"
+                          />
+                          <div className={`w-5 h-5 border-2 rounded transition-all duration-200 flex items-center justify-center ${
+                            experience.isCurrentRole 
+                              ? 'bg-blue-600 border-blue-600' 
+                              : 'bg-white border-gray-300 hover:border-blue-400'
+                          }`}>
+                            {experience.isCurrentRole && (
+                              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 select-none">
+                          Current Role
                         </span>
                       </label>
                     </div>
