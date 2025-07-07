@@ -283,8 +283,16 @@ export default function CaptureRecord() {
     formData.workExperiences.forEach((exp, index) => {
       if (!exp.companyName.trim()) newErrors[`workExperience${index}Company`] = "Company name is required";
       if (!exp.position.trim()) newErrors[`workExperience${index}Position`] = "Position is required";
-      if (!exp.startDate.trim()) newErrors[`workExperience${index}StartDate`] = "Start date is required";
-      if (!exp.isCurrentRole && !exp.endDate.trim()) newErrors[`workExperience${index}EndDate`] = "End date is required";
+      if (!exp.startDate.trim()) {
+        newErrors[`workExperience${index}StartDate`] = "Start date is required";
+      } else if (!/^\d{2}\/\d{4}$/.test(exp.startDate)) {
+        newErrors[`workExperience${index}StartDate`] = "Please use MM/YYYY format (e.g., 01/2020)";
+      }
+      if (!exp.isCurrentRole && !exp.endDate.trim()) {
+        newErrors[`workExperience${index}EndDate`] = "End date is required";
+      } else if (!exp.isCurrentRole && exp.endDate && !/^\d{2}\/\d{4}$/.test(exp.endDate)) {
+        newErrors[`workExperience${index}EndDate`] = "Please use MM/YYYY format (e.g., 12/2023)";
+      }
     });
 
     // Validate email format
@@ -702,14 +710,15 @@ export default function CaptureRecord() {
                       <Label htmlFor={`startDate-${index}`}>Start Date *</Label>
                       <Input
                         id={`startDate-${index}`}
-                        type="month"
+                        type="text"
                         value={experience.startDate}
                         onChange={(e) => handleWorkExperienceChange(index, "startDate", e.target.value)}
                         className={errors[`workExperience${index}StartDate`] ? "border-red-500" : ""}
-                        placeholder="YYYY-MM"
+                        placeholder="MM/YYYY"
+                        maxLength={7}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        Select month and year (e.g., 2020-01 for Jan 2020)
+                        Format: MM/YYYY (e.g., 01/2020 for Jan 2020)
                       </p>
                       {errors[`workExperience${index}StartDate`] && (
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}StartDate`]}</p>
@@ -719,15 +728,16 @@ export default function CaptureRecord() {
                       <Label htmlFor={`endDate-${index}`}>End Date {!experience.isCurrentRole ? "*" : ""}</Label>
                       <Input
                         id={`endDate-${index}`}
-                        type="month"
+                        type="text"
                         value={experience.endDate}
                         onChange={(e) => handleWorkExperienceChange(index, "endDate", e.target.value)}
                         disabled={experience.isCurrentRole}
                         className={errors[`workExperience${index}EndDate`] ? "border-red-500" : ""}
-                        placeholder="YYYY-MM"
+                        placeholder="MM/YYYY"
+                        maxLength={7}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        {experience.isCurrentRole ? "Disabled for current role" : "Select month and year (e.g., 2023-12 for Dec 2023)"}
+                        {experience.isCurrentRole ? "Disabled for current role" : "Format: MM/YYYY (e.g., 12/2023 for Dec 2023)"}
                       </p>
                       {errors[`workExperience${index}EndDate`] && (
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}EndDate`]}</p>
