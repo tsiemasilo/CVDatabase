@@ -103,10 +103,14 @@ export default function CaptureRecord() {
       .sort();
   };
 
-  // Get K-level for the selected role from the positions|roles data
-  const getKLevelForRole = (roleName: string) => {
-    if (!roleName || departmentRoles.length === 0) return "";
-    const roleData = departmentRoles.find(role => role.role === roleName && role.department === formData.department);
+  // Get K-level for the selected role title from the positions|roles data
+  const getKLevelForRoleTitle = (roleTitle: string) => {
+    if (!roleTitle || !formData.position || !formData.department || departmentRoles.length === 0) return "";
+    const roleData = departmentRoles.find(role => 
+      role.roleTitle === roleTitle && 
+      role.role === formData.position && 
+      role.department === formData.department
+    );
     return roleData?.kLevel || "";
   };
 
@@ -138,14 +142,18 @@ export default function CaptureRecord() {
         [field]: value
       };
       
-      // Auto-set K-level when role is selected and clear role title
+      // Clear role title and K-level when role changes
       if (field === "position" && value) {
-        const kLevel = getKLevelForRole(value);
+        updated.roleTitle = "";
+        updated.sapKLevel = "";
+      }
+      
+      // Auto-set K-level when role title is selected
+      if (field === "roleTitle" && value) {
+        const kLevel = getKLevelForRoleTitle(value);
         if (kLevel) {
           updated.sapKLevel = kLevel;
         }
-        // Clear role title when role changes
-        updated.roleTitle = "";
       }
       
       return updated;
@@ -495,10 +503,10 @@ export default function CaptureRecord() {
                   <Select
                     value={formData.sapKLevel}
                     onValueChange={(value) => handleInputChange("sapKLevel", value)}
-                    disabled={!formData.position}
+                    disabled={!formData.roleTitle}
                   >
-                    <SelectTrigger className={formData.position && formData.sapKLevel ? "bg-green-50" : ""}>
-                      <SelectValue placeholder={formData.position ? "K-Level auto-set from role" : "Select role first"} />
+                    <SelectTrigger className={formData.roleTitle && formData.sapKLevel ? "bg-green-50" : ""}>
+                      <SelectValue placeholder={formData.roleTitle ? "K-Level auto-set from role title" : "Select role title first"} />
                     </SelectTrigger>
                     <SelectContent>
                       {getAvailableKLevels().map((level) => (
@@ -508,9 +516,9 @@ export default function CaptureRecord() {
                       ))}
                     </SelectContent>
                   </Select>
-                  {formData.position && formData.sapKLevel && (
+                  {formData.roleTitle && formData.sapKLevel && (
                     <p className="text-xs text-green-600 mt-1">
-                      ✓ K-Level {formData.sapKLevel} automatically set for {formData.position}
+                      ✓ K-Level {formData.sapKLevel} automatically set for {formData.roleTitle}
                     </p>
                   )}
                 </div>
