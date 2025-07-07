@@ -41,7 +41,9 @@ export default function CaptureRecord() {
     department: "",
     languages: [""],
     qualificationType: "",
-    qualificationName: ""
+    qualificationName: "",
+    experienceInSimilarRole: "",
+    experienceWithITSMTools: ""
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -208,6 +210,8 @@ export default function CaptureRecord() {
     if (!formData.position.trim()) newErrors.position = "Position/Role is required";
     if (!formData.roleTitle.trim()) newErrors.roleTitle = "Role title is required";
     if (!formData.department) newErrors.department = "Department is required";
+    if (!formData.experienceInSimilarRole.trim()) newErrors.experienceInSimilarRole = "Experience in similar role is required";
+    if (!formData.experienceWithITSMTools.trim()) newErrors.experienceWithITSMTools = "Experience with ITSM tools is required";
 
     // Validate email format
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -217,6 +221,16 @@ export default function CaptureRecord() {
     // Validate years of experience is a number
     if (formData.yearsOfExperience && isNaN(Number(formData.yearsOfExperience))) {
       newErrors.yearsOfExperience = "Please enter a valid number";
+    }
+    
+    // Validate experience in similar role is a number
+    if (formData.experienceInSimilarRole && isNaN(Number(formData.experienceInSimilarRole))) {
+      newErrors.experienceInSimilarRole = "Please enter a valid number";
+    }
+    
+    // Validate experience with ITSM tools is a number
+    if (formData.experienceWithITSMTools && isNaN(Number(formData.experienceWithITSMTools))) {
+      newErrors.experienceWithITSMTools = "Please enter a valid number";
     }
 
     // Validate at least one language is selected
@@ -482,22 +496,6 @@ export default function CaptureRecord() {
                   </Select>
                   {errors.roleTitle && <p className="text-red-500 text-sm mt-1">{errors.roleTitle}</p>}
                 </div>
-                <div></div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="yearsOfExperience">Years of Experience *</Label>
-                  <Input
-                    id="yearsOfExperience"
-                    type="number"
-                    min="0"
-                    value={formData.yearsOfExperience}
-                    onChange={(e) => handleInputChange("yearsOfExperience", e.target.value)}
-                    className={errors.yearsOfExperience ? "border-red-500" : ""}
-                  />
-                  {errors.yearsOfExperience && <p className="text-red-500 text-sm mt-1">{errors.yearsOfExperience}</p>}
-                </div>
                 <div>
                   <Label htmlFor="sapKLevel">K-Level (Auto-populated from role)</Label>
                   <Select
@@ -521,6 +519,45 @@ export default function CaptureRecord() {
                       ✓ K-Level {formData.sapKLevel} automatically set for {formData.roleTitle}
                     </p>
                   )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="yearsOfExperience">Years of Experience *</Label>
+                  <Input
+                    id="yearsOfExperience"
+                    type="number"
+                    min="0"
+                    value={formData.yearsOfExperience}
+                    onChange={(e) => handleInputChange("yearsOfExperience", e.target.value)}
+                    className={errors.yearsOfExperience ? "border-red-500" : ""}
+                  />
+                  {errors.yearsOfExperience && <p className="text-red-500 text-sm mt-1">{errors.yearsOfExperience}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="experienceInSimilarRole">Years in Similar Role *</Label>
+                  <Input
+                    id="experienceInSimilarRole"
+                    type="number"
+                    min="0"
+                    value={formData.experienceInSimilarRole}
+                    onChange={(e) => handleInputChange("experienceInSimilarRole", e.target.value)}
+                    className={errors.experienceInSimilarRole ? "border-red-500" : ""}
+                  />
+                  {errors.experienceInSimilarRole && <p className="text-red-500 text-sm mt-1">{errors.experienceInSimilarRole}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="experienceWithITSMTools">Years with ITSM Tools *</Label>
+                  <Input
+                    id="experienceWithITSMTools"
+                    type="number"
+                    min="0"
+                    value={formData.experienceWithITSMTools}
+                    onChange={(e) => handleInputChange("experienceWithITSMTools", e.target.value)}
+                    className={errors.experienceWithITSMTools ? "border-red-500" : ""}
+                  />
+                  {errors.experienceWithITSMTools && <p className="text-red-500 text-sm mt-1">{errors.experienceWithITSMTools}</p>}
                 </div>
               </div>
             </CardContent>
