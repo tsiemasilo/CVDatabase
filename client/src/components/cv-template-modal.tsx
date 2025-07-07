@@ -33,16 +33,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         <div className="bg-white">
           {/* Header with Alteram Logo and Branding */}
-          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4 relative">
-            {/* Background logo with low opacity */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-10">
-              <img 
-                src={alteramLogoPath} 
-                alt="Alteram Solutions Background" 
-                className="h-24 w-auto"
-              />
-            </div>
-            <div className="flex items-center justify-between relative z-10">
+          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+            <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img 
                   src={alteramLogoPath} 
@@ -61,7 +53,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 <p className="text-sm font-medium mt-1">www.alteram.co.za</p>
               </div>
             </div>
-            <div className="mt-2 border-t border-orange-200 pt-2 relative z-10">
+            <div className="mt-2 border-t border-orange-200 pt-2">
               <p className="text-sm text-white font-medium">
                 Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07
               </p>
