@@ -200,9 +200,27 @@ export default function CaptureRecord() {
     }
   };
 
+  const formatDateInput = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+    
+    // Add slash after 2 digits
+    if (digits.length >= 2) {
+      return digits.slice(0, 2) + '/' + digits.slice(2, 6);
+    }
+    return digits;
+  };
+
   const handleWorkExperienceChange = (index: number, field: string, value: string | boolean) => {
+    let processedValue = value;
+    
+    // Format date fields automatically
+    if ((field === 'startDate' || field === 'endDate') && typeof value === 'string') {
+      processedValue = formatDateInput(value);
+    }
+    
     const newWorkExperiences = [...formData.workExperiences];
-    newWorkExperiences[index] = { ...newWorkExperiences[index], [field]: value };
+    newWorkExperiences[index] = { ...newWorkExperiences[index], [field]: processedValue };
     setFormData(prev => ({
       ...prev,
       workExperiences: newWorkExperiences
