@@ -1,7 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, MapPin, Phone, Mail, User, Award, Briefcase, GraduationCap, Globe } from "lucide-react";
+import { CalendarDays, MapPin, Phone, Mail, User, Award, Briefcase, GraduationCap, Globe, Download, Printer } from "lucide-react";
 import alteramLogoPath from "@assets/alteram1_1_600x197_1750838676214.png";
 import footerImagePath from "@assets/image_1751895895280.png";
 
@@ -28,10 +29,89 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     return total;
   }, 0);
 
+  const handleDownloadPDF = () => {
+    const element = document.getElementById('cv-content');
+    if (element) {
+      // Load html2pdf script if not already loaded
+      if (!(window as any).html2pdf) {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = () => {
+          generatePDF(element);
+        };
+        document.head.appendChild(script);
+      } else {
+        generatePDF(element);
+      }
+    }
+  };
+
+  const generatePDF = (element: HTMLElement) => {
+    const opt = {
+      margin: 0.5,
+      filename: `CV_${record.name}_${record.surname || ''}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    (window as any).html2pdf().set(opt).from(element).save();
+  };
+
+  const handlePrint = () => {
+    const printContent = document.getElementById('cv-content');
+    if (printContent) {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>CV - ${record.name} ${record.surname || ''}</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>
+              @media print {
+                body { margin: 0; }
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            ${printContent.innerHTML}
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+      }
+    }
+  };
+
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-        <div className="bg-white">
+        {/* Action Buttons */}
+        <div className="absolute top-4 right-16 z-50 flex gap-2">
+          <Button
+            onClick={handleDownloadPDF}
+            size="sm"
+            className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg"
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Download PDF
+          </Button>
+          <Button
+            onClick={handlePrint}
+            size="sm"
+            variant="outline"
+            className="bg-white hover:bg-gray-50 text-gray-700 border-gray-300 shadow-lg"
+          >
+            <Printer className="w-4 h-4 mr-1" />
+            Print
+          </Button>
+        </div>
+        
+        <div id="cv-content" className="bg-white">
           {/* Header with Alteram Logo and Branding */}
           <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
             <div className="flex items-center justify-between">

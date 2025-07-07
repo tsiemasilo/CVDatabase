@@ -97,61 +97,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   };
 
   const handleView = (record: CVRecord) => {
-    // Open CV template in new tab
-    const newWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    if (newWindow) {
-      newWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>CV - ${record.name} ${record.surname || ''}</title>
-          <meta charset="UTF-8">
-          <script src="https://cdn.tailwindcss.com"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-          <style>
-            @media print {
-              body { margin: 0; }
-              .no-print { display: none; }
-            }
-          </style>
-        </head>
-        <body class="bg-gray-50 p-4">
-          <div id="cv-content" class="max-w-4xl mx-auto bg-white shadow-lg">
-            <!-- CV content will be inserted here -->
-          </div>
-          <div class="no-print text-center mt-6">
-            <button onclick="downloadPDF()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium mr-4">
-              Download as PDF
-            </button>
-            <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">
-              Print CV
-            </button>
-          </div>
-          <script>
-            function downloadPDF() {
-              const element = document.getElementById('cv-content');
-              const opt = {
-                margin: 0.5,
-                filename: 'CV_${record.name}_${record.surname || ''}.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-              };
-              html2pdf().set(opt).from(element).save();
-            }
-          </script>
-        </body>
-        </html>
-      `);
-      
-      // Generate CV content and insert it
-      setTimeout(() => {
-        const cvContent = generateCVHTML(record);
-        if (newWindow.document.getElementById('cv-content')) {
-          newWindow.document.getElementById('cv-content').innerHTML = cvContent;
-        }
-      }, 100);
-    }
+    setViewingRecord(record);
   };
 
   const generateCVHTML = (record: CVRecord) => {
