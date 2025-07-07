@@ -706,7 +706,11 @@ export default function CaptureRecord() {
                         value={experience.startDate}
                         onChange={(e) => handleWorkExperienceChange(index, "startDate", e.target.value)}
                         className={errors[`workExperience${index}StartDate`] ? "border-red-500" : ""}
+                        placeholder="YYYY-MM"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Select month and year (e.g., 2020-01 for Jan 2020)
+                      </p>
                       {errors[`workExperience${index}StartDate`] && (
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}StartDate`]}</p>
                       )}
@@ -720,7 +724,11 @@ export default function CaptureRecord() {
                         onChange={(e) => handleWorkExperienceChange(index, "endDate", e.target.value)}
                         disabled={experience.isCurrentRole}
                         className={errors[`workExperience${index}EndDate`] ? "border-red-500" : ""}
+                        placeholder="YYYY-MM"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        {experience.isCurrentRole ? "Disabled for current role" : "Select month and year (e.g., 2023-12 for Dec 2023)"}
+                      </p>
                       {errors[`workExperience${index}EndDate`] && (
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}EndDate`]}</p>
                       )}
