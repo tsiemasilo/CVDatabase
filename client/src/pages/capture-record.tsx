@@ -192,8 +192,8 @@ export default function CaptureRecord() {
   };
 
   const removeLanguage = (index: number) => {
-    if (formData.languages.length > 1) {
-      const newLanguages = formData.languages.filter((_, i) => i !== index);
+    if ((formData.languages || []).length > 1) {
+      const newLanguages = (formData.languages || []).filter((_, i) => i !== index);
       setFormData(prev => ({
         ...prev,
         languages: newLanguages
@@ -246,7 +246,7 @@ export default function CaptureRecord() {
   };
 
   const handleOtherQualificationChange = (index: number, field: string, value: string | File | null) => {
-    const newOtherQualifications = [...formData.otherQualifications];
+    const newOtherQualifications = [...(formData.otherQualifications || [])];
     newOtherQualifications[index] = { ...newOtherQualifications[index], [field]: value };
     setFormData(prev => ({
       ...prev,
@@ -257,13 +257,13 @@ export default function CaptureRecord() {
   const addOtherQualification = () => {
     setFormData(prev => ({
       ...prev,
-      otherQualifications: [...prev.otherQualifications, { name: "", certificate: null }]
+      otherQualifications: [...(prev.otherQualifications || []), { name: "", certificate: null }]
     }));
   };
 
   const removeOtherQualification = (index: number) => {
-    if (formData.otherQualifications.length > 1) {
-      const newOtherQualifications = formData.otherQualifications.filter((_, i) => i !== index);
+    if ((formData.otherQualifications || []).length > 1) {
+      const newOtherQualifications = (formData.otherQualifications || []).filter((_, i) => i !== index);
       setFormData(prev => ({
         ...prev,
         otherQualifications: newOtherQualifications
@@ -335,7 +335,7 @@ export default function CaptureRecord() {
     }
 
     // Validate at least one language is selected
-    const validLanguages = formData.languages.filter(lang => lang.trim() !== "");
+    const validLanguages = (formData.languages || []).filter(lang => lang.trim() !== "");
     if (validLanguages.length === 0) {
       newErrors.languages = "At least one language is required";
     }
@@ -399,7 +399,7 @@ export default function CaptureRecord() {
       .filter(name => name.trim() !== "")
       .join(" ");
 
-    const validLanguages = formData.languages.filter(lang => lang.trim() !== "");
+    const validLanguages = (formData.languages || []).filter(lang => lang.trim() !== "");
 
     const cvData: InsertCVRecord = {
       name: fullName,
@@ -906,13 +906,13 @@ export default function CaptureRecord() {
               {/* Other Qualifications */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800">Other Qualifications</h4>
-                {formData.otherQualifications.map((qualification, index) => (
+                {(formData.otherQualifications || []).map((qualification, index) => (
                   <div key={index} className="border rounded-lg p-4 bg-gray-50">
                     <div className="flex justify-between items-center mb-3">
                       <h5 className="font-medium text-gray-700">
                         Other Qualification {index + 1}
                       </h5>
-                      {formData.otherQualifications.length > 1 && (
+                      {(formData.otherQualifications || []).length > 1 && (
                         <Button
                           type="button"
                           variant="outline"
@@ -979,7 +979,7 @@ export default function CaptureRecord() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {formData.languages.map((language, index) => (
+              {(formData.languages || []).map((language, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <div className="flex-1">
                     <Select
@@ -998,7 +998,7 @@ export default function CaptureRecord() {
                       </SelectContent>
                     </Select>
                   </div>
-                  {formData.languages.length > 1 && (
+                  {(formData.languages || []).length > 1 && (
                     <Button
                       type="button"
                       variant="outline"
