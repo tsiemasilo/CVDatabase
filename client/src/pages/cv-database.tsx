@@ -240,11 +240,9 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Departments</SelectItem>
-                      <SelectItem value="SAP">SAP</SelectItem>
-                      <SelectItem value="ICT">ICT</SelectItem>
-                      <SelectItem value="HR">HR</SelectItem>
-                      <SelectItem value="PROJECT MANAGEMENT">PROJECT MANAGEMENT</SelectItem>
-                      <SelectItem value="SERVICE DESK">SERVICE DESK</SelectItem>
+                      {DEPARTMENTS.map((dept) => (
+                        <SelectItem key={dept.id} value={dept.name}>{dept.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -257,21 +255,9 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Roles</SelectItem>
-                      <SelectItem value="Developer">Developer</SelectItem>
-                      <SelectItem value="SAP Technical Consultant">SAP Technical Consultant</SelectItem>
-                      <SelectItem value="SAP Functional Consultant">SAP Functional Consultant</SelectItem>
-                      <SelectItem value="Technical Support Specialist">Technical Support Specialist</SelectItem>
-                      <SelectItem value="System Administrator">System Administrator</SelectItem>
-                      <SelectItem value="Network Engineer">Network Engineer</SelectItem>
-                      <SelectItem value="HR Specialist">HR Specialist</SelectItem>
-                      <SelectItem value="Recruitment Specialist">Recruitment Specialist</SelectItem>
-                      <SelectItem value="Training Coordinator">Training Coordinator</SelectItem>
-                      <SelectItem value="Project Manager">Project Manager</SelectItem>
-                      <SelectItem value="Project Coordinator">Project Coordinator</SelectItem>
-                      <SelectItem value="Business Analyst">Business Analyst</SelectItem>
-                      <SelectItem value="Help Desk Technician">Help Desk Technician</SelectItem>
-                      <SelectItem value="IT Support Specialist">IT Support Specialist</SelectItem>
-                      <SelectItem value="Service Desk Manager">Service Desk Manager</SelectItem>
+                      {ROLES.map((role) => (
+                        <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -284,11 +270,11 @@ export default function CVDatabase() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All K-Levels</SelectItem>
-                      <SelectItem value="K1">K1</SelectItem>
-                      <SelectItem value="K2">K2</SelectItem>
-                      <SelectItem value="K3">K3</SelectItem>
-                      <SelectItem value="K4">K4</SelectItem>
-                      <SelectItem value="K5">K5</SelectItem>
+                      <SelectItem value="Knowledge Level One">K1</SelectItem>
+                      <SelectItem value="Knowledge Level Two">K2</SelectItem>
+                      <SelectItem value="Knowledge Level Three">K3</SelectItem>
+                      <SelectItem value="Knowledge Level Four">K4</SelectItem>
+                      <SelectItem value="Knowledge Level Five">K5</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

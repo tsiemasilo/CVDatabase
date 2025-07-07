@@ -248,9 +248,22 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   <div className="text-sm text-gray-900">{record.roleTitle || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <Badge className={`${getStatusColor(record.status)} border-0`}>
-                    {record.status}
-                  </Badge>
+                  <Select 
+                    value={record.status} 
+                    onValueChange={(value) => updateMutation.mutate({ 
+                      id: record.id, 
+                      updates: { status: value as "active" | "pending" | "archived" } 
+                    })}
+                  >
+                    <SelectTrigger className={`w-24 h-6 text-xs border-0 ${getStatusColor(record.status)}`}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="archived">Archive</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.experience || 0} years</div>
