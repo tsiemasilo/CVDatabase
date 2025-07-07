@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -307,7 +308,7 @@ export default function CaptureRecord() {
         newErrors[`workExperience${index}StartDate`] = "Please use MM/YYYY format (e.g., 01/2020)";
       }
       if (!exp.isCurrentRole && !exp.endDate.trim()) {
-        newErrors[`workExperience${index}EndDate`] = "End date is required";
+        newErrors[`workExperience${index}EndDate`] = "End date is required for non-current roles";
       } else if (!exp.isCurrentRole && exp.endDate && !/^\d{2}\/\d{4}$/.test(exp.endDate)) {
         newErrors[`workExperience${index}EndDate`] = "Please use MM/YYYY format (e.g., 12/2023)";
       }
@@ -762,19 +763,17 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     <div className="flex items-center space-x-2 mt-6">
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         id={`currentRole-${index}`}
                         checked={experience.isCurrentRole}
-                        onChange={(e) => {
-                          handleWorkExperienceChange(index, "isCurrentRole", e.target.checked);
-                          if (e.target.checked) {
+                        onCheckedChange={(checked) => {
+                          handleWorkExperienceChange(index, "isCurrentRole", checked);
+                          if (checked) {
                             handleWorkExperienceChange(index, "endDate", "");
                           }
                         }}
-                        className="rounded"
                       />
-                      <Label htmlFor={`currentRole-${index}`} className="text-sm">
+                      <Label htmlFor={`currentRole-${index}`} className="text-sm cursor-pointer">
                         Current Role
                       </Label>
                     </div>
