@@ -49,14 +49,21 @@ export default function PositionsRoles() {
     { id: 22, department: "Project Management", role: "Project Officer", description: "Junior project execution and monitoring", kLevel: "K2" },
     { id: 23, department: "Project Management", role: "Project Manager", description: "Independent project lifecycle management", kLevel: "K3" },
     { id: 24, department: "Project Management", role: "Senior Project Manager", description: "Senior lead for complex project portfolios", kLevel: "K4" },
-    { id: 25, department: "Project Management", role: "Program Director", description: "Master-level strategic program leadership", kLevel: "K5" }
+    { id: 25, department: "Project Management", role: "Program Director", description: "Master-level strategic program leadership", kLevel: "K5" },
+    
+    // Service Desk Department
+    { id: 26, department: "Service Desk", role: "Service Desk Agent", description: "Entry-level user support and incident logging", kLevel: "K1" },
+    { id: 27, department: "Service Desk", role: "Technical Support Specialist", description: "Junior technical troubleshooting and resolution", kLevel: "K2" },
+    { id: 28, department: "Service Desk", role: "Service Desk Analyst", description: "Independent incident and problem management", kLevel: "K3" },
+    { id: 29, department: "Service Desk", role: "Service Desk Team Lead", description: "Senior lead for service desk operations", kLevel: "K4" },
+    { id: 30, department: "Service Desk", role: "Service Desk Manager", description: "Master-level service delivery management", kLevel: "K5" }
   ]);
 
   const [newRecord, setNewRecord] = useState({ department: '', role: '', description: '', kLevel: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [addStep, setAddStep] = useState<'department' | 'role'>('department');
 
-  const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management"];
+  const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
   const kLevels = ["K1", "K2", "K3", "K4", "K5"];
 
   const addRecord = () => {
