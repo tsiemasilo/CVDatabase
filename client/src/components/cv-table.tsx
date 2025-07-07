@@ -97,7 +97,107 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   };
 
   const handleView = (record: CVRecord) => {
-    setViewingRecord(record);
+    // Open CV template in new tab
+    const newWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>CV - ${record.name} ${record.surname || ''}</title>
+          <meta charset="UTF-8">
+          <script src="https://cdn.tailwindcss.com"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+          <style>
+            @media print {
+              body { margin: 0; }
+              .no-print { display: none !important; }
+            }
+            .action-buttons {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              z-index: 1000;
+              display: flex;
+              gap: 12px;
+            }
+            .btn {
+              padding: 8px 16px;
+              border-radius: 6px;
+              font-weight: 500;
+              font-size: 14px;
+              cursor: pointer;
+              border: none;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              transition: all 0.2s;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .btn-orange {
+              background: #f97316;
+              color: white;
+            }
+            .btn-orange:hover {
+              background: #ea580c;
+            }
+            .btn-white {
+              background: white;
+              color: #374151;
+              border: 1px solid #d1d5db;
+            }
+            .btn-white:hover {
+              background: #f9fafb;
+            }
+          </style>
+        </head>
+        <body class="bg-gray-50 p-4">
+          <div class="action-buttons no-print">
+            <button onclick="downloadPDF()" class="btn btn-orange">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2v13l4-4 1.4 1.4L12 18.8 6.6 12.4 8 11l4 4V2h-0z"/>
+                <path d="M3 17v3h18v-3h2v5H1v-5h2z"/>
+              </svg>
+              Download PDF
+            </button>
+            <button onclick="window.print()" class="btn btn-white">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18 3H6v4h12V3zM6 19h12v-4H6v4zm2-6h8v2H8v-2z"/>
+                <path d="M16 8H8v8h8V8z"/>
+              </svg>
+              Print
+            </button>
+          </div>
+          
+          <div id="cv-content" class="max-w-4xl mx-auto bg-white shadow-lg">
+            <!-- CV content will be inserted here -->
+          </div>
+          
+          <script>
+            function downloadPDF() {
+              const element = document.getElementById('cv-content');
+              const opt = {
+                margin: 0.5,
+                filename: 'CV_${record.name}_${record.surname || ''}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+              };
+              html2pdf().set(opt).from(element).save();
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      
+      // Generate CV content and insert it
+      setTimeout(() => {
+        const cvContent = generateCVHTML(record);
+        if (newWindow.document.getElementById('cv-content')) {
+          newWindow.document.getElementById('cv-content').innerHTML = cvContent;
+        }
+      }, 100);
+    }
   };
 
   const generateCVHTML = (record: CVRecord) => {
