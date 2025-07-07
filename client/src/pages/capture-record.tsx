@@ -42,6 +42,8 @@ export default function CaptureRecord() {
     languages: [""],
     qualificationType: "",
     qualificationName: "",
+    qualificationCertificate: null,
+    otherQualifications: [{ name: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", duration: "" }]
@@ -221,6 +223,43 @@ export default function CaptureRecord() {
         ...prev,
         workExperiences: newWorkExperiences
       }));
+    }
+  };
+
+  const handleOtherQualificationChange = (index: number, field: string, value: string | File | null) => {
+    const newOtherQualifications = [...formData.otherQualifications];
+    newOtherQualifications[index] = { ...newOtherQualifications[index], [field]: value };
+    setFormData(prev => ({
+      ...prev,
+      otherQualifications: newOtherQualifications
+    }));
+  };
+
+  const addOtherQualification = () => {
+    setFormData(prev => ({
+      ...prev,
+      otherQualifications: [...prev.otherQualifications, { name: "", certificate: null }]
+    }));
+  };
+
+  const removeOtherQualification = (index: number) => {
+    if (formData.otherQualifications.length > 1) {
+      const newOtherQualifications = formData.otherQualifications.filter((_, i) => i !== index);
+      setFormData(prev => ({
+        ...prev,
+        otherQualifications: newOtherQualifications
+      }));
+    }
+  };
+
+  const handleFileUpload = (field: string, file: File | null, index?: number) => {
+    if (field === 'qualificationCertificate') {
+      setFormData(prev => ({
+        ...prev,
+        qualificationCertificate: file
+      }));
+    } else if (field === 'otherQualificationCertificate' && index !== undefined) {
+      handleOtherQualificationChange(index, 'certificate', file);
     }
   };
 
@@ -718,56 +757,146 @@ export default function CaptureRecord() {
             </CardContent>
           </Card>
 
-          {/* Qualifications */}
+          {/* Qualifications & Certificates */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
-                Qualifications
+                Qualifications & Certificates
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="qualificationType">Qualification Type</Label>
-                  <Select
-                    value={formData.qualificationType}
-                    onValueChange={(value) => {
-                      handleInputChange("qualificationType", value);
-                      // Clear qualification name when type changes
-                      handleInputChange("qualificationName", "");
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select qualification type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {QUALIFICATION_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            <CardContent className="space-y-6">
+              {/* Primary Qualification */}
+              <div className="border rounded-lg p-4 bg-blue-50">
+                <h4 className="font-medium text-gray-800 mb-3">Primary Qualification</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label htmlFor="qualificationType">Qualification Type</Label>
+                    <Select
+                      value={formData.qualificationType}
+                      onValueChange={(value) => {
+                        handleInputChange("qualificationType", value);
+                        // Clear qualification name when type changes
+                        handleInputChange("qualificationName", "");
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select qualification type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {QUALIFICATION_TYPES.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="qualificationName">Qualification Name</Label>
+                    <Select
+                      value={formData.qualificationName}
+                      onValueChange={(value) => handleInputChange("qualificationName", value)}
+                      disabled={!formData.qualificationType}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={formData.qualificationType ? "Select qualification name" : "Select qualification type first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableQualificationNames().map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+                
+                {/* Certificate Upload for Primary Qualification */}
                 <div>
-                  <Label htmlFor="qualificationName">Qualification Name</Label>
-                  <Select
-                    value={formData.qualificationName}
-                    onValueChange={(value) => handleInputChange("qualificationName", value)}
-                    disabled={!formData.qualificationType}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={formData.qualificationType ? "Select qualification name" : "Select qualification type first"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getAvailableQualificationNames().map((name) => (
-                        <SelectItem key={name} value={name}>
-                          {name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="qualificationCertificate">Upload Certificate (Optional)</Label>
+                  <Input
+                    id="qualificationCertificate"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload('qualificationCertificate', e.target.files?.[0] || null)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Accepted formats: PDF, JPG, PNG (Max 10MB)
+                  </p>
+                  {formData.qualificationCertificate && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ✓ Certificate uploaded: {formData.qualificationCertificate.name}
+                    </p>
+                  )}
                 </div>
+              </div>
+
+              {/* Other Qualifications */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-gray-800">Other Qualifications</h4>
+                {formData.otherQualifications.map((qualification, index) => (
+                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-3">
+                      <h5 className="font-medium text-gray-700">
+                        Other Qualification {index + 1}
+                      </h5>
+                      {formData.otherQualifications.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeOtherQualification(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <Label htmlFor={`otherQual-${index}`}>Qualification Name</Label>
+                        <Input
+                          id={`otherQual-${index}`}
+                          placeholder="Enter qualification name"
+                          value={qualification.name}
+                          onChange={(e) => handleOtherQualificationChange(index, "name", e.target.value)}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor={`otherQualCert-${index}`}>Upload Certificate (Optional)</Label>
+                        <Input
+                          id={`otherQualCert-${index}`}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => handleFileUpload('otherQualificationCertificate', e.target.files?.[0] || null, index)}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Accepted formats: PDF, JPG, PNG (Max 10MB)
+                        </p>
+                        {qualification.certificate && (
+                          <p className="text-xs text-green-600 mt-1">
+                            ✓ Certificate uploaded: {(qualification.certificate as File).name}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addOtherQualification}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Another Qualification
+                </Button>
               </div>
             </CardContent>
           </Card>
