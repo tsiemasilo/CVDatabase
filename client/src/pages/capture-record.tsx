@@ -426,7 +426,10 @@ export default function CaptureRecord() {
   // Get available certificate roles for the selected department
   const getAvailableCertificateRoles = (department: string) => {
     if (!department) return [];
+    console.log(`Looking for certificate roles for department: "${department}"`);
+    console.log('Available certificate mappings:', CERTIFICATE_MAPPINGS.map(c => ({ dept: c.department, role: c.role })));
     const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
+    console.log('Filtered mappings:', departmentMappings);
     const certificateRoles = [...new Set(departmentMappings.map(c => c.role))];
     console.log(`Certificate roles for ${department}:`, certificateRoles);
     return certificateRoles;
