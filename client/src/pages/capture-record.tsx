@@ -420,18 +420,21 @@ export default function CaptureRecord() {
 
   // Get available departments for certificates
   const getCertificateDepartments = () => {
-    return CERTIFICATE_MAPPINGS.map(mapping => mapping.department).sort();
+    const departments = [...new Set(CERTIFICATE_MAPPINGS.map(mapping => mapping.department))];
+    return departments.sort();
   };
 
   // Get available roles for a department
   const getCertificateRoles = (department: string) => {
-    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department);
-    return mapping ? mapping.role.split(', ') : [];
+    const roles = CERTIFICATE_MAPPINGS
+      .filter(mapping => mapping.department === department)
+      .map(mapping => mapping.role);
+    return [...new Set(roles)].sort();
   };
 
   // Get available certificate names for department and role
   const getCertificateNames = (department: string, role: string) => {
-    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department);
+    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department && m.role === role);
     return mapping ? mapping.certificates : [];
   };
 
