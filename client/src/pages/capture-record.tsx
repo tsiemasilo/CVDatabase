@@ -1138,69 +1138,93 @@ export default function CaptureRecord() {
 
               {/* Certificate Type and Certificate Name */}
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-800">Certificate Type & Certificate Name</h4>
-                {(formData.certificateTypes || []).map((certificate, index) => (
-                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                    <div className="flex justify-between items-center mb-3">
-                      <h5 className="font-medium text-gray-700">
-                        Certificate {index + 1}
-                      </h5>
-                      {(formData.certificateTypes || []).length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeCertificateType(index)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                      <div>
-                        <Label htmlFor={`certName-${index}`}>Certificate Name</Label>
-                        <Input
-                          id={`certName-${index}`}
-                          type="text"
-                          value={certificate.name}
-                          onChange={(e) => handleCertificateTypeChange(index, "name", e.target.value)}
-                          placeholder="Enter certificate name"
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`certFile-${index}`}>Upload Certificate (Optional)</Label>
-                        <Input
-                          id={`certFile-${index}`}
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Accepted formats: PDF, JPG, PNG (Max 10MB)
-                        </p>
-                        {certificate.certificate && (
-                          <p className="text-xs text-green-600 mt-1">
-                            ✓ Certificate uploaded: {(certificate.certificate as File).name}
-                          </p>
+                <div className="border-b pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900">Certificate Type & Certificate Name</h4>
+                </div>
+                
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  {(formData.certificateTypes || []).map((certificate, index) => (
+                    <div key={index} className="mb-6 last:mb-0">
+                      <div className="flex justify-between items-center mb-4">
+                        <h5 className="text-md font-medium text-gray-800 flex items-center">
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm mr-2">
+                            {index + 1}
+                          </span>
+                          Certificate Details
+                        </h5>
+                        {(formData.certificateTypes || []).length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeCertificateType(index)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         )}
                       </div>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor={`certName-${index}`} className="text-sm font-medium text-gray-700">
+                            Certificate Name *
+                          </Label>
+                          <Input
+                            id={`certName-${index}`}
+                            type="text"
+                            value={certificate.name}
+                            onChange={(e) => handleCertificateTypeChange(index, "name", e.target.value)}
+                            placeholder="e.g., Microsoft Azure Fundamentals"
+                            className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`certFile-${index}`} className="text-sm font-medium text-gray-700">
+                            Certificate Document
+                          </Label>
+                          <div className="relative">
+                            <Input
+                              id={`certFile-${index}`}
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
+                              className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500">
+                            Accepted: PDF, JPG, PNG (Max 10MB)
+                          </p>
+                          {certificate.certificate && (
+                            <div className="flex items-center space-x-2 mt-2">
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <p className="text-sm text-green-600 font-medium">
+                                {(certificate.certificate as File).name}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {index < (formData.certificateTypes || []).length - 1 && (
+                        <hr className="mt-6 border-gray-200" />
+                      )}
                     </div>
+                  ))}
+                  
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={addCertificateType}
+                      className="w-full border-dashed border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-600 hover:text-blue-600 py-3"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Another Certificate
+                    </Button>
                   </div>
-                ))}
-                
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addCertificateType}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Another Certificate
-                </Button>
+                </div>
               </div>
 
             </CardContent>
