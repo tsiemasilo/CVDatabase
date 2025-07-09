@@ -800,5 +800,17 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
       "ISO 9001:2015 Lead Auditor",
       "Master of Business Administration (MBA) - Operations"
     ]
+  },
+  // Test Department
+  {
+    department: "Test",
+    role: "Test 2",
+    certificates: [
+      "Test Certificate A",
+      "Test Certificate B",
+      "Test Certificate C",
+      "Advanced Test Certification",
+      "Professional Test Credential"
+    ]
   }
 ];
