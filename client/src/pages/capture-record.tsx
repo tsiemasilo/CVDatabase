@@ -425,7 +425,10 @@ export default function CaptureRecord() {
 
   // Get available departments for certificates (directly from certificate mappings)
   const getAvailableCertificateDepartments = () => {
+    console.log('CERTIFICATE_MAPPINGS:', CERTIFICATE_MAPPINGS.length, 'items');
+    console.log('First few mappings:', CERTIFICATE_MAPPINGS.slice(0, 3));
     const departments = [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))];
+    console.log('Available certificate departments:', departments);
     return departments.sort();
   };
 
