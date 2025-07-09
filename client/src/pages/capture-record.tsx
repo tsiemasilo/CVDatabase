@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, getCertificateTypesForDepartment, getCertificateNamesForType } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -146,10 +146,6 @@ export default function CaptureRecord() {
     languages: [""],
     qualificationType: "",
     qualificationName: "",
-    certificateDepartment: "",
-    certificateType: "",
-    certificateName: "",
-    certificateFile: null,
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
     experienceInSimilarRole: "",
@@ -176,8 +172,12 @@ export default function CaptureRecord() {
 
   // Get unique departments from the positions|roles data
   const getAvailableDepartments = () => {
-    // Always use the default departments since they're comprehensive
-    return ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"];
+    if (departmentRoles.length === 0) {
+      // Fallback to default departments if no data is loaded yet
+      return ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
+    }
+    const uniqueDepartments = [...new Set(departmentRoles.map(role => role.department))];
+    return uniqueDepartments.sort();
   };
 
   // Get roles for the selected department from the positions|roles data
@@ -189,8 +189,9 @@ export default function CaptureRecord() {
         "SAP": ["SAP ABAP Developer", "SAP Functional Consultant", "SAP Technical Consultant"],
         "ICT": ["IT Support Technician", "Network Administrator", "Systems Analyst"],
         "HR": ["HR Assistant", "Recruitment Coordinator", "HR Business Partner"],
-        "PROJECT MANAGEMENT": ["Project Coordinator", "Project Officer", "Project Manager"],
-        "SERVICE DESK": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
+        "DEVELOPMENT": ["Junior Developer", "Software Developer", "Senior Developer"],
+        "Project Management": ["Project Coordinator", "Project Officer", "Project Manager"],
+        "Service Desk": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
       };
       return fallbackRoles[formData.department] || [];
     }
@@ -241,18 +242,6 @@ export default function CaptureRecord() {
     if (!formData.qualificationType) return [];
     const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === formData.qualificationType);
     return selectedMapping ? selectedMapping.names : [];
-  };
-
-  // Get certificate types for the selected certificate department
-  const getAvailableCertificateTypes = () => {
-    if (!formData.certificateDepartment) return [];
-    return getCertificateTypesForDepartment(formData.certificateDepartment);
-  };
-
-  // Get certificate names for the selected certificate type and department
-  const getAvailableCertificateNames = () => {
-    if (!formData.certificateDepartment || !formData.certificateType) return [];
-    return getCertificateNamesForType(formData.certificateDepartment, formData.certificateType);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -391,11 +380,6 @@ export default function CaptureRecord() {
         ...prev,
         qualificationCertificate: file
       }));
-    } else if (field === 'certificateFile') {
-      setFormData(prev => ({
-        ...prev,
-        certificateFile: file
-      }));
     } else if (field === 'otherQualificationCertificate' && index !== undefined) {
       handleOtherQualificationChange(index, 'certificate', file);
     }
@@ -491,11 +475,7 @@ export default function CaptureRecord() {
         department: "",
         languages: [""],
         qualificationType: "",
-        qualificationName: "",
-        certificateDepartment: "",
-        certificateType: "",
-        certificateName: "",
-        certificateFile: null
+        qualificationName: ""
       });
     },
     onError: (error: any) => {
@@ -536,12 +516,7 @@ export default function CaptureRecord() {
       languages: validLanguages.join(", "), // Store languages in languages field
       qualifications: formData.qualificationType && formData.qualificationName 
         ? `${formData.qualificationType} - ${formData.qualificationName}`
-        : "No qualifications listed", // Combine qualification type and name
-      qualificationType: formData.qualificationType,
-      qualificationName: formData.qualificationName,
-      certificateDepartment: formData.certificateDepartment,
-      certificateType: formData.certificateType,
-      certificateName: formData.certificateName
+        : "No qualifications listed" // Combine qualification type and name
     };
 
     console.log("Submitting CV data:", cvData);
@@ -1053,106 +1028,6 @@ export default function CaptureRecord() {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Certificates */}
-              <div className="border rounded-lg p-4 bg-blue-50">
-                <h4 className="font-medium text-gray-800 mb-3">Certificates</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <Label htmlFor="certificateDepartment">Department</Label>
-                    <Select
-                      value={formData.certificateDepartment}
-                      onValueChange={(value) => {
-                        handleInputChange("certificateDepartment", value);
-                        // Clear certificate type and name when department changes
-                        handleInputChange("certificateType", "");
-                        handleInputChange("certificateName", "");
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select department" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].map((dept) => (
-                          <SelectItem key={dept} value={dept}>
-                            {dept}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="certificateType">Certificate Type</Label>
-                    <Select
-                      value={formData.certificateType}
-                      onValueChange={(value) => {
-                        handleInputChange("certificateType", value);
-                        // Clear certificate name when type changes
-                        handleInputChange("certificateName", "");
-                      }}
-                      disabled={!formData.certificateDepartment}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={formData.certificateDepartment ? "Select certificate type" : "Select department first"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getAvailableCertificateTypes().map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="certificateName">Certificate Name</Label>
-                    <Select
-                      value={formData.certificateName}
-                      onValueChange={(value) => handleInputChange("certificateName", value)}
-                      disabled={!formData.certificateType}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={formData.certificateType ? "Select certificate name" : "Select certificate type first"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getAvailableCertificateNames().map((name) => (
-                          <SelectItem key={name} value={name}>
-                            {name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                {/* Certificate Upload */}
-                <div>
-                  <Label htmlFor="certificateFile">Upload Certificate (Optional)</Label>
-                  <Input
-                    id="certificateFile"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleFileUpload('certificateFile', e.target.files?.[0] || null)}
-                    className="mt-1"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Accepted formats: PDF, JPG, PNG (Max 10MB)
-                  </p>
-                  {formData.certificateFile && (
-                    <p className="text-xs text-green-600 mt-1">
-                      ✓ Certificate uploaded: {formData.certificateFile.name}
-                    </p>
-                  )}
-                </div>
-                
-                {formData.certificateDepartment && formData.certificateType && formData.certificateName && (
-                  <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
-                    <p className="text-xs text-green-700">
-                      ✓ Selected: {formData.certificateName} ({formData.certificateType} - {formData.certificateDepartment})
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* Other Qualifications */}

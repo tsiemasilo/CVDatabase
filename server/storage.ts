@@ -49,9 +49,6 @@ export class MemStorage implements IStorage {
         qualifications: "Bachelor of Computer Science",
         qualificationType: "Degree",
         qualificationName: "Bachelor of Computer Science",
-        certificateDepartment: "ICT",
-        certificateType: "Technical Certification",
-        certificateName: "Microsoft Certified: Azure Developer Associate",
         languages: "English, Afrikaans",
         workExperiences: JSON.stringify([
           { companyName: "Tech Corp", position: "Junior Developer", startDate: "01/2020", endDate: "12/2022", isCurrentRole: false },
@@ -78,9 +75,6 @@ export class MemStorage implements IStorage {
         qualifications: "MBA, PMP Certification",
         qualificationType: "Postgraduate Degree",
         qualificationName: "Master of Business Administration",
-        certificateDepartment: "PROJECT MANAGEMENT",
-        certificateType: "Professional Management",
-        certificateName: "PMP (Project Management Professional)",
         languages: "English, Zulu",
         workExperiences: JSON.stringify([
           { companyName: "ConsultCorp", position: "Project Coordinator", startDate: "03/2018", endDate: "06/2021", isCurrentRole: false },
@@ -107,9 +101,6 @@ export class MemStorage implements IStorage {
         qualifications: "SAP Certified Application Associate",
         qualificationType: "Professional Certification",
         qualificationName: "SAP Certified Application Associate - ABAP",
-        certificateDepartment: "SAP",
-        certificateType: "SAP Technical",
-        certificateName: "SAP Certified Development Associate - ABAP with SAP NetWeaver 7.50",
         languages: "English, Mandarin",
         workExperiences: JSON.stringify([
           { companyName: "SAP Solutions", position: "Junior SAP Developer", startDate: "06/2019", endDate: "05/2022", isCurrentRole: false },
