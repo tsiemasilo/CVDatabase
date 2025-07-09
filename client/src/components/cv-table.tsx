@@ -414,7 +414,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
               <TableHead className="text-white font-medium py-4 px-6">
                 SAP K-Level
               </TableHead>
-              <TableHead className="text-white font-medium py-4 px-6 min-w-[140px]">
+              <TableHead className="text-white font-medium py-4 px-6 min-w-[160px]">
                 Phone Number
               </TableHead>
               <TableHead className="text-white font-medium py-4 px-6">
@@ -474,8 +474,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.sapKLevel || 'N/A'}</div>
                 </TableCell>
-                <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900 font-mono">
+                <TableCell className="py-4 px-6 min-w-[160px]">
+                  <div className="text-sm text-gray-900 font-mono whitespace-nowrap">
                     {record.phone ? formatPhoneNumber(record.phone) : 'N/A'}
                   </div>
                 </TableCell>
