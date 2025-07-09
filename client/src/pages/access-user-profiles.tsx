@@ -43,7 +43,7 @@ export default function AccessUserProfiles() {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchTerm) params.append("search", searchTerm);
-      if (selectedRole) params.append("role", selectedRole);
+      if (selectedRole && selectedRole !== "all") params.append("role", selectedRole);
       
       const url = `/api/user-profiles${params.toString() ? `?${params.toString()}` : ''}`;
       return await apiRequest(url);
@@ -350,7 +350,7 @@ export default function AccessUserProfiles() {
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Roles</SelectItem>
+              <SelectItem value="all">All Roles</SelectItem>
               <SelectItem value="admin">Admin</SelectItem>
               <SelectItem value="manager">Manager</SelectItem>
               <SelectItem value="user">User</SelectItem>
