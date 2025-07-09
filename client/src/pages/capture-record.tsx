@@ -157,6 +157,12 @@ export default function CaptureRecord() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [departmentRoles, setDepartmentRoles] = useState<DepartmentRole[]>([]);
 
+  // Debug: Log certificate mappings on component mount
+  useEffect(() => {
+    console.log('Certificate mappings loaded:', CERTIFICATE_MAPPINGS.length, 'items');
+    console.log('Available departments:', [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))]);
+  }, []);
+
   // Load departments and roles from localStorage (same source as positions|roles page)
   useEffect(() => {
     const savedRecords = localStorage.getItem('departmentRoles');
@@ -425,10 +431,7 @@ export default function CaptureRecord() {
 
   // Get available departments for certificates (directly from certificate mappings)
   const getAvailableCertificateDepartments = () => {
-    console.log('CERTIFICATE_MAPPINGS:', CERTIFICATE_MAPPINGS.length, 'items');
-    console.log('First few mappings:', CERTIFICATE_MAPPINGS.slice(0, 3));
     const departments = [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))];
-    console.log('Available certificate departments:', departments);
     return departments.sort();
   };
 
@@ -1196,11 +1199,15 @@ export default function CaptureRecord() {
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
-                            {getAvailableCertificateDepartments().map((dept) => (
-                              <SelectItem key={dept} value={dept}>
-                                {dept}
-                              </SelectItem>
-                            ))}
+                            {(() => {
+                              const departments = getAvailableCertificateDepartments();
+                              console.log('Rendering certificate department options:', departments);
+                              return departments.map((dept) => (
+                                <SelectItem key={dept} value={dept}>
+                                  {dept}
+                                </SelectItem>
+                              ));
+                            })()}
                           </SelectContent>
                         </Select>
                       </div>
