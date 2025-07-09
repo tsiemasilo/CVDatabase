@@ -175,12 +175,8 @@ export default function CaptureRecord() {
 
   // Get unique departments from the positions|roles data
   const getAvailableDepartments = () => {
-    if (departmentRoles.length === 0) {
-      // Fallback to default departments if no data is loaded yet
-      return ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
-    }
-    const uniqueDepartments = [...new Set(departmentRoles.map(role => role.department))];
-    return uniqueDepartments.sort();
+    // Always use the default departments since they're comprehensive
+    return ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"];
   };
 
   // Get roles for the selected department from the positions|roles data
@@ -192,9 +188,8 @@ export default function CaptureRecord() {
         "SAP": ["SAP ABAP Developer", "SAP Functional Consultant", "SAP Technical Consultant"],
         "ICT": ["IT Support Technician", "Network Administrator", "Systems Analyst"],
         "HR": ["HR Assistant", "Recruitment Coordinator", "HR Business Partner"],
-        "DEVELOPMENT": ["Junior Developer", "Software Developer", "Senior Developer"],
-        "Project Management": ["Project Coordinator", "Project Officer", "Project Manager"],
-        "Service Desk": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
+        "PROJECT MANAGEMENT": ["Project Coordinator", "Project Officer", "Project Manager"],
+        "SERVICE DESK": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
       };
       return fallbackRoles[formData.department] || [];
     }
