@@ -460,7 +460,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
   },
   // ICT Department
   {
-    department: "Information and Communications Technology",
+    department: "ICT",
     role: "IT Support Technician",
     certificates: [
       "CompTIA A+ Certification",
@@ -476,7 +476,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "Information and Communications Technology",
+    department: "ICT",
     role: "Network Administrator",
     certificates: [
       "Cisco Certified Network Professional (CCNP)",
@@ -492,7 +492,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "Information and Communications Technology",
+    department: "ICT",
     role: "Systems Analyst",
     certificates: [
       "CBAP - Certified Business Analysis Professional",
@@ -652,6 +652,153 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
       "Certified Information Systems Auditor (CISA)",
       "Microsoft 365 Certified: Enterprise Administrator Expert",
       "Change Management Certification"
+    ]
+  },
+  // Finance Department
+  {
+    department: "Finance",
+    role: "Financial Analyst",
+    certificates: [
+      "Chartered Financial Analyst (CFA)",
+      "Financial Risk Manager (FRM)",
+      "Certified Financial Planner (CFP)",
+      "Chartered Accountant (CA)",
+      "Certified Public Accountant (CPA)",
+      "Certified Management Accountant (CMA)",
+      "Financial Modeling & Valuation Analyst (FMVA)",
+      "Certified Investment Management Analyst (CIMA)",
+      "Chartered Financial Consultant (ChFC)",
+      "Certified Treasury Professional (CTP)"
+    ]
+  },
+  {
+    department: "Finance",
+    role: "Accountant",
+    certificates: [
+      "Chartered Accountant (CA)",
+      "Certified Public Accountant (CPA)",
+      "Certified Management Accountant (CMA)",
+      "Certified Internal Auditor (CIA)",
+      "Certified Information Systems Auditor (CISA)",
+      "Association of Chartered Certified Accountants (ACCA)",
+      "Certified Fraud Examiner (CFE)",
+      "Enrolled Agent (EA)",
+      "QuickBooks ProAdvisor Certification",
+      "SAP Financial Accounting Certification"
+    ]
+  },
+  {
+    department: "Finance",
+    role: "Financial Manager",
+    certificates: [
+      "Chartered Financial Analyst (CFA)",
+      "Certified Public Accountant (CPA)",
+      "Chartered Accountant (CA)",
+      "Financial Risk Manager (FRM)",
+      "Certified Treasury Professional (CTP)",
+      "Certified Management Accountant (CMA)",
+      "Master of Business Administration (MBA) - Finance",
+      "Certified Investment Management Analyst (CIMA)",
+      "Chartered Financial Consultant (ChFC)",
+      "Project Management Professional (PMP)"
+    ]
+  },
+  // Marketing Department
+  {
+    department: "Marketing",
+    role: "Marketing Assistant",
+    certificates: [
+      "Google Analytics Certified",
+      "Google Ads Certification",
+      "Facebook Blueprint Certification",
+      "HubSpot Content Marketing Certification",
+      "Hootsuite Social Media Marketing Certification",
+      "American Marketing Association Professional Certified Marketer",
+      "Digital Marketing Institute Certification",
+      "Salesforce Marketing Cloud Certification",
+      "LinkedIn Marketing Solutions Certification",
+      "Mailchimp Email Marketing Certification"
+    ]
+  },
+  {
+    department: "Marketing",
+    role: "Digital Marketing Specialist",
+    certificates: [
+      "Google Analytics Certified",
+      "Google Ads Certification",
+      "Facebook Blueprint Certification",
+      "HubSpot Inbound Marketing Certification",
+      "Salesforce Marketing Cloud Certification",
+      "Adobe Certified Expert - Marketing Cloud",
+      "Amazon DSP Certification",
+      "Microsoft Advertising Certified Professional",
+      "Twitter Flight School Certification",
+      "YouTube Creator Academy Certification"
+    ]
+  },
+  {
+    department: "Marketing",
+    role: "Marketing Manager",
+    certificates: [
+      "American Marketing Association Professional Certified Marketer",
+      "Digital Marketing Institute Professional Diploma",
+      "HubSpot Marketing Software Certification",
+      "Google Analytics Individual Qualification",
+      "Salesforce Marketing Cloud Consultant",
+      "Adobe Certified Expert - Marketing Cloud",
+      "Certified Marketing Management Professional",
+      "Project Management Professional (PMP)",
+      "Certified Customer Experience Professional",
+      "Master of Business Administration (MBA) - Marketing"
+    ]
+  },
+  // Operations Department
+  {
+    department: "Operations",
+    role: "Operations Assistant",
+    certificates: [
+      "Certified Associate in Project Management (CAPM)",
+      "Six Sigma Yellow Belt",
+      "ITIL Foundation Certificate",
+      "Lean Foundation Certificate",
+      "Supply Chain Operations Reference (SCOR) Model",
+      "Microsoft Office Specialist (MOS)",
+      "Certified Administrative Professional (CAP)",
+      "Business Process Management Professional (BPMP)",
+      "Certified Quality Improvement Associate (CQIA)",
+      "Process Excellence Network Certification"
+    ]
+  },
+  {
+    department: "Operations",
+    role: "Operations Specialist",
+    certificates: [
+      "Six Sigma Green Belt",
+      "Lean Six Sigma Green Belt",
+      "Project Management Professional (PMP)",
+      "Certified Supply Chain Professional (CSCP)",
+      "APICS Supply Chain Operations Reference (SCOR)",
+      "Certified in Production and Inventory Management (CPIM)",
+      "Business Process Management Professional (BPMP)",
+      "Certified Quality Engineer (CQE)",
+      "ISO 9001:2015 Lead Auditor",
+      "Change Management Certification"
+    ]
+  },
+  {
+    department: "Operations",
+    role: "Operations Manager",
+    certificates: [
+      "Six Sigma Black Belt",
+      "Lean Six Sigma Black Belt",
+      "Project Management Professional (PMP)",
+      "Certified Supply Chain Professional (CSCP)",
+      "Certified in Production and Inventory Management (CPIM)",
+      "Certified Professional in Supply Management (CPSM)",
+      "Master Black Belt Certification",
+      "Certified Quality Manager (CQM)",
+      "ISO 9001:2015 Lead Auditor",
+      "Master of Business Administration (MBA) - Operations"
     ]
   }
 ];
