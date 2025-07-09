@@ -391,8 +391,10 @@ export default function CaptureRecord() {
 
   // Certificate Type handlers
   const handleCertificateTypeChange = (index: number, field: string, value: string | File | null) => {
+    console.log(`Updating certificate ${index}, field: ${field}, value: ${value}`);
     const newCertificateTypes = [...(formData.certificateTypes || [])];
     newCertificateTypes[index] = { ...newCertificateTypes[index], [field]: value };
+    console.log('Updated certificate types:', newCertificateTypes);
     setFormData(prev => ({
       ...prev,
       certificateTypes: newCertificateTypes
@@ -1181,6 +1183,7 @@ export default function CaptureRecord() {
                         <Select
                           value={certificate.department}
                           onValueChange={(value) => {
+                            console.log(`Selected department: "${value}"`);
                             handleCertificateTypeChange(index, "department", value);
                             // Clear role and certificate name when department changes
                             handleCertificateTypeChange(index, "role", "");
@@ -1191,11 +1194,18 @@ export default function CaptureRecord() {
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
-                            {getAvailableDepartments().map((dept) => (
-                              <SelectItem key={dept} value={dept}>
-                                {dept}
-                              </SelectItem>
-                            ))}
+                            {(() => {
+                              const depts = getAvailableDepartments();
+                              console.log('Available departments for certificate form:', depts);
+                              return depts.map((dept) => {
+                                console.log(`Rendering department option: "${dept}"`);
+                                return (
+                                  <SelectItem key={dept} value={dept}>
+                                    {dept}
+                                  </SelectItem>
+                                );
+                              });
+                            })()}
                           </SelectContent>
                         </Select>
                       </div>
