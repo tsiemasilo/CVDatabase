@@ -252,10 +252,7 @@ export default function CaptureRecord() {
   // Get certificate names for the selected certificate type and department
   const getAvailableCertificateNames = () => {
     if (!formData.certificateDepartment || !formData.certificateType) return [];
-    console.log('Getting certificate names for:', formData.certificateDepartment, formData.certificateType);
-    const names = getCertificateNamesForType(formData.certificateDepartment, formData.certificateType);
-    console.log('Available certificate names:', names);
-    return names;
+    return getCertificateNamesForType(formData.certificateDepartment, formData.certificateType);
   };
 
   const handleInputChange = (field: string, value: string) => {

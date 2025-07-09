@@ -372,7 +372,17 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
           "SAP Certified Application Associate - SAP S/4HANA Procurement",
           "SAP Certified Application Associate - SAP S/4HANA Financial Accounting",
           "SAP Certified Application Associate - SAP S/4HANA Management Accounting",
-          "SAP Certified Application Associate - SAP SuccessFactors Employee Central"
+          "SAP Certified Application Associate - SAP SuccessFactors Employee Central",
+          "SAP Certified Application Associate - SAP S/4HANA Production Planning",
+          "SAP Certified Application Associate - SAP S/4HANA Quality Management",
+          "SAP Certified Application Associate - SAP S/4HANA Plant Maintenance",
+          "SAP Certified Application Associate - SAP S/4HANA Warehouse Management",
+          "SAP Certified Application Associate - SAP S/4HANA Extended Warehouse Management",
+          "SAP Certified Application Associate - SAP SuccessFactors Recruiting",
+          "SAP Certified Application Associate - SAP SuccessFactors Performance & Goals",
+          "SAP Certified Application Associate - SAP SuccessFactors Compensation",
+          "SAP Certified Application Associate - SAP SuccessFactors Learning Management",
+          "SAP Certified Application Associate - SAP Customer Data Platform"
         ]
       },
       {
@@ -382,7 +392,17 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
           "SAP Certified Technology Associate - SAP HANA 2.0 SPS04",
           "SAP Certified Application Associate - SAP Fiori Application Developer",
           "SAP Certified Technology Associate - SAP S/4HANA System Administration",
-          "SAP Certified Development Associate - SAP Integration Suite"
+          "SAP Certified Development Associate - SAP Integration Suite",
+          "SAP Certified Development Associate - SAP Extension Suite",
+          "SAP Certified Technology Associate - SAP BASIS Administration",
+          "SAP Certified Technology Associate - SAP Security",
+          "SAP Certified Development Associate - SAP UI5 with SAP NetWeaver Gateway",
+          "SAP Certified Technology Associate - SAP HANA Cloud Provisioning and Administration",
+          "SAP Certified Development Associate - SAP BTP Extension Developer",
+          "SAP Certified Technology Associate - SAP Landscape Transformation Replication Server",
+          "SAP Certified Development Associate - SAP Cloud Application Programming Model",
+          "SAP Certified Technology Associate - SAP S/4HANA Conversion and SAP System Upgrade",
+          "SAP Certified Development Associate - Programming with SAP HANA"
         ]
       },
       {
@@ -424,10 +444,20 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
         type: "Network & Infrastructure Certifications",
         names: [
           "Cisco Certified Network Associate (CCNA)",
+          "Cisco Certified Network Professional (CCNP)",
+          "Cisco Certified Internetwork Expert (CCIE)",
           "CompTIA Network+ (N+)",
           "Microsoft Certified: Azure Administrator Associate",
+          "Microsoft Certified: Azure Solutions Architect Expert",
           "VMware Certified Professional - Data Center Virtualization (VCP-DCV)",
-          "CompTIA Server+ (Server+)"
+          "VMware Certified Advanced Professional (VCAP)",
+          "CompTIA Server+ (Server+)",
+          "Red Hat Certified System Administrator (RHCSA)",
+          "Red Hat Certified Engineer (RHCE)",
+          "Juniper Networks Certified Internet Associate (JNCIA)",
+          "HPE FlexNetwork Certified Professional",
+          "Dell EMC Proven Professional Certification",
+          "F5 Certified BIG-IP Administrator"
         ]
       },
       {
@@ -435,9 +465,19 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
         names: [
           "CompTIA Security+ (Sec+)",
           "Certified Information Systems Security Professional (CISSP)",
+          "Certified Information Security Manager (CISM)",
+          "Certified Information Systems Auditor (CISA)",
           "Certified Ethical Hacker (CEH)",
           "CompTIA Cybersecurity Analyst (CySA+)",
-          "SANS GIAC Security Essentials (GSEC)"
+          "SANS GIAC Security Essentials (GSEC)",
+          "SANS GIAC Certified Incident Handler (GCIH)",
+          "SANS GIAC Penetration Tester (GPEN)",
+          "Certified Information Systems Security Professional Associate (CISSP Associate)",
+          "Offensive Security Certified Professional (OSCP)",
+          "CompTIA PenTest+ (PT0-002)",
+          "SANS GIAC Certified Forensics Analyst (GCFA)",
+          "Certified Cloud Security Professional (CCSP)",
+          "ISACA Risk and Information Systems Control (CRISC)"
         ]
       },
       {
@@ -482,7 +522,17 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
           "Senior Professional in Human Resources (SPHR)",
           "Society for Human Resource Management Certified Professional (SHRM-CP)",
           "Society for Human Resource Management Senior Certified Professional (SHRM-SCP)",
-          "Certified Human Resources Professional (CHRP)"
+          "Certified Human Resources Professional (CHRP)",
+          "Global Professional in Human Resources (GPHR)",
+          "Human Resource Information Professional (HRIP)",
+          "Certified Employee Benefits Specialist (CEBS)",
+          "Certified Compensation Professional (CCP)",
+          "Certified Benefits Professional (CBP)",
+          "Professional in Human Resources - California (PHR-CA)",
+          "Associate Professional in Human Resources (aPHR)",
+          "Human Resources Certification Institute Associate (HRCI Associate)",
+          "Certified Diversity Professional (CDP)",
+          "Certified Executive Coach (CEC)"
         ]
       },
       {
@@ -537,7 +587,17 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
           "Certified Associate in Project Management (CAPM)",
           "Program Management Professional (PgMP)",
           "Portfolio Management Professional (PfMP)",
-          "PMI Agile Certified Practitioner (PMI-ACP)"
+          "PMI Agile Certified Practitioner (PMI-ACP)",
+          "PMI Risk Management Professional (PMI-RMP)",
+          "PMI Scheduling Professional (PMI-SP)",
+          "PMI Professional in Business Analysis (PMI-PBA)",
+          "Microsoft Project Certification",
+          "Oracle Primavera P6 Certification",
+          "PRINCE2 Foundation Certificate",
+          "PRINCE2 Practitioner Certificate",
+          "PMI Construction Professional (PMI-CP)",
+          "Certified Project Director (CPD)",
+          "Master Project Manager (MPM)"
         ]
       },
       {
@@ -592,7 +652,37 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
           "ITIL Practitioner Certificate",
           "ITIL Intermediate Service Strategy Certificate",
           "ITIL Intermediate Service Design Certificate",
-          "ITIL Expert Certificate"
+          "ITIL Intermediate Service Transition Certificate",
+          "ITIL Intermediate Service Operation Certificate",
+          "ITIL Intermediate Continual Service Improvement Certificate",
+          "ITIL Expert Certificate",
+          "ITIL Master Certificate",
+          "ITIL 4 Foundation Certificate",
+          "ITIL 4 Managing Professional (MP)",
+          "ITIL 4 Strategic Leader (SL)",
+          "ITIL 4 Master Certificate",
+          "VeriSM Foundation Certificate",
+          "FitSM Foundation Certificate"
+        ]
+      },
+      {
+        type: "Service Desk Software Certifications",
+        names: [
+          "ServiceNow Certified System Administrator",
+          "ServiceNow Certified Application Developer",
+          "ServiceNow Certified Implementation Specialist",
+          "Remedy ARS Certified Administrator",
+          "BMC Remedy Developer Certification",
+          "Jira Service Management Administrator",
+          "Atlassian Certified Professional",
+          "Microsoft System Center Service Manager",
+          "HP Service Manager Certification",
+          "Cherwell Service Management Administrator",
+          "Freshservice Administrator Certification",
+          "Zendesk Administrator Certification",
+          "HEAT Service Management Certification",
+          "ManageEngine ServiceDesk Plus Administrator",
+          "Ivanti Service Manager Certification"
         ]
       },
       {
