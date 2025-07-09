@@ -1157,11 +1157,11 @@ export default function CaptureRecord() {
 
               {/* Certificate Type and Certificate Name */}
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-800">Certificate Type & Certificate Name</h4>
+                <h4 className="font-semibold text-gray-900 text-lg">Certificate Type & Certificate Name</h4>
                 {(formData.certificateTypes || []).map((certificate, index) => (
-                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                    <div className="flex justify-between items-center mb-3">
-                      <h5 className="font-medium text-gray-700">
+                  <div key={index} className="border rounded-lg p-6 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                      <h5 className="font-medium text-gray-700 text-base">
                         Certificate {index + 1}
                       </h5>
                       {(formData.certificateTypes || []).length > 1 && (
@@ -1177,9 +1177,9 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <Label htmlFor={`certDept-${index}`}>Department</Label>
+                        <Label htmlFor={`certDept-${index}`} className="text-sm font-medium text-gray-700">Department</Label>
                         <Select
                           value={certificate.department}
                           onValueChange={(value) => {
@@ -1189,7 +1189,7 @@ export default function CaptureRecord() {
                             handleCertificateTypeChange(index, "certificateName", "");
                           }}
                         >
-                          <SelectTrigger id={`certDept-${index}`}>
+                          <SelectTrigger id={`certDept-${index}`} className="mt-1">
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1202,7 +1202,7 @@ export default function CaptureRecord() {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor={`certRole-${index}`}>Role</Label>
+                        <Label htmlFor={`certRole-${index}`} className="text-sm font-medium text-gray-700">Role</Label>
                         <Select
                           value={certificate.role}
                           onValueChange={(value) => {
@@ -1212,8 +1212,8 @@ export default function CaptureRecord() {
                           }}
                           disabled={!certificate.department}
                         >
-                          <SelectTrigger id={`certRole-${index}`}>
-                            <SelectValue placeholder={certificate.department ? "Select role" : "Select department first"} />
+                          <SelectTrigger id={`certRole-${index}`} className="mt-1">
+                            <SelectValue placeholder="Select department first" />
                           </SelectTrigger>
                           <SelectContent>
                             {getAvailableCertificateRoles(certificate.department).map((role) => (
@@ -1225,14 +1225,14 @@ export default function CaptureRecord() {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor={`certName-${index}`}>Certificate Name</Label>
+                        <Label htmlFor={`certName-${index}`} className="text-sm font-medium text-gray-700">Certificate Name</Label>
                         <Select
                           value={certificate.certificateName}
                           onValueChange={(value) => handleCertificateTypeChange(index, "certificateName", value)}
                           disabled={!certificate.department || !certificate.role}
                         >
-                          <SelectTrigger id={`certName-${index}`}>
-                            <SelectValue placeholder={certificate.department && certificate.role ? "Select certificate" : "Select department & role first"} />
+                          <SelectTrigger id={`certName-${index}`} className="mt-1">
+                            <SelectValue placeholder="Select department & role first" />
                           </SelectTrigger>
                           <SelectContent>
                             {getAvailableCertificateNames(certificate.department, certificate.role).map((name) => (
@@ -1246,19 +1246,29 @@ export default function CaptureRecord() {
                     </div>
                     
                     <div>
-                      <Label htmlFor={`certFile-${index}`}>Upload Certificate (Optional)</Label>
-                      <Input
-                        id={`certFile-${index}`}
-                        type="file"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
-                        className="mt-1"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Accepted formats: PDF, JPG, PNG (Max 10MB)
-                      </p>
+                      <Label htmlFor={`certFile-${index}`} className="text-sm font-medium text-gray-700">Upload Certificate (Optional)</Label>
+                      <div className="mt-1 flex items-center justify-center w-full">
+                        <label htmlFor={`certFile-${index}`} className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p className="mb-2 text-sm text-gray-500">
+                              <span className="font-semibold">Choose File</span> No file chosen
+                            </p>
+                            <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+                          </div>
+                          <Input
+                            id={`certFile-${index}`}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
                       {certificate.certificate && (
-                        <p className="text-xs text-green-600 mt-1">
+                        <p className="text-xs text-green-600 mt-2">
                           ✓ Certificate uploaded: {(certificate.certificate as File).name}
                         </p>
                       )}
@@ -1270,7 +1280,7 @@ export default function CaptureRecord() {
                   type="button"
                   variant="outline"
                   onClick={addCertificateType}
-                  className="w-full"
+                  className="w-full mt-4 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Another Certificate
