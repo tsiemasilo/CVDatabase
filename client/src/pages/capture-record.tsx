@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS, CERTIFICATE_MAPPINGS } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -148,6 +148,7 @@ export default function CaptureRecord() {
     qualificationName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
+    certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -385,7 +386,53 @@ export default function CaptureRecord() {
       }));
     } else if (field === 'otherQualificationCertificate' && index !== undefined) {
       handleOtherQualificationChange(index, 'certificate', file);
+    } else if (field === 'certificateFile' && index !== undefined) {
+      handleCertificateChange(index, 'certificateFile', file);
     }
+  };
+
+  // Certificate handlers
+  const handleCertificateChange = (index: number, field: string, value: string | File | null) => {
+    const newCertificates = [...(formData.certificates || [])];
+    newCertificates[index] = { ...newCertificates[index], [field]: value };
+    setFormData(prev => ({
+      ...prev,
+      certificates: newCertificates
+    }));
+  };
+
+  const addCertificate = () => {
+    setFormData(prev => ({
+      ...prev,
+      certificates: [...(prev.certificates || []), { department: "", role: "", certificateName: "", certificateFile: null }]
+    }));
+  };
+
+  const removeCertificate = (index: number) => {
+    if ((formData.certificates || []).length > 1) {
+      const newCertificates = (formData.certificates || []).filter((_, i) => i !== index);
+      setFormData(prev => ({
+        ...prev,
+        certificates: newCertificates
+      }));
+    }
+  };
+
+  // Get available departments for certificates
+  const getCertificateDepartments = () => {
+    return CERTIFICATE_MAPPINGS.map(mapping => mapping.department).sort();
+  };
+
+  // Get available roles for a department
+  const getCertificateRoles = (department: string) => {
+    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department);
+    return mapping ? mapping.role.split(', ') : [];
+  };
+
+  // Get available certificate names for department and role
+  const getCertificateNames = (department: string, role: string) => {
+    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department);
+    return mapping ? mapping.certificates : [];
   };
 
 
@@ -484,6 +531,7 @@ export default function CaptureRecord() {
         qualificationName: "",
         qualificationCertificate: null,
         otherQualifications: [{ name: "", certificate: null }],
+        certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
         experienceInSimilarRole: "",
         experienceWithITSMTools: "",
         workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -1109,6 +1157,148 @@ export default function CaptureRecord() {
 
 
 
+            </CardContent>
+          </Card>
+
+          {/* Certificates */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
+                Certificate Type & Certificate Name
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {(formData.certificates || []).map((certificate, index) => (
+                <div key={index} className="border rounded-lg p-6 bg-gray-50">
+                  <div className="flex justify-between items-center mb-4">
+                    <h5 className="font-medium text-gray-700 text-base">
+                      Certificate {index + 1}
+                    </h5>
+                    {(formData.certificates || []).length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeCertificate(index)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <Label htmlFor={`certDept-${index}`} className="text-sm font-medium text-gray-700">Department</Label>
+                      <Select
+                        value={certificate.department}
+                        onValueChange={(value) => {
+                          handleCertificateChange(index, "department", value);
+                          // Clear dependent fields when department changes
+                          handleCertificateChange(index, "role", "");
+                          handleCertificateChange(index, "certificateName", "");
+                        }}
+                      >
+                        <SelectTrigger id={`certDept-${index}`} className="mt-1">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getCertificateDepartments().map((dept) => (
+                            <SelectItem key={dept} value={dept}>
+                              {dept}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor={`certRole-${index}`} className="text-sm font-medium text-gray-700">Role</Label>
+                      <Select
+                        value={certificate.role}
+                        onValueChange={(value) => {
+                          handleCertificateChange(index, "role", value);
+                          // Clear certificate name when role changes
+                          handleCertificateChange(index, "certificateName", "");
+                        }}
+                        disabled={!certificate.department}
+                      >
+                        <SelectTrigger id={`certRole-${index}`} className="mt-1">
+                          <SelectValue placeholder={certificate.department ? "Select role" : "Select department first"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getCertificateRoles(certificate.department).map((role) => (
+                            <SelectItem key={role} value={role}>
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor={`certName-${index}`} className="text-sm font-medium text-gray-700">Certificate Name</Label>
+                      <Select
+                        value={certificate.certificateName}
+                        onValueChange={(value) => {
+                          handleCertificateChange(index, "certificateName", value);
+                        }}
+                        disabled={!certificate.department || !certificate.role}
+                      >
+                        <SelectTrigger id={`certName-${index}`} className="mt-1">
+                          <SelectValue placeholder={certificate.department && certificate.role ? "Select certificate" : "Select department & role first"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getCertificateNames(certificate.department, certificate.role).map((cert) => (
+                            <SelectItem key={cert} value={cert}>
+                              {cert}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor={`certFile-${index}`} className="text-sm font-medium text-gray-700">Upload Certificate (Optional)</Label>
+                    <div className="mt-1 flex items-center justify-center w-full">
+                      <label htmlFor={`certFile-${index}`} className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">Choose File</span> No file chosen
+                          </p>
+                          <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+                        </div>
+                        <Input
+                          id={`certFile-${index}`}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => handleFileUpload('certificateFile', e.target.files?.[0] || null, index)}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    {certificate.certificateFile && (
+                      <p className="text-xs text-green-600 mt-2">
+                        ✓ Certificate uploaded: {(certificate.certificateFile as File).name}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addCertificate}
+                className="w-full mt-4 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Another Certificate
+              </Button>
             </CardContent>
           </Card>
 
