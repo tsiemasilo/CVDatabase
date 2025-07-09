@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, CERTIFICATE_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -148,7 +148,6 @@ export default function CaptureRecord() {
     qualificationName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
-    certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -157,11 +156,7 @@ export default function CaptureRecord() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [departmentRoles, setDepartmentRoles] = useState<DepartmentRole[]>([]);
 
-  // Debug: Log certificate mappings on component mount
-  useEffect(() => {
-    console.log('Certificate mappings loaded:', CERTIFICATE_MAPPINGS.length, 'items');
-    console.log('Available departments:', [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))]);
-  }, []);
+
 
   // Load departments and roles from localStorage (same source as positions|roles page)
   useEffect(() => {
@@ -390,58 +385,10 @@ export default function CaptureRecord() {
       }));
     } else if (field === 'otherQualificationCertificate' && index !== undefined) {
       handleOtherQualificationChange(index, 'certificate', file);
-    } else if (field === 'certificateType' && index !== undefined) {
-      handleCertificateTypeChange(index, 'certificate', file);
     }
   };
 
-  // Certificate Type handlers
-  const handleCertificateTypeChange = (index: number, field: string, value: string | File | null) => {
-    const newCertificateTypes = [...(formData.certificateTypes || [])];
-    newCertificateTypes[index] = { ...newCertificateTypes[index], [field]: value };
-    setFormData(prev => ({
-      ...prev,
-      certificateTypes: newCertificateTypes
-    }));
-  };
 
-  const addCertificateType = () => {
-    setFormData(prev => ({
-      ...prev,
-      certificateTypes: [...(prev.certificateTypes || []), { department: "", role: "", certificateName: "", certificate: null }]
-    }));
-  };
-
-  const removeCertificateType = (index: number) => {
-    if ((formData.certificateTypes || []).length > 1) {
-      const newCertificateTypes = (formData.certificateTypes || []).filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        certificateTypes: newCertificateTypes
-      }));
-    }
-  };
-
-  // Get available certificate names for the selected department and role
-  const getAvailableCertificateNames = (department: string, role: string) => {
-    if (!department || !role) return [];
-    const selectedMapping = CERTIFICATE_MAPPINGS.find(c => c.department === department && c.role === role);
-    return selectedMapping ? selectedMapping.certificates : [];
-  };
-
-  // Get available departments for certificates (directly from certificate mappings)
-  const getAvailableCertificateDepartments = () => {
-    const departments = [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))];
-    return departments.sort();
-  };
-
-  // Get available certificate roles for the selected department
-  const getAvailableCertificateRoles = (department: string) => {
-    if (!department) return [];
-    const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
-    const certificateRoles = [...new Set(departmentMappings.map(c => c.role))];
-    return certificateRoles;
-  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -537,7 +484,6 @@ export default function CaptureRecord() {
         qualificationName: "",
         qualificationCertificate: null,
         otherQualifications: [{ name: "", certificate: null }],
-        certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
         experienceInSimilarRole: "",
         experienceWithITSMTools: "",
         workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -1161,131 +1107,7 @@ export default function CaptureRecord() {
                 </Button>
               </div>
 
-              {/* Certificate Type and Certificate Name */}
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800">Certificate Type & Certificate Name</h4>
-                {(formData.certificateTypes || []).map((certificate, index) => (
-                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                    <div className="flex justify-between items-center mb-3">
-                      <h5 className="font-medium text-gray-700">
-                        Certificate {index + 1}
-                      </h5>
-                      {(formData.certificateTypes || []).length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeCertificateType(index)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                      <div>
-                        <Label htmlFor={`certDept-${index}`}>Department</Label>
-                        <Select
-                          value={certificate.department}
-                          onValueChange={(value) => {
-                            handleCertificateTypeChange(index, "department", value);
-                            // Clear role and certificate name when department changes
-                            handleCertificateTypeChange(index, "role", "");
-                            handleCertificateTypeChange(index, "certificateName", "");
-                          }}
-                        >
-                          <SelectTrigger id={`certDept-${index}`}>
-                            <SelectValue placeholder="Select department" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(() => {
-                              const departments = getAvailableCertificateDepartments();
-                              console.log('Rendering certificate department options:', departments);
-                              return departments.map((dept) => (
-                                <SelectItem key={dept} value={dept}>
-                                  {dept}
-                                </SelectItem>
-                              ));
-                            })()}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor={`certRole-${index}`}>Role</Label>
-                        <Select
-                          value={certificate.role}
-                          onValueChange={(value) => {
-                            handleCertificateTypeChange(index, "role", value);
-                            // Clear certificate name when role changes
-                            handleCertificateTypeChange(index, "certificateName", "");
-                          }}
-                          disabled={!certificate.department}
-                        >
-                          <SelectTrigger id={`certRole-${index}`}>
-                            <SelectValue placeholder={certificate.department ? "Select role" : "Select department first"} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAvailableCertificateRoles(certificate.department).map((role) => (
-                              <SelectItem key={role} value={role}>
-                                {role}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor={`certName-${index}`}>Certificate Name</Label>
-                        <Select
-                          value={certificate.certificateName}
-                          onValueChange={(value) => handleCertificateTypeChange(index, "certificateName", value)}
-                          disabled={!certificate.department || !certificate.role}
-                        >
-                          <SelectTrigger id={`certName-${index}`}>
-                            <SelectValue placeholder={certificate.department && certificate.role ? "Select certificate" : "Select department & role first"} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAvailableCertificateNames(certificate.department, certificate.role).map((name) => (
-                              <SelectItem key={name} value={name}>
-                                {name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor={`certFile-${index}`}>Upload Certificate (Optional)</Label>
-                      <Input
-                        id={`certFile-${index}`}
-                        type="file"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
-                        className="mt-1"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Accepted formats: PDF, JPG, PNG (Max 10MB)
-                      </p>
-                      {certificate.certificate && (
-                        <p className="text-xs text-green-600 mt-1">
-                          ✓ Certificate uploaded: {(certificate.certificate as File).name}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-                
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addCertificateType}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Another Certificate
-                </Button>
-              </div>
+
             </CardContent>
           </Card>
 
