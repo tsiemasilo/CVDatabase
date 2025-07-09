@@ -148,6 +148,7 @@ export default function CaptureRecord() {
     qualificationName: "",
     certificateType: "",
     certificateName: "",
+    certificateFile: null,
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
     experienceInSimilarRole: "",
@@ -394,6 +395,11 @@ export default function CaptureRecord() {
         ...prev,
         qualificationCertificate: file
       }));
+    } else if (field === 'certificateFile') {
+      setFormData(prev => ({
+        ...prev,
+        certificateFile: file
+      }));
     } else if (field === 'otherQualificationCertificate' && index !== undefined) {
       handleOtherQualificationChange(index, 'certificate', file);
     }
@@ -491,7 +497,8 @@ export default function CaptureRecord() {
         qualificationType: "",
         qualificationName: "",
         certificateType: "",
-        certificateName: ""
+        certificateName: "",
+        certificateFile: null
       });
     },
     onError: (error: any) => {
@@ -1053,7 +1060,7 @@ export default function CaptureRecord() {
               {/* Certificates */}
               <div className="border rounded-lg p-4 bg-blue-50">
                 <h4 className="font-medium text-gray-800 mb-3">Certificates</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <Label htmlFor="certificateType">Certificate Type</Label>
                     <Select
@@ -1102,6 +1109,27 @@ export default function CaptureRecord() {
                     </Select>
                   </div>
                 </div>
+                
+                {/* Certificate Upload */}
+                <div>
+                  <Label htmlFor="certificateFile">Upload Certificate (Optional)</Label>
+                  <Input
+                    id="certificateFile"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload('certificateFile', e.target.files?.[0] || null)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Accepted formats: PDF, JPG, PNG (Max 10MB)
+                  </p>
+                  {formData.certificateFile && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ✓ Certificate uploaded: {formData.certificateFile.name}
+                    </p>
+                  )}
+                </div>
+                
                 {formData.department && formData.certificateType && formData.certificateName && (
                   <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
                     <p className="text-xs text-green-700">
