@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, varchar, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -57,3 +57,30 @@ export const insertCVRecordSchema = createInsertSchema(cvRecords).omit({
 
 export type InsertCVRecord = z.infer<typeof insertCVRecordSchema>;
 export type CVRecord = typeof cvRecords.$inferSelect;
+
+// User profiles table for authentication and role management
+export const userProfiles = pgTable("user_profiles", {
+  id: serial("id").primaryKey(),
+  username: varchar("username", { length: 50 }).unique().notNull(),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  password: varchar("password", { length: 255 }).notNull(), // hashed
+  role: varchar("role", { length: 20 }).notNull().default("user"), // 'admin', 'manager', 'user'
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
+  department: varchar("department", { length: 100 }),
+  position: varchar("position", { length: 100 }),
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  isActive: boolean("is_active").default(true),
+  lastLogin: timestamp("last_login"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
+export type UserProfile = typeof userProfiles.$inferSelect;

@@ -1,4 +1,4 @@
-import { CVRecord, InsertCVRecord } from "@shared/schema";
+import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<any | undefined>;
@@ -12,19 +12,31 @@ export interface IStorage {
   updateCVRecord(id: number, cvRecord: Partial<InsertCVRecord>): Promise<CVRecord | undefined>;
   deleteCVRecord(id: number): Promise<boolean>;
   searchCVRecords(searchTerm: string, statusFilter?: string): Promise<CVRecord[]>;
+
+  // User Profile methods
+  getAllUserProfiles(): Promise<UserProfile[]>;
+  getUserProfile(id: number): Promise<UserProfile | undefined>;
+  createUserProfile(userProfile: InsertUserProfile): Promise<UserProfile>;
+  updateUserProfile(id: number, userProfile: Partial<InsertUserProfile>): Promise<UserProfile | undefined>;
+  deleteUserProfile(id: number): Promise<boolean>;
+  searchUserProfiles(searchTerm: string, roleFilter?: string): Promise<UserProfile[]>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, any>;
   private cvRecords: Map<number, CVRecord>;
+  private userProfiles: Map<number, UserProfile>;
   private currentUserId: number;
   private currentCVId: number;
+  private currentUserProfileId: number;
 
   constructor() {
     this.users = new Map();
     this.cvRecords = new Map();
+    this.userProfiles = new Map();
     this.currentUserId = 1;
     this.currentCVId = 1;
+    this.currentUserProfileId = 1;
     
     // Initialize with some sample data
     this.initializeSampleData();
@@ -54,6 +66,7 @@ export class MemStorage implements IStorage {
           { companyName: "Tech Corp", position: "Junior Developer", startDate: "01/2020", endDate: "12/2022", isCurrentRole: false },
           { companyName: "InnovateTech", position: "Software Developer", startDate: "01/2023", endDate: "", isCurrentRole: true }
         ]),
+        certificateTypes: JSON.stringify({}),
         status: "active",
         cvFile: "john_doe_cv.pdf",
         submittedAt: new Date("2024-01-15"),
@@ -80,6 +93,7 @@ export class MemStorage implements IStorage {
           { companyName: "ConsultCorp", position: "Project Coordinator", startDate: "03/2018", endDate: "06/2021", isCurrentRole: false },
           { companyName: "MegaProjects", position: "Senior Project Manager", startDate: "07/2021", endDate: "", isCurrentRole: true }
         ]),
+        certificateTypes: JSON.stringify({}),
         status: "pending",
         cvFile: "sarah_johnson_cv.pdf",
         submittedAt: new Date("2024-01-20"),
@@ -106,6 +120,7 @@ export class MemStorage implements IStorage {
           { companyName: "SAP Solutions", position: "Junior SAP Developer", startDate: "06/2019", endDate: "05/2022", isCurrentRole: false },
           { companyName: "Enterprise SAP", position: "SAP ABAP Developer", startDate: "06/2022", endDate: "", isCurrentRole: true }
         ]),
+        certificateTypes: JSON.stringify({}),
         status: "active",
         cvFile: "michael_chen_cv.pdf",
         submittedAt: new Date("2024-01-25"),
@@ -115,6 +130,60 @@ export class MemStorage implements IStorage {
     sampleCVs.forEach(cv => {
       const id = this.currentCVId++;
       this.cvRecords.set(id, { ...cv, id });
+    });
+
+    // Initialize sample user profiles
+    const sampleUserProfiles: Omit<UserProfile, 'id'>[] = [
+      {
+        username: "admin_user",
+        email: "admin@alteram.co.za",
+        password: "admin123", // In production, this should be hashed
+        role: "admin",
+        firstName: "System",
+        lastName: "Administrator",
+        department: "ICT",
+        position: "System Admin",
+        phoneNumber: "011 234 5678",
+        isActive: true,
+        lastLogin: new Date("2025-01-09T08:30:00"),
+        createdAt: new Date("2024-12-01T00:00:00"),
+        updatedAt: new Date("2024-12-01T00:00:00")
+      },
+      {
+        username: "hr_manager",
+        email: "manager@alteram.co.za",
+        password: "manager123",
+        role: "manager",
+        firstName: "Sarah",
+        lastName: "Johnson",
+        department: "HR",
+        position: "HR Manager",
+        phoneNumber: "011 234 5679",
+        isActive: true,
+        lastLogin: new Date("2025-01-09T09:15:00"),
+        createdAt: new Date("2024-12-05T00:00:00"),
+        updatedAt: new Date("2024-12-05T00:00:00")
+      },
+      {
+        username: "candidate_user",
+        email: "candidate@example.com",
+        password: "user123",
+        role: "user",
+        firstName: "John",
+        lastName: "Doe",
+        department: "SAP",
+        position: "SAP Developer",
+        phoneNumber: "083 123 4567",
+        isActive: true,
+        lastLogin: new Date("2025-01-09T10:00:00"),
+        createdAt: new Date("2024-12-10T00:00:00"),
+        updatedAt: new Date("2024-12-10T00:00:00")
+      }
+    ];
+
+    sampleUserProfiles.forEach(profile => {
+      const id = this.currentUserProfileId++;
+      this.userProfiles.set(id, { ...profile, id });
     });
   }
 
@@ -150,11 +219,22 @@ export class MemStorage implements IStorage {
     const cvRecord: CVRecord = {
       ...insertCVRecord,
       id,
+      surname: insertCVRecord.surname || null,
+      idPassport: insertCVRecord.idPassport || null,
+      gender: insertCVRecord.gender || null,
       phone: insertCVRecord.phone || null,
+      roleTitle: insertCVRecord.roleTitle || null,
       department: insertCVRecord.department || null,
       experience: insertCVRecord.experience || null,
+      experienceInSimilarRole: insertCVRecord.experienceInSimilarRole || null,
+      experienceWithITSMTools: insertCVRecord.experienceWithITSMTools || null,
+      sapKLevel: insertCVRecord.sapKLevel || null,
       qualifications: insertCVRecord.qualifications || null,
+      qualificationType: insertCVRecord.qualificationType || null,
+      qualificationName: insertCVRecord.qualificationName || null,
       languages: insertCVRecord.languages || null,
+      workExperiences: insertCVRecord.workExperiences || null,
+      certificateTypes: insertCVRecord.certificateTypes || null,
       cvFile: insertCVRecord.cvFile || null,
       submittedAt: new Date(),
     };
@@ -188,6 +268,73 @@ export class MemStorage implements IStorage {
       const matchesStatus = !statusFilter || record.status === statusFilter;
       
       return matchesSearch && matchesStatus;
+    });
+  }
+
+  // User Profile methods
+  async getAllUserProfiles(): Promise<UserProfile[]> {
+    return Array.from(this.userProfiles.values()).sort((a, b) => 
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+    );
+  }
+
+  async getUserProfile(id: number): Promise<UserProfile | undefined> {
+    return this.userProfiles.get(id);
+  }
+
+  async createUserProfile(insertUserProfile: InsertUserProfile): Promise<UserProfile> {
+    const id = this.currentUserProfileId++;
+    const userProfile: UserProfile = {
+      id,
+      username: insertUserProfile.username,
+      email: insertUserProfile.email,
+      password: insertUserProfile.password,
+      role: insertUserProfile.role ?? 'user',
+      firstName: insertUserProfile.firstName || null,
+      lastName: insertUserProfile.lastName || null,
+      department: insertUserProfile.department || null,
+      position: insertUserProfile.position || null,
+      phoneNumber: insertUserProfile.phoneNumber || null,
+      isActive: insertUserProfile.isActive ?? true,
+      lastLogin: insertUserProfile.lastLogin || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.userProfiles.set(id, userProfile);
+    return userProfile;
+  }
+
+  async updateUserProfile(id: number, updateData: Partial<InsertUserProfile>): Promise<UserProfile | undefined> {
+    const existing = this.userProfiles.get(id);
+    if (!existing) return undefined;
+
+    const updated: UserProfile = { 
+      ...existing, 
+      ...updateData,
+      updatedAt: new Date()
+    };
+    this.userProfiles.set(id, updated);
+    return updated;
+  }
+
+  async deleteUserProfile(id: number): Promise<boolean> {
+    return this.userProfiles.delete(id);
+  }
+
+  async searchUserProfiles(searchTerm: string, roleFilter?: string): Promise<UserProfile[]> {
+    const allProfiles = await this.getAllUserProfiles();
+    
+    return allProfiles.filter(profile => {
+      const matchesSearch = !searchTerm || 
+        (profile.firstName && profile.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (profile.lastName && profile.lastName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        profile.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        profile.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (profile.department && profile.department.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesRole = !roleFilter || profile.role === roleFilter;
+      
+      return matchesSearch && matchesRole;
     });
   }
 }

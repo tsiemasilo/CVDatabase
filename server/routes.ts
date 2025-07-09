@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCVRecordSchema } from "@shared/schema";
+import { insertCVRecordSchema, insertUserProfileSchema } from "@shared/schema";
 import { upload, deleteFile, getFileInfo } from "./uploads";
 import { z } from "zod";
 import path from "path";
@@ -263,6 +263,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to get file info" });
+    }
+  });
+
+  // User Profiles API Routes
+  
+  // Get all user profiles
+  app.get("/api/user-profiles", async (req, res) => {
+    try {
+      const { search, role } = req.query;
+      
+      let profiles;
+      if (search || role) {
+        profiles = await storage.searchUserProfiles(
+          search as string || "", 
+          role as string
+        );
+      } else {
+        profiles = await storage.getAllUserProfiles();
+      }
+      
+      res.json(profiles);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user profiles" });
+    }
+  });
+
+  // Get a specific user profile
+  app.get("/api/user-profiles/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid user profile ID" });
+      }
+
+      const profile = await storage.getUserProfile(id);
+      if (!profile) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  // Create a new user profile
+  app.post("/api/user-profiles", async (req, res) => {
+    try {
+      const validatedData = insertUserProfileSchema.parse(req.body);
+      const newProfile = await storage.createUserProfile(validatedData);
+      res.status(201).json(newProfile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create user profile" });
+    }
+  });
+
+  // Update a user profile
+  app.put("/api/user-profiles/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid user profile ID" });
+      }
+
+      const validatedData = insertUserProfileSchema.partial().parse(req.body);
+      const updatedProfile = await storage.updateUserProfile(id, validatedData);
+      
+      if (!updatedProfile) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+
+      res.json(updatedProfile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
+  // Delete a user profile
+  app.delete("/api/user-profiles/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid user profile ID" });
+      }
+
+      const deleted = await storage.deleteUserProfile(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete user profile" });
     }
   });
 
