@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS, CERTIFICATE_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -420,26 +420,268 @@ export default function CaptureRecord() {
     }
   };
 
-  // Get available departments for certificates
+  // Get available departments for certificates (from positions|roles data)
   const getCertificateDepartments = () => {
-    const departments = [...new Set(CERTIFICATE_MAPPINGS.map(mapping => mapping.department))];
+    const departments = getAvailableDepartments();
     console.log('Certificate departments:', departments);
-    return departments.sort();
+    return departments;
   };
 
-  // Get available roles for a department
+  // Get available roles for a department (from positions|roles data)
   const getCertificateRoles = (department: string) => {
-    const roles = CERTIFICATE_MAPPINGS
-      .filter(mapping => mapping.department === department)
-      .map(mapping => mapping.role);
+    if (departmentRoles.length === 0) {
+      // Fallback roles if no data is loaded yet
+      const fallbackRoles: Record<string, string[]> = {
+        "SAP": ["SAP ABAP Developer", "SAP Functional Consultant", "SAP Technical Consultant"],
+        "ICT": ["IT Support Technician", "Network Administrator", "Systems Analyst"],
+        "HR": ["HR Assistant", "Recruitment Coordinator", "HR Business Partner"],
+        "DEVELOPMENT": ["Junior Developer", "Software Developer", "Senior Developer"],
+        "Project Management": ["Project Coordinator", "Project Officer", "Project Manager"],
+        "Service Desk": ["Service Desk Agent", "Technical Support Specialist", "Service Desk Analyst"]
+      };
+      const roles = fallbackRoles[department] || [];
+      console.log('Roles for', department, ':', roles);
+      return roles;
+    }
+    const roles = departmentRoles
+      .filter(role => role.department === department)
+      .map(role => role.role)
+      .filter((role, index, self) => self.indexOf(role) === index); // Remove duplicates
     console.log('Roles for', department, ':', roles);
-    return [...new Set(roles)].sort();
+    return roles.sort();
   };
 
   // Get available certificate names for department and role
   const getCertificateNames = (department: string, role: string) => {
-    const mapping = CERTIFICATE_MAPPINGS.find(m => m.department === department && m.role === role);
-    return mapping ? mapping.certificates : [];
+    // Generate certificates based on department and role
+    const certificatesByRole: Record<string, string[]> = {
+      // Development certificates
+      "Junior Developer": [
+        "HTML5 Fundamentals Certificate", 
+        "CSS3 Advanced Styling Certificate", 
+        "JavaScript ES6+ Certificate", 
+        "React Basics Certificate", 
+        "Git Version Control Certificate", 
+        "Responsive Web Design Certificate", 
+        "Bootstrap Framework Certificate", 
+        "Basic SQL Certificate", 
+        "API Integration Certificate", 
+        "Agile Development Certificate"
+      ],
+      "Software Developer": [
+        "Full Stack Development Certificate", 
+        "Node.js Backend Certificate", 
+        "Database Management Certificate", 
+        "Cloud Computing Basics Certificate", 
+        "Software Testing Certificate", 
+        "DevOps Fundamentals Certificate", 
+        "Security Best Practices Certificate", 
+        "Performance Optimization Certificate", 
+        "Code Review Practices Certificate", 
+        "System Architecture Certificate"
+      ],
+      "Senior Developer": [
+        "Advanced System Architecture Certificate", 
+        "Team Leadership Certificate", 
+        "Code Quality Standards Certificate", 
+        "Advanced Security Certificate", 
+        "Microservices Architecture Certificate", 
+        "Advanced Cloud Computing Certificate", 
+        "Performance Tuning Certificate", 
+        "Technical Mentoring Certificate", 
+        "Project Management Certificate", 
+        "Enterprise Development Certificate"
+      ],
+      // SAP certificates
+      "SAP ABAP Developer": [
+        "SAP ABAP Programming Certificate", 
+        "SAP Data Dictionary Certificate", 
+        "SAP Module Pool Programming Certificate", 
+        "SAP Reports Development Certificate", 
+        "SAP Enhancement Framework Certificate", 
+        "SAP Workflow Certificate", 
+        "SAP IDOC Processing Certificate", 
+        "SAP BAdI Implementation Certificate", 
+        "SAP Performance Optimization Certificate", 
+        "SAP Debugging Techniques Certificate"
+      ],
+      "SAP Functional Consultant": [
+        "SAP FI/CO Configuration Certificate", 
+        "SAP SD Configuration Certificate", 
+        "SAP MM Configuration Certificate", 
+        "SAP Business Process Certificate", 
+        "SAP Integration Certificate", 
+        "SAP Customization Certificate", 
+        "SAP User Training Certificate", 
+        "SAP Testing Methodology Certificate", 
+        "SAP Documentation Certificate", 
+        "SAP Go-Live Support Certificate"
+      ],
+      "SAP Technical Consultant": [
+        "SAP Basis Administration Certificate", 
+        "SAP HANA Database Certificate", 
+        "SAP System Integration Certificate", 
+        "SAP Performance Monitoring Certificate", 
+        "SAP Security Configuration Certificate", 
+        "SAP Transport Management Certificate", 
+        "SAP System Upgrade Certificate", 
+        "SAP Backup & Recovery Certificate", 
+        "SAP Monitoring Tools Certificate", 
+        "SAP Technical Architecture Certificate"
+      ],
+      // ICT certificates
+      "IT Support Technician": [
+        "CompTIA A+ Certificate", 
+        "Windows 10/11 Support Certificate", 
+        "Hardware Troubleshooting Certificate", 
+        "Network Basics Certificate", 
+        "Help Desk Operations Certificate", 
+        "Customer Service Certificate", 
+        "Remote Support Tools Certificate", 
+        "IT Documentation Certificate", 
+        "Software Installation Certificate", 
+        "Basic Security Certificate"
+      ],
+      "Network Administrator": [
+        "Cisco CCNA Certificate", 
+        "Network Security Certificate", 
+        "Windows Server Administration Certificate", 
+        "Network Monitoring Certificate", 
+        "Firewall Configuration Certificate", 
+        "VPN Setup Certificate", 
+        "Network Troubleshooting Certificate", 
+        "IP Address Management Certificate", 
+        "Network Documentation Certificate", 
+        "Wireless Network Certificate"
+      ],
+      "Systems Analyst": [
+        "Systems Analysis Certificate", 
+        "Requirements Gathering Certificate", 
+        "Business Process Analysis Certificate", 
+        "Data Flow Analysis Certificate", 
+        "System Design Certificate", 
+        "Testing Methodology Certificate", 
+        "Project Management Certificate", 
+        "Database Analysis Certificate", 
+        "User Acceptance Testing Certificate", 
+        "Technical Documentation Certificate"
+      ],
+      // HR certificates
+      "HR Assistant": [
+        "HR Administration Certificate", 
+        "Employee Records Management Certificate", 
+        "Payroll Processing Certificate", 
+        "Benefits Administration Certificate", 
+        "HR Compliance Certificate", 
+        "Employee Communication Certificate", 
+        "HRIS Software Certificate", 
+        "HR Documentation Certificate", 
+        "Time & Attendance Certificate", 
+        "Customer Service Certificate"
+      ],
+      "Recruitment Coordinator": [
+        "Recruitment Strategy Certificate", 
+        "Candidate Screening Certificate", 
+        "Interview Techniques Certificate", 
+        "Job Posting Optimization Certificate", 
+        "Applicant Tracking Systems Certificate", 
+        "Background Check Procedures Certificate", 
+        "Employment Law Certificate", 
+        "Diversity & Inclusion Certificate", 
+        "Onboarding Process Certificate", 
+        "Talent Acquisition Certificate"
+      ],
+      "HR Business Partner": [
+        "Strategic HR Management Certificate", 
+        "Performance Management Certificate", 
+        "Employee Relations Certificate", 
+        "Change Management Certificate", 
+        "Leadership Development Certificate", 
+        "Organizational Development Certificate", 
+        "HR Analytics Certificate", 
+        "Compensation Planning Certificate", 
+        "Succession Planning Certificate", 
+        "Employee Engagement Certificate"
+      ],
+      // Project Management certificates
+      "Project Coordinator": [
+        "Project Management Basics Certificate", 
+        "MS Project Software Certificate", 
+        "Task Scheduling Certificate", 
+        "Team Coordination Certificate", 
+        "Meeting Management Certificate", 
+        "Documentation Management Certificate", 
+        "Risk Identification Certificate", 
+        "Communication Skills Certificate", 
+        "Quality Assurance Certificate", 
+        "Stakeholder Management Certificate"
+      ],
+      "Project Officer": [
+        "Project Planning Certificate", 
+        "Budget Management Certificate", 
+        "Resource Allocation Certificate", 
+        "Progress Monitoring Certificate", 
+        "Risk Management Certificate", 
+        "Quality Control Certificate", 
+        "Vendor Management Certificate", 
+        "Project Reporting Certificate", 
+        "Change Control Certificate", 
+        "Project Closure Certificate"
+      ],
+      "Project Manager": [
+        "PMP Certification", 
+        "PRINCE2 Certificate", 
+        "Agile Project Management Certificate", 
+        "Scrum Master Certificate", 
+        "Advanced Risk Management Certificate", 
+        "Strategic Planning Certificate", 
+        "Leadership in Projects Certificate", 
+        "Financial Project Management Certificate", 
+        "Multi-Project Management Certificate", 
+        "Portfolio Management Certificate"
+      ],
+      // Service Desk certificates
+      "Service Desk Agent": [
+        "ITIL Foundation Certificate", 
+        "Customer Service Excellence Certificate", 
+        "Incident Management Certificate", 
+        "Service Request Handling Certificate", 
+        "Communication Skills Certificate", 
+        "Problem-Solving Certificate", 
+        "Help Desk Software Certificate", 
+        "Time Management Certificate", 
+        "Technical Writing Certificate", 
+        "Conflict Resolution Certificate"
+      ],
+      "Technical Support Specialist": [
+        "Advanced Troubleshooting Certificate", 
+        "Technical Communication Certificate", 
+        "System Diagnostics Certificate", 
+        "Remote Support Tools Certificate", 
+        "Knowledge Management Certificate", 
+        "Process Improvement Certificate", 
+        "Training Delivery Certificate", 
+        "Quality Assurance Certificate", 
+        "Technical Documentation Certificate", 
+        "Customer Relationship Management Certificate"
+      ],
+      "Service Desk Analyst": [
+        "Service Desk Management Certificate", 
+        "Performance Metrics Certificate", 
+        "Process Analysis Certificate", 
+        "Team Leadership Certificate", 
+        "Workflow Optimization Certificate", 
+        "Reporting & Analytics Certificate", 
+        "Continuous Improvement Certificate", 
+        "Service Level Management Certificate", 
+        "Knowledge Base Management Certificate", 
+        "Strategic Planning Certificate"
+      ]
+    };
+
+    const certificates = certificatesByRole[role] || [];
+    console.log('Certificates for', department, role, ':', certificates);
+    return certificates;
   };
 
 
