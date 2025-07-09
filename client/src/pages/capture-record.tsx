@@ -421,6 +421,7 @@ export default function CaptureRecord() {
   // Get available departments for certificates
   const getCertificateDepartments = () => {
     const departments = [...new Set(CERTIFICATE_MAPPINGS.map(mapping => mapping.department))];
+    console.log('Certificate departments:', departments);
     return departments.sort();
   };
 
