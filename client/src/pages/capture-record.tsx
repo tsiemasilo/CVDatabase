@@ -148,6 +148,7 @@ export default function CaptureRecord() {
     qualificationName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
+    certificateTypes: [{ type: "", name: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -382,7 +383,43 @@ export default function CaptureRecord() {
       }));
     } else if (field === 'otherQualificationCertificate' && index !== undefined) {
       handleOtherQualificationChange(index, 'certificate', file);
+    } else if (field === 'certificateType' && index !== undefined) {
+      handleCertificateTypeChange(index, 'certificate', file);
     }
+  };
+
+  // Certificate Type handlers
+  const handleCertificateTypeChange = (index: number, field: string, value: string | File | null) => {
+    const newCertificateTypes = [...(formData.certificateTypes || [])];
+    newCertificateTypes[index] = { ...newCertificateTypes[index], [field]: value };
+    setFormData(prev => ({
+      ...prev,
+      certificateTypes: newCertificateTypes
+    }));
+  };
+
+  const addCertificateType = () => {
+    setFormData(prev => ({
+      ...prev,
+      certificateTypes: [...(prev.certificateTypes || []), { type: "", name: "", certificate: null }]
+    }));
+  };
+
+  const removeCertificateType = (index: number) => {
+    if ((formData.certificateTypes || []).length > 1) {
+      const newCertificateTypes = (formData.certificateTypes || []).filter((_, i) => i !== index);
+      setFormData(prev => ({
+        ...prev,
+        certificateTypes: newCertificateTypes
+      }));
+    }
+  };
+
+  // Get available certificate names for the selected certificate type
+  const getAvailableCertificateNames = (certificateType: string) => {
+    if (!certificateType) return [];
+    const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === certificateType);
+    return selectedMapping ? selectedMapping.names : [];
   };
 
   const validateForm = () => {
@@ -472,10 +509,17 @@ export default function CaptureRecord() {
         contactNumber: "",
         email: "",
         position: "",
+        roleTitle: "",
         department: "",
         languages: [""],
         qualificationType: "",
-        qualificationName: ""
+        qualificationName: "",
+        qualificationCertificate: null,
+        otherQualifications: [{ name: "", certificate: null }],
+        certificateTypes: [{ type: "", name: "", certificate: null }],
+        experienceInSimilarRole: "",
+        experienceWithITSMTools: "",
+        workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
       });
     },
     onError: (error: any) => {
@@ -1093,6 +1137,104 @@ export default function CaptureRecord() {
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Another Qualification
+                </Button>
+              </div>
+
+              {/* Certificate Type and Certificate Name */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-gray-800">Certificate Type & Certificate Name</h4>
+                {(formData.certificateTypes || []).map((certificate, index) => (
+                  <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-3">
+                      <h5 className="font-medium text-gray-700">
+                        Certificate {index + 1}
+                      </h5>
+                      {(formData.certificateTypes || []).length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeCertificateType(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <Label htmlFor={`certType-${index}`}>Certificate Type</Label>
+                        <Select
+                          value={certificate.type}
+                          onValueChange={(value) => {
+                            handleCertificateTypeChange(index, "type", value);
+                            // Clear certificate name when type changes
+                            handleCertificateTypeChange(index, "name", "");
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select certificate type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {QUALIFICATION_TYPES.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor={`certName-${index}`}>Certificate Name</Label>
+                        <Select
+                          value={certificate.name}
+                          onValueChange={(value) => handleCertificateTypeChange(index, "name", value)}
+                          disabled={!certificate.type}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={certificate.type ? "Select certificate name" : "Select certificate type first"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getAvailableCertificateNames(certificate.type).map((name) => (
+                              <SelectItem key={name} value={name}>
+                                {name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor={`certFile-${index}`}>Upload Certificate (Optional)</Label>
+                      <Input
+                        id={`certFile-${index}`}
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => handleFileUpload('certificateType', e.target.files?.[0] || null, index)}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Accepted formats: PDF, JPG, PNG (Max 10MB)
+                      </p>
+                      {certificate.certificate && (
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Certificate uploaded: {(certificate.certificate as File).name}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addCertificateType}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Another Certificate
                 </Button>
               </div>
             </CardContent>
