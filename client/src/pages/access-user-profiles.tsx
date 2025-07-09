@@ -46,7 +46,9 @@ export default function AccessUserProfiles() {
       if (selectedRole && selectedRole !== "all") params.append("role", selectedRole);
       
       const url = `/api/user-profiles${params.toString() ? `?${params.toString()}` : ''}`;
-      return await apiRequest(url);
+      const result = await apiRequest(url);
+      console.log("Fetched user profiles:", result);
+      return result;
     },
   });
 
@@ -175,6 +177,9 @@ export default function AccessUserProfiles() {
   };
 
   const filteredUsers = userProfiles;
+  console.log("User profiles:", userProfiles);
+  console.log("Filtered users:", filteredUsers);
+  console.log("Is loading:", isLoading);
 
   const handleAddUser = () => {
     if (!newUser.username || !newUser.email || !newUser.password) {
@@ -430,13 +435,26 @@ export default function AccessUserProfiles() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-gray-50">
-                    <TableCell>
-                      <div className="font-medium">
-                        {user.firstName || ''} {user.lastName || ''}
-                      </div>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      Loading user profiles...
                     </TableCell>
+                  </TableRow>
+                ) : filteredUsers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      No user profiles found.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <TableRow key={user.id} className="hover:bg-gray-50">
+                      <TableCell>
+                        <div className="font-medium">
+                          {user.firstName || ''} {user.lastName || ''}
+                        </div>
+                      </TableCell>
                     <TableCell className="font-mono text-sm">{user.username}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
@@ -601,7 +619,8 @@ export default function AccessUserProfiles() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
