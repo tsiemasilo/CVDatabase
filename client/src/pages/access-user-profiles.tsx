@@ -19,7 +19,7 @@ import type { UserProfile, InsertUserProfile } from "@shared/schema";
 export default function AccessUserProfiles() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedRole, setSelectedRole] = useState<string>("");
+  const [selectedRole, setSelectedRole] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
@@ -38,7 +38,7 @@ export default function AccessUserProfiles() {
   });
 
   // Fetch user profiles from API
-  const { data: userProfiles = [], isLoading } = useQuery({
+  const { data: userProfiles = [], isLoading, error } = useQuery({
     queryKey: ["/api/user-profiles", { search: searchTerm, role: selectedRole }],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -46,20 +46,22 @@ export default function AccessUserProfiles() {
       if (selectedRole && selectedRole !== "all") params.append("role", selectedRole);
       
       const url = `/api/user-profiles${params.toString() ? `?${params.toString()}` : ''}`;
+      console.log("Making API call to:", url);
       const result = await apiRequest(url);
       console.log("Fetched user profiles:", result);
       return result;
     },
   });
 
+  if (error) {
+    console.error("Query error:", error);
+  }
+
   // Create user profile mutation
   const createUserMutation = useMutation({
     mutationFn: async (data: InsertUserProfile) => {
-      return await apiRequest("/api/user-profiles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("POST", "/api/user-profiles", data);
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-profiles"] });
@@ -90,9 +92,7 @@ export default function AccessUserProfiles() {
   // Delete user profile mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/user-profiles/${id}`, {
-        method: "DELETE",
-      });
+      return await apiRequest("DELETE", `/api/user-profiles/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-profiles"] });
@@ -106,11 +106,8 @@ export default function AccessUserProfiles() {
   // Update user profile mutation
   const updateUserMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<InsertUserProfile> }) => {
-      return await apiRequest(`/api/user-profiles/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("PUT", `/api/user-profiles/${id}`, data);
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-profiles"] });
