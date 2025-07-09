@@ -1200,10 +1200,17 @@ export default function CaptureRecord() {
                       <Select
                         value={certificate.department}
                         onValueChange={(value) => {
-                          handleCertificateChange(index, "department", value);
-                          // Clear dependent fields when department changes
-                          handleCertificateChange(index, "role", "");
-                          handleCertificateChange(index, "certificateName", "");
+                          const newCertificates = [...(formData.certificates || [])];
+                          newCertificates[index] = { 
+                            ...newCertificates[index], 
+                            department: value,
+                            role: "",
+                            certificateName: ""
+                          };
+                          setFormData(prev => ({
+                            ...prev,
+                            certificates: newCertificates
+                          }));
                         }}
                       >
                         <SelectTrigger id={`certDept-${index}`} className="mt-1">
@@ -1224,9 +1231,16 @@ export default function CaptureRecord() {
                       <Select
                         value={certificate.role}
                         onValueChange={(value) => {
-                          handleCertificateChange(index, "role", value);
-                          // Clear certificate name when role changes
-                          handleCertificateChange(index, "certificateName", "");
+                          const newCertificates = [...(formData.certificates || [])];
+                          newCertificates[index] = { 
+                            ...newCertificates[index], 
+                            role: value,
+                            certificateName: ""
+                          };
+                          setFormData(prev => ({
+                            ...prev,
+                            certificates: newCertificates
+                          }));
                         }}
                         disabled={!certificate.department}
                       >
