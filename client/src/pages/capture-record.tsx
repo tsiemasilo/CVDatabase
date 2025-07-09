@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, CERTIFICATE_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS, DISCIPLINES, DOMAINS, CATEGORIES, ROLES } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -148,7 +148,7 @@ export default function CaptureRecord() {
     qualificationName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
-    certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
+    certificateTypes: [{ department: "", discipline: "", domain: "", category: "", role: "", disciplineId: "", domainId: "", categoryId: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -404,7 +404,7 @@ export default function CaptureRecord() {
   const addCertificateType = () => {
     setFormData(prev => ({
       ...prev,
-      certificateTypes: [...(prev.certificateTypes || []), { department: "", role: "", certificateName: "", certificate: null }]
+      certificateTypes: [...(prev.certificateTypes || []), { department: "", discipline: "", domain: "", category: "", role: "", disciplineId: "", domainId: "", categoryId: "", certificate: null }]
     }));
   };
 
@@ -418,23 +418,31 @@ export default function CaptureRecord() {
     }
   };
 
-  // Certificate mapping helper functions
+  // Certificate hierarchical helper functions (same structure as Position|Role form)
   const getAvailableCertificateDepartments = () => {
-    const departments = [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))];
-    return departments.sort();
+    return DEPARTMENTS.map(dept => dept.name).sort();
   };
 
-  const getAvailableCertificateRoles = (department: string) => {
+  const getAvailableCertificateDisciplines = (departmentName: string) => {
+    if (!departmentName) return [];
+    const department = DEPARTMENTS.find(d => d.name === departmentName);
     if (!department) return [];
-    const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
-    const roles = [...new Set(departmentMappings.map(c => c.role))];
-    return roles.sort();
+    return DISCIPLINES.filter(disc => disc.departmentId === department.id);
   };
 
-  const getAvailableCertificateNames = (department: string, role: string) => {
-    if (!department || !role) return [];
-    const mapping = CERTIFICATE_MAPPINGS.find(c => c.department === department && c.role === role);
-    return mapping ? mapping.certificates : [];
+  const getAvailableCertificateDomains = (disciplineId: number) => {
+    if (!disciplineId) return [];
+    return DOMAINS.filter(domain => domain.disciplineId === disciplineId);
+  };
+
+  const getAvailableCertificateCategories = (domainId: number) => {
+    if (!domainId) return [];
+    return CATEGORIES.filter(category => category.domainId === domainId);
+  };
+
+  const getAvailableCertificateRoles = (categoryId: number) => {
+    if (!categoryId) return [];
+    return ROLES.filter(role => role.categoryId === categoryId);
   };
 
   const validateForm = () => {
@@ -531,7 +539,7 @@ export default function CaptureRecord() {
         qualificationName: "",
         qualificationCertificate: null,
         otherQualifications: [{ name: "", certificate: null }],
-        certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
+        certificateTypes: [{ department: "", discipline: "", domain: "", category: "", role: "", disciplineId: "", domainId: "", categoryId: "", certificate: null }],
         experienceInSimilarRole: "",
         experienceWithITSMTools: "",
         workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -1177,67 +1185,132 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <Label htmlFor={`certDept-${index}`} className="text-sm font-medium text-gray-700">Department</Label>
-                        <Select
-                          value={certificate.department}
-                          onValueChange={(value) => {
-                            handleCertificateTypeChange(index, "department", value);
-                            // Clear role and certificate name when department changes
-                            handleCertificateTypeChange(index, "role", "");
-                            handleCertificateTypeChange(index, "certificateName", "");
-                          }}
-                        >
-                          <SelectTrigger id={`certDept-${index}`} className="mt-1">
-                            <SelectValue placeholder="Select department" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAvailableCertificateDepartments().map((dept) => (
-                              <SelectItem key={dept} value={dept}>
-                                {dept}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                    <div className="space-y-4 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`certDept-${index}`} className="text-sm font-medium text-gray-700">Department</Label>
+                          <Select
+                            value={certificate.department}
+                            onValueChange={(value) => {
+                              handleCertificateTypeChange(index, "department", value);
+                              // Clear all dependent fields when department changes
+                              handleCertificateTypeChange(index, "discipline", "");
+                              handleCertificateTypeChange(index, "domain", "");
+                              handleCertificateTypeChange(index, "category", "");
+                              handleCertificateTypeChange(index, "role", "");
+                            }}
+                          >
+                            <SelectTrigger id={`certDept-${index}`} className="mt-1">
+                              <SelectValue placeholder="Select department" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getAvailableCertificateDepartments().map((dept) => (
+                                <SelectItem key={dept} value={dept}>
+                                  {dept}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor={`certDisc-${index}`} className="text-sm font-medium text-gray-700">Discipline</Label>
+                          <Select
+                            value={certificate.discipline}
+                            onValueChange={(value) => {
+                              const selectedDiscipline = getAvailableCertificateDisciplines(certificate.department).find(d => d.name === value);
+                              handleCertificateTypeChange(index, "discipline", value);
+                              handleCertificateTypeChange(index, "disciplineId", selectedDiscipline?.id.toString() || "");
+                              // Clear dependent fields
+                              handleCertificateTypeChange(index, "domain", "");
+                              handleCertificateTypeChange(index, "category", "");
+                              handleCertificateTypeChange(index, "role", "");
+                            }}
+                            disabled={!certificate.department}
+                          >
+                            <SelectTrigger id={`certDisc-${index}`} className="mt-1">
+                              <SelectValue placeholder="Select discipline" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getAvailableCertificateDisciplines(certificate.department).map((discipline) => (
+                                <SelectItem key={discipline.id} value={discipline.name}>
+                                  {discipline.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`certDomain-${index}`} className="text-sm font-medium text-gray-700">Domain</Label>
+                          <Select
+                            value={certificate.domain}
+                            onValueChange={(value) => {
+                              const selectedDomain = getAvailableCertificateDomains(parseInt((certificate as any).disciplineId || "0")).find(d => d.name === value);
+                              handleCertificateTypeChange(index, "domain", value);
+                              handleCertificateTypeChange(index, "domainId", selectedDomain?.id.toString() || "");
+                              // Clear dependent fields
+                              handleCertificateTypeChange(index, "category", "");
+                              handleCertificateTypeChange(index, "role", "");
+                            }}
+                            disabled={!certificate.discipline}
+                          >
+                            <SelectTrigger id={`certDomain-${index}`} className="mt-1">
+                              <SelectValue placeholder="Select domain" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getAvailableCertificateDomains(parseInt((certificate as any).disciplineId || "0")).map((domain) => (
+                                <SelectItem key={domain.id} value={domain.name}>
+                                  {domain.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor={`certCategory-${index}`} className="text-sm font-medium text-gray-700">Category</Label>
+                          <Select
+                            value={certificate.category}
+                            onValueChange={(value) => {
+                              const selectedCategory = getAvailableCertificateCategories(parseInt((certificate as any).domainId || "0")).find(c => c.name === value);
+                              handleCertificateTypeChange(index, "category", value);
+                              handleCertificateTypeChange(index, "categoryId", selectedCategory?.id.toString() || "");
+                              // Clear dependent field
+                              handleCertificateTypeChange(index, "role", "");
+                            }}
+                            disabled={!certificate.domain}
+                          >
+                            <SelectTrigger id={`certCategory-${index}`} className="mt-1">
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getAvailableCertificateCategories(parseInt((certificate as any).domainId || "0")).map((category) => (
+                                <SelectItem key={category.id} value={category.name}>
+                                  {category.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
                       <div>
                         <Label htmlFor={`certRole-${index}`} className="text-sm font-medium text-gray-700">Role</Label>
                         <Select
                           value={certificate.role}
                           onValueChange={(value) => {
                             handleCertificateTypeChange(index, "role", value);
-                            // Clear certificate name when role changes
-                            handleCertificateTypeChange(index, "certificateName", "");
                           }}
-                          disabled={!certificate.department}
+                          disabled={!certificate.category}
                         >
                           <SelectTrigger id={`certRole-${index}`} className="mt-1">
-                            <SelectValue placeholder="Select department first" />
+                            <SelectValue placeholder="Select role" />
                           </SelectTrigger>
                           <SelectContent>
-                            {getAvailableCertificateRoles(certificate.department).map((role) => (
-                              <SelectItem key={role} value={role}>
-                                {role}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor={`certName-${index}`} className="text-sm font-medium text-gray-700">Certificate Name</Label>
-                        <Select
-                          value={certificate.certificateName}
-                          onValueChange={(value) => handleCertificateTypeChange(index, "certificateName", value)}
-                          disabled={!certificate.department || !certificate.role}
-                        >
-                          <SelectTrigger id={`certName-${index}`} className="mt-1">
-                            <SelectValue placeholder="Select department & role first" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAvailableCertificateNames(certificate.department, certificate.role).map((name) => (
-                              <SelectItem key={name} value={name}>
-                                {name}
+                            {getAvailableCertificateRoles(parseInt((certificate as any).categoryId || "0")).map((role) => (
+                              <SelectItem key={role.id} value={role.name}>
+                                {role.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
