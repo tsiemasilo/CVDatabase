@@ -40,14 +40,24 @@ export default function AccessUserProfiles() {
   // Fetch user profiles from API
   const { data: userProfiles = [], isLoading, error } = useQuery({
     queryKey: ["/api/user-profiles", { search: searchTerm, role: selectedRole }],
-    queryFn: async () => {
+    queryFn: async ({ queryKey }) => {
       const params = new URLSearchParams();
       if (searchTerm) params.append("search", searchTerm);
       if (selectedRole && selectedRole !== "all") params.append("role", selectedRole);
       
       const url = `/api/user-profiles${params.toString() ? `?${params.toString()}` : ''}`;
       console.log("Making API call to:", url);
-      const result = await apiRequest(url);
+      
+      const res = await fetch(url, {
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        const text = (await res.text()) || res.statusText;
+        throw new Error(`${res.status}: ${text}`);
+      }
+      
+      const result = await res.json();
       console.log("Fetched user profiles:", result);
       return result;
     },
