@@ -411,7 +411,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
   },
   // Development Department
   {
-    department: "DEVELOPMENT",
+    department: "Development",
     role: "Junior Developer",
     certificates: [
       "Microsoft Certified: Azure Fundamentals",
@@ -427,7 +427,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "DEVELOPMENT",
+    department: "Development",
     role: "Software Developer",
     certificates: [
       "Microsoft Certified: Azure Developer Associate",
@@ -443,7 +443,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "DEVELOPMENT",
+    department: "Development",
     role: "Senior Developer",
     certificates: [
       "Microsoft Certified: Azure Solutions Architect Expert",
@@ -460,7 +460,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
   },
   // ICT Department
   {
-    department: "ICT",
+    department: "Information and Communications Technology",
     role: "IT Support Technician",
     certificates: [
       "CompTIA A+ Certification",
@@ -476,7 +476,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "ICT",
+    department: "Information and Communications Technology",
     role: "Network Administrator",
     certificates: [
       "Cisco Certified Network Professional (CCNP)",
@@ -492,7 +492,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "ICT",
+    department: "Information and Communications Technology",
     role: "Systems Analyst",
     certificates: [
       "CBAP - Certified Business Analysis Professional",
@@ -509,7 +509,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
   },
   // HR Department
   {
-    department: "HR",
+    department: "Human Resources",
     role: "HR Assistant",
     certificates: [
       "Professional in Human Resources (PHR)",
@@ -525,7 +525,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "HR",
+    department: "Human Resources",
     role: "Recruitment Coordinator",
     certificates: [
       "Certified Talent Acquisition Professional (CTAP)",
@@ -541,7 +541,7 @@ export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
     ]
   },
   {
-    department: "HR",
+    department: "Human Resources",
     role: "HR Business Partner",
     certificates: [
       "Senior Professional in Human Resources (SPHR)",

@@ -178,6 +178,7 @@ export default function CaptureRecord() {
       return ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
     }
     const uniqueDepartments = [...new Set(departmentRoles.map(role => role.department))];
+    console.log('Available departments:', uniqueDepartments);
     return uniqueDepartments.sort();
   };
 
@@ -426,7 +427,9 @@ export default function CaptureRecord() {
   const getAvailableCertificateRoles = (department: string) => {
     if (!department) return [];
     const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
-    return [...new Set(departmentMappings.map(c => c.role))];
+    const certificateRoles = [...new Set(departmentMappings.map(c => c.role))];
+    console.log(`Certificate roles for ${department}:`, certificateRoles);
+    return certificateRoles;
   };
 
   const validateForm = () => {
