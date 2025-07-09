@@ -22,6 +22,27 @@ interface CVTableProps {
 
 const ITEMS_PER_PAGE = 10;
 
+// Phone number formatting function
+const formatPhoneNumber = (phone: string) => {
+  // Remove all non-digit characters
+  const cleaned = phone.replace(/\D/g, '');
+  
+  // South African phone number formatting
+  if (cleaned.length === 10) {
+    // Format as: 083 123 4567
+    return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+  } else if (cleaned.length === 11 && cleaned.startsWith('27')) {
+    // Format international: +27 83 123 4567
+    return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7)}`;
+  } else if (cleaned.length === 9) {
+    // Format as: 83 123 4567 (missing leading 0)
+    return `${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5)}`;
+  }
+  
+  // Return original if can't format
+  return phone;
+};
+
 export default function CVTable({ records, isLoading, onRefetch }: CVTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CVRecord; direction: 'asc' | 'desc' }>({ key: 'submittedAt', direction: 'desc' });
@@ -79,6 +100,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-teal-500'];
     return colors[index % colors.length];
   };
+
+
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -391,8 +414,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
               <TableHead className="text-white font-medium py-4 px-6">
                 SAP K-Level
               </TableHead>
-              <TableHead className="text-white font-medium py-4 px-6">
-                Phone
+              <TableHead className="text-white font-medium py-4 px-6 min-w-[140px]">
+                Phone Number
               </TableHead>
               <TableHead className="text-white font-medium py-4 px-6">
                 Languages
@@ -452,7 +475,9 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   <div className="text-sm text-gray-900">{record.sapKLevel || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900">{record.phone || 'N/A'}</div>
+                  <div className="text-sm text-gray-900 font-mono">
+                    {record.phone ? formatPhoneNumber(record.phone) : 'N/A'}
+                  </div>
                 </TableCell>
                 <TableCell className="py-4 px-6 max-w-xs">
                   <div className="text-sm text-gray-900 truncate" title={record.languages || 'No languages listed'}>
