@@ -242,16 +242,35 @@ export default function CaptureRecord() {
     return selectedMapping ? selectedMapping.names : [];
   };
 
-  // Get certificate types for the selected department
+  // Get certificate types for the selected department or all available
   const getAvailableCertificateTypes = () => {
-    if (!formData.department) return [];
-    return getCertificateTypesForDepartment(formData.department);
+    // If department is selected, use that department's types
+    if (formData.department) {
+      return getCertificateTypesForDepartment(formData.department);
+    }
+    // Otherwise, show all available certificate types across all departments
+    const allTypes = new Set<string>();
+    ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].forEach(dept => {
+      getCertificateTypesForDepartment(dept).forEach(type => allTypes.add(type));
+    });
+    return Array.from(allTypes).sort();
   };
 
-  // Get certificate names for the selected certificate type and department
+  // Get certificate names for the selected certificate type
   const getAvailableCertificateNames = () => {
-    if (!formData.department || !formData.certificateType) return [];
-    return getCertificateNamesForType(formData.department, formData.certificateType);
+    if (!formData.certificateType) return [];
+    
+    // If department is selected, use that department's names
+    if (formData.department) {
+      return getCertificateNamesForType(formData.department, formData.certificateType);
+    }
+    
+    // Otherwise, show all available certificate names for this type across all departments
+    const allNames = new Set<string>();
+    ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].forEach(dept => {
+      getCertificateNamesForType(dept, formData.certificateType).forEach(name => allNames.add(name));
+    });
+    return Array.from(allNames).sort();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -1065,10 +1084,9 @@ export default function CaptureRecord() {
                         // Clear certificate name when type changes
                         handleInputChange("certificateName", "");
                       }}
-                      disabled={!formData.department}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={formData.department ? "Select certificate type" : "Select department first"} />
+                        <SelectValue placeholder="Select certificate type" />
                       </SelectTrigger>
                       <SelectContent>
                         {getAvailableCertificateTypes().map((type) => (
@@ -1078,11 +1096,6 @@ export default function CaptureRecord() {
                         ))}
                       </SelectContent>
                     </Select>
-                    {!formData.department && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Please select a department first to see available certificate types
-                      </p>
-                    )}
                   </div>
                   <div>
                     <Label htmlFor="certificateName">Certificate Name</Label>
@@ -1125,10 +1138,11 @@ export default function CaptureRecord() {
                   )}
                 </div>
                 
-                {formData.department && formData.certificateType && formData.certificateName && (
+                {formData.certificateType && formData.certificateName && (
                   <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
                     <p className="text-xs text-green-700">
-                      ✓ Selected: {formData.certificateName} ({formData.certificateType} - {formData.department})
+                      ✓ Selected: {formData.certificateName} ({formData.certificateType})
+                      {formData.department && ` - Department: ${formData.department}`}
                     </p>
                   </div>
                 )}
