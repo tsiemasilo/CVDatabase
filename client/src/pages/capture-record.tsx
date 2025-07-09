@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, CERTIFICATE_MAPPINGS } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -148,7 +148,7 @@ export default function CaptureRecord() {
     qualificationName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
-    certificateTypes: [{ type: "", name: "", certificate: null }],
+    certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
     workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -401,7 +401,7 @@ export default function CaptureRecord() {
   const addCertificateType = () => {
     setFormData(prev => ({
       ...prev,
-      certificateTypes: [...(prev.certificateTypes || []), { type: "", name: "", certificate: null }]
+      certificateTypes: [...(prev.certificateTypes || []), { department: "", role: "", certificateName: "", certificate: null }]
     }));
   };
 
@@ -415,11 +415,18 @@ export default function CaptureRecord() {
     }
   };
 
-  // Get available certificate names for the selected certificate type
-  const getAvailableCertificateNames = (certificateType: string) => {
-    if (!certificateType) return [];
-    const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === certificateType);
-    return selectedMapping ? selectedMapping.names : [];
+  // Get available certificate names for the selected department and role
+  const getAvailableCertificateNames = (department: string, role: string) => {
+    if (!department || !role) return [];
+    const selectedMapping = CERTIFICATE_MAPPINGS.find(c => c.department === department && c.role === role);
+    return selectedMapping ? selectedMapping.certificates : [];
+  };
+
+  // Get available certificate roles for the selected department
+  const getAvailableCertificateRoles = (department: string) => {
+    if (!department) return [];
+    const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
+    return [...new Set(departmentMappings.map(c => c.role))];
   };
 
   const validateForm = () => {
@@ -516,7 +523,7 @@ export default function CaptureRecord() {
         qualificationName: "",
         qualificationCertificate: null,
         otherQualifications: [{ name: "", certificate: null }],
-        certificateTypes: [{ type: "", name: "", certificate: null }],
+        certificateTypes: [{ department: "", role: "", certificateName: "", certificate: null }],
         experienceInSimilarRole: "",
         experienceWithITSMTools: "",
         workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
@@ -1162,24 +1169,48 @@ export default function CaptureRecord() {
                       )}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
                       <div>
-                        <Label htmlFor={`certType-${index}`}>Certificate Type</Label>
+                        <Label htmlFor={`certDept-${index}`}>Department</Label>
                         <Select
-                          value={certificate.type}
+                          value={certificate.department}
                           onValueChange={(value) => {
-                            handleCertificateTypeChange(index, "type", value);
-                            // Clear certificate name when type changes
-                            handleCertificateTypeChange(index, "name", "");
+                            handleCertificateTypeChange(index, "department", value);
+                            // Clear role and certificate name when department changes
+                            handleCertificateTypeChange(index, "role", "");
+                            handleCertificateTypeChange(index, "certificateName", "");
                           }}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select certificate type" />
+                            <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
-                            {QUALIFICATION_TYPES.map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
+                            {getAvailableDepartments().map((dept) => (
+                              <SelectItem key={dept} value={dept}>
+                                {dept}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor={`certRole-${index}`}>Role</Label>
+                        <Select
+                          value={certificate.role}
+                          onValueChange={(value) => {
+                            handleCertificateTypeChange(index, "role", value);
+                            // Clear certificate name when role changes
+                            handleCertificateTypeChange(index, "certificateName", "");
+                          }}
+                          disabled={!certificate.department}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={certificate.department ? "Select role" : "Select department first"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getAvailableCertificateRoles(certificate.department).map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {role}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -1188,15 +1219,15 @@ export default function CaptureRecord() {
                       <div>
                         <Label htmlFor={`certName-${index}`}>Certificate Name</Label>
                         <Select
-                          value={certificate.name}
-                          onValueChange={(value) => handleCertificateTypeChange(index, "name", value)}
-                          disabled={!certificate.type}
+                          value={certificate.certificateName}
+                          onValueChange={(value) => handleCertificateTypeChange(index, "certificateName", value)}
+                          disabled={!certificate.department || !certificate.role}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder={certificate.type ? "Select certificate name" : "Select certificate type first"} />
+                            <SelectValue placeholder={certificate.department && certificate.role ? "Select certificate" : "Select department & role first"} />
                           </SelectTrigger>
                           <SelectContent>
-                            {getAvailableCertificateNames(certificate.type).map((name) => (
+                            {getAvailableCertificateNames(certificate.department, certificate.role).map((name) => (
                               <SelectItem key={name} value={name}>
                                 {name}
                               </SelectItem>

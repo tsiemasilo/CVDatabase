@@ -351,3 +351,307 @@ export const SAP_K_LEVELS = [
 ];
 
 export const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
+
+// Certificate mappings for different roles based on department and role
+export interface CertificateMapping {
+  department: string;
+  role: string;
+  certificates: string[];
+}
+
+export const CERTIFICATE_MAPPINGS: CertificateMapping[] = [
+  // SAP Department
+  {
+    department: "SAP",
+    role: "SAP ABAP Developer",
+    certificates: [
+      "SAP Certified Development Associate - ABAP with SAP NetWeaver",
+      "SAP Certified Development Professional - ABAP for SAP HANA",
+      "SAP Certified Application Associate - SAP ABAP Development",
+      "SAP Certified Development Specialist - ABAP for SAP S/4HANA",
+      "SAP Certified Associate - SAP ABAP Development Tools",
+      "SAP Certified Professional - SAP ABAP Performance Optimization",
+      "SAP Certified Expert - SAP ABAP Development with Eclipse",
+      "SAP Certified Specialist - SAP ABAP Web Dynpro",
+      "SAP Certified Associate - SAP ABAP Object-Oriented Programming",
+      "SAP Certified Professional - SAP ABAP Advanced Programming"
+    ]
+  },
+  {
+    department: "SAP",
+    role: "SAP Functional Consultant",
+    certificates: [
+      "SAP Certified Application Associate - SAP S/4HANA for Financial Accounting Associates",
+      "SAP Certified Application Associate - SAP S/4HANA Sales",
+      "SAP Certified Application Associate - SAP S/4HANA Material Management",
+      "SAP Certified Application Associate - SAP S/4HANA Human Resources",
+      "SAP Certified Application Associate - SAP S/4HANA Production Planning",
+      "SAP Certified Application Associate - SAP S/4HANA Sourcing and Procurement",
+      "SAP Certified Application Associate - SAP BusinessObjects Business Intelligence",
+      "SAP Certified Application Associate - SAP S/4HANA Project Management",
+      "SAP Certified Application Associate - SAP S/4HANA Quality Management",
+      "SAP Certified Application Associate - SAP S/4HANA Plant Maintenance"
+    ]
+  },
+  {
+    department: "SAP",
+    role: "SAP Technical Consultant",
+    certificates: [
+      "SAP Certified Technology Associate - SAP S/4HANA System Administration",
+      "SAP Certified Technology Associate - SAP HANA 2.0 SPS04",
+      "SAP Certified Technology Associate - SAP Basis Administration",
+      "SAP Certified Technology Associate - SAP NetWeaver Application Server",
+      "SAP Certified Technology Associate - SAP S/4HANA Cloud Technical Implementation",
+      "SAP Certified Technology Associate - SAP Process Integration",
+      "SAP Certified Technology Associate - SAP Cloud Platform Integration",
+      "SAP Certified Technology Associate - SAP S/4HANA Embedded Analytics",
+      "SAP Certified Technology Associate - SAP HANA Cloud Provisioning",
+      "SAP Certified Technology Associate - SAP S/4HANA Migration and Upgrade"
+    ]
+  },
+  // Development Department
+  {
+    department: "DEVELOPMENT",
+    role: "Junior Developer",
+    certificates: [
+      "Microsoft Certified: Azure Fundamentals",
+      "AWS Certified Cloud Practitioner",
+      "CompTIA IT Fundamentals+",
+      "Oracle Certified Associate, Java SE 11 Developer",
+      "Microsoft Certified: Programming in C#",
+      "Google Cloud Digital Leader",
+      "Scrum Foundation Professional Certificate",
+      "HTML5 Application Development Fundamentals",
+      "Python Institute Certified Entry-Level Python Programmer",
+      "JavaScript Developer Certificate"
+    ]
+  },
+  {
+    department: "DEVELOPMENT",
+    role: "Software Developer",
+    certificates: [
+      "Microsoft Certified: Azure Developer Associate",
+      "AWS Certified Developer - Associate",
+      "Oracle Certified Professional, Java SE 11 Developer",
+      "Microsoft Certified: .NET Developer",
+      "Google Cloud Professional Cloud Developer",
+      "Certified Scrum Developer (CSD)",
+      "MongoDB Certified Developer Associate",
+      "React Developer Certification",
+      "Node.js Application Developer Certification",
+      "Full Stack Web Developer Certificate"
+    ]
+  },
+  {
+    department: "DEVELOPMENT",
+    role: "Senior Developer",
+    certificates: [
+      "Microsoft Certified: Azure Solutions Architect Expert",
+      "AWS Certified Solutions Architect - Professional",
+      "Oracle Certified Master, Java SE 11 Developer",
+      "Microsoft Certified: DevOps Engineer Expert",
+      "Google Cloud Professional Cloud Architect",
+      "Certified Scrum Professional Developer (CSP-D)",
+      "MongoDB Certified Developer Professional",
+      "Kubernetes Certified Application Developer (CKAD)",
+      "Docker Certified Associate",
+      "Certified Ethical Hacker (CEH)"
+    ]
+  },
+  // ICT Department
+  {
+    department: "ICT",
+    role: "IT Support Technician",
+    certificates: [
+      "CompTIA A+ Certification",
+      "CompTIA Network+ Certification",
+      "Microsoft Certified: Modern Desktop Administrator Associate",
+      "CompTIA Security+ Certification",
+      "ITIL Foundation Certificate",
+      "Microsoft 365 Certified: Fundamentals",
+      "VMware Certified Professional - Data Center Virtualization",
+      "Cisco Certified Network Associate (CCNA)",
+      "Apple Certified Support Professional",
+      "Linux Professional Institute Certification Level 1"
+    ]
+  },
+  {
+    department: "ICT",
+    role: "Network Administrator",
+    certificates: [
+      "Cisco Certified Network Professional (CCNP)",
+      "CompTIA Network+ Certification",
+      "Microsoft Certified: Azure Administrator Associate",
+      "VMware Certified Professional - Network Virtualization",
+      "Juniper Networks Certified Associate (JNCIA)",
+      "CompTIA Security+ Certification",
+      "Palo Alto Networks Certified Network Security Administrator",
+      "F5 Certified BIG-IP Administrator",
+      "Aruba Certified Switching Professional",
+      "Fortinet Network Security Expert (NSE)"
+    ]
+  },
+  {
+    department: "ICT",
+    role: "Systems Analyst",
+    certificates: [
+      "CBAP - Certified Business Analysis Professional",
+      "PMI Professional in Business Analysis (PMI-PBA)",
+      "IIBA Agile Analysis Certification (IIBA-AAC)",
+      "Microsoft Certified: Azure Solutions Architect Expert",
+      "TOGAF 9 Certified",
+      "Certified Information Systems Analyst (CISA)",
+      "Six Sigma Green Belt Certification",
+      "Lean IT Foundation Certificate",
+      "ITIL Expert Certificate",
+      "Certified ScrumMaster (CSM)"
+    ]
+  },
+  // HR Department
+  {
+    department: "HR",
+    role: "HR Assistant",
+    certificates: [
+      "Professional in Human Resources (PHR)",
+      "Society for Human Resource Management Certified Professional (SHRM-CP)",
+      "Human Resources Information Professional (HRIP)",
+      "Certified Compensation Professional (CCP)",
+      "Global Professional in Human Resources (GPHR)",
+      "Certified Employee Benefit Specialist (CEBS)",
+      "Human Resources Business Partner Certificate",
+      "Certified Talent Development Professional (CTDP)",
+      "Certified Professional in Learning and Performance (CPLP)",
+      "HR Analytics Certificate"
+    ]
+  },
+  {
+    department: "HR",
+    role: "Recruitment Coordinator",
+    certificates: [
+      "Certified Talent Acquisition Professional (CTAP)",
+      "Professional in Human Resources (PHR)",
+      "Society for Human Resource Management Certified Professional (SHRM-CP)",
+      "Certified Recruitment Professional (CRP)",
+      "Global Professional in Human Resources (GPHR)",
+      "Certified Employment Interview Professional (CEIP)",
+      "LinkedIn Certified Professional - Recruiter",
+      "Certified Internet Recruiter (CIR)",
+      "Certified Diversity and Inclusion Recruiter (CDIR)",
+      "Certified Social Recruiting Strategist (CSRS)"
+    ]
+  },
+  {
+    department: "HR",
+    role: "HR Business Partner",
+    certificates: [
+      "Senior Professional in Human Resources (SPHR)",
+      "Society for Human Resource Management Senior Certified Professional (SHRM-SCP)",
+      "Human Resources Business Partner Certificate",
+      "Certified Compensation Professional (CCP)",
+      "Global Professional in Human Resources (GPHR)",
+      "Certified Benefits Professional (CBP)",
+      "Certified Employee Benefit Specialist (CEBS)",
+      "Certified Talent Development Professional (CTDP)",
+      "Certified Professional in Learning and Performance (CPLP)",
+      "HR Analytics and Metrics Certificate"
+    ]
+  },
+  // Project Management Department
+  {
+    department: "Project Management",
+    role: "Project Coordinator",
+    certificates: [
+      "Project Management Professional (PMP)",
+      "Certified Associate in Project Management (CAPM)",
+      "PRINCE2 Foundation Certificate",
+      "Agile Certified Practitioner (PMI-ACP)",
+      "Certified ScrumMaster (CSM)",
+      "Microsoft Project Certification",
+      "Certified Project Coordinator (CPC)",
+      "Project Management Institute Scheduling Professional (PMI-SP)",
+      "Project Management Institute Risk Management Professional (PMI-RMP)",
+      "ITIL Foundation Certificate"
+    ]
+  },
+  {
+    department: "Project Management",
+    role: "Project Officer",
+    certificates: [
+      "Project Management Professional (PMP)",
+      "PRINCE2 Practitioner Certificate",
+      "Agile Certified Practitioner (PMI-ACP)",
+      "Certified ScrumMaster (CSM)",
+      "Microsoft Project Advanced Certification",
+      "Certified Project Manager (CPM)",
+      "Project Management Institute Scheduling Professional (PMI-SP)",
+      "Project Management Institute Risk Management Professional (PMI-RMP)",
+      "Six Sigma Green Belt Certification",
+      "Change Management Certification"
+    ]
+  },
+  {
+    department: "Project Management",
+    role: "Project Manager",
+    certificates: [
+      "Project Management Professional (PMP)",
+      "PRINCE2 Advanced Practitioner Certificate",
+      "Program Management Professional (PgMP)",
+      "Agile Certified Practitioner (PMI-ACP)",
+      "Certified Scrum Professional (CSP)",
+      "Portfolio Management Professional (PfMP)",
+      "Project Management Institute Risk Management Professional (PMI-RMP)",
+      "Project Management Institute Scheduling Professional (PMI-SP)",
+      "Six Sigma Black Belt Certification",
+      "Change Management Professional Certification"
+    ]
+  },
+  // Service Desk Department
+  {
+    department: "Service Desk",
+    role: "Service Desk Agent",
+    certificates: [
+      "ITIL Foundation Certificate",
+      "CompTIA A+ Certification",
+      "Microsoft Certified: Modern Desktop Administrator Associate",
+      "HDI Customer Service Representative (HDI-CSR)",
+      "HDI Desktop Support Technician (HDI-DST)",
+      "CompTIA Network+ Certification",
+      "Microsoft 365 Certified: Fundamentals",
+      "ServiceNow Certified System Administrator",
+      "Certified Help Desk Professional (CHDP)",
+      "Customer Service Excellence Certificate"
+    ]
+  },
+  {
+    department: "Service Desk",
+    role: "Technical Support Specialist",
+    certificates: [
+      "CompTIA A+ Certification",
+      "CompTIA Network+ Certification",
+      "ITIL Foundation Certificate",
+      "Microsoft Certified: Azure Administrator Associate",
+      "HDI Support Center Analyst (HDI-SCA)",
+      "ServiceNow Certified Application Developer",
+      "VMware Certified Professional - Data Center Virtualization",
+      "Cisco Certified Network Associate (CCNA)",
+      "Microsoft 365 Certified: Enterprise Administrator Expert",
+      "CompTIA Security+ Certification"
+    ]
+  },
+  {
+    department: "Service Desk",
+    role: "Service Desk Analyst",
+    certificates: [
+      "ITIL Expert Certificate",
+      "HDI Support Center Analyst (HDI-SCA)",
+      "ServiceNow Certified Implementation Specialist",
+      "CompTIA A+ Certification",
+      "Microsoft Certified: Azure Administrator Associate",
+      "Six Sigma Green Belt Certification",
+      "COBIT 5 Foundation Certificate",
+      "Certified Information Systems Auditor (CISA)",
+      "Microsoft 365 Certified: Enterprise Administrator Expert",
+      "Change Management Certification"
+    ]
+  }
+];
