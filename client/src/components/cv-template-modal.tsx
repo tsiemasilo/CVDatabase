@@ -237,6 +237,29 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 </table>
               </div>
 
+              {/* Certificates Table */}
+              {(record.certificateType || record.certificateName) && (
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Certificates</h2>
+                  <table className="w-full border-collapse border border-blue-300">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Certificate Type</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Certificate Name</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white">Department</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="hover:bg-blue-50">
+                        <td className="border border-blue-300 px-4 py-2">{record.certificateType || '-'}</td>
+                        <td className="border border-blue-300 px-4 py-2">{record.certificateName || '-'}</td>
+                        <td className="border border-blue-300 px-4 py-2">{record.department || '-'}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
           {/* Professional Summary/Description */}
           {record.qualifications && (
             <div className="mb-8">

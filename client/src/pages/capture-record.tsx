@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
-import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS } from "@shared/data";
+import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, getCertificateTypesForDepartment, getCertificateNamesForType } from "@shared/data";
 
 // Custom checkbox styles
 const checkboxStyles = `
@@ -146,6 +146,8 @@ export default function CaptureRecord() {
     languages: [""],
     qualificationType: "",
     qualificationName: "",
+    certificateType: "",
+    certificateName: "",
     qualificationCertificate: null,
     otherQualifications: [{ name: "", certificate: null }],
     experienceInSimilarRole: "",
@@ -242,6 +244,18 @@ export default function CaptureRecord() {
     if (!formData.qualificationType) return [];
     const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === formData.qualificationType);
     return selectedMapping ? selectedMapping.names : [];
+  };
+
+  // Get certificate types for the selected department
+  const getAvailableCertificateTypes = () => {
+    if (!formData.department) return [];
+    return getCertificateTypesForDepartment(formData.department);
+  };
+
+  // Get certificate names for the selected certificate type and department
+  const getAvailableCertificateNames = () => {
+    if (!formData.department || !formData.certificateType) return [];
+    return getCertificateNamesForType(formData.department, formData.certificateType);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -475,7 +489,9 @@ export default function CaptureRecord() {
         department: "",
         languages: [""],
         qualificationType: "",
-        qualificationName: ""
+        qualificationName: "",
+        certificateType: "",
+        certificateName: ""
       });
     },
     onError: (error: any) => {
@@ -516,7 +532,11 @@ export default function CaptureRecord() {
       languages: validLanguages.join(", "), // Store languages in languages field
       qualifications: formData.qualificationType && formData.qualificationName 
         ? `${formData.qualificationType} - ${formData.qualificationName}`
-        : "No qualifications listed" // Combine qualification type and name
+        : "No qualifications listed", // Combine qualification type and name
+      qualificationType: formData.qualificationType,
+      qualificationName: formData.qualificationName,
+      certificateType: formData.certificateType,
+      certificateName: formData.certificateName
     };
 
     console.log("Submitting CV data:", cvData);
@@ -1028,6 +1048,67 @@ export default function CaptureRecord() {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Certificates */}
+              <div className="border rounded-lg p-4 bg-blue-50">
+                <h4 className="font-medium text-gray-800 mb-3">Certificates</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="certificateType">Certificate Type</Label>
+                    <Select
+                      value={formData.certificateType}
+                      onValueChange={(value) => {
+                        handleInputChange("certificateType", value);
+                        // Clear certificate name when type changes
+                        handleInputChange("certificateName", "");
+                      }}
+                      disabled={!formData.department}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={formData.department ? "Select certificate type" : "Select department first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableCertificateTypes().map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {!formData.department && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Please select a department first to see available certificate types
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="certificateName">Certificate Name</Label>
+                    <Select
+                      value={formData.certificateName}
+                      onValueChange={(value) => handleInputChange("certificateName", value)}
+                      disabled={!formData.certificateType}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={formData.certificateType ? "Select certificate name" : "Select certificate type first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableCertificateNames().map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {formData.department && formData.certificateType && formData.certificateName && (
+                  <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
+                    <p className="text-xs text-green-700">
+                      ✓ Selected: {formData.certificateName} ({formData.certificateType} - {formData.department})
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Other Qualifications */}

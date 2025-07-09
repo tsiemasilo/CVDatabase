@@ -20,6 +20,8 @@ export const cvRecords = pgTable("cv_records", {
   qualifications: text("qualifications"),
   qualificationType: text("qualification_type"),
   qualificationName: text("qualification_name"),
+  certificateType: text("certificate_type"),
+  certificateName: text("certificate_name"),
   languages: text("languages"),
   workExperiences: text("work_experiences"), // JSON string
   status: text("status").notNull().default("pending"),
@@ -47,6 +49,8 @@ export const insertCVRecordSchema = createInsertSchema(cvRecords).omit({
   qualifications: z.string().optional(),
   qualificationType: z.string().optional(),
   qualificationName: z.string().optional(),
+  certificateType: z.string().optional(),
+  certificateName: z.string().optional(),
   languages: z.string().optional(),
   workExperiences: z.string().optional(),
   status: z.enum(["active", "pending", "archived"]).default("pending"),
