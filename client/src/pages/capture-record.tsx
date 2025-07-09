@@ -391,10 +391,8 @@ export default function CaptureRecord() {
 
   // Certificate Type handlers
   const handleCertificateTypeChange = (index: number, field: string, value: string | File | null) => {
-    console.log(`Updating certificate ${index}, field: ${field}, value: ${value}`);
     const newCertificateTypes = [...(formData.certificateTypes || [])];
     newCertificateTypes[index] = { ...newCertificateTypes[index], [field]: value };
-    console.log('Updated certificate types:', newCertificateTypes);
     setFormData(prev => ({
       ...prev,
       certificateTypes: newCertificateTypes
@@ -425,15 +423,17 @@ export default function CaptureRecord() {
     return selectedMapping ? selectedMapping.certificates : [];
   };
 
+  // Get available departments for certificates (directly from certificate mappings)
+  const getAvailableCertificateDepartments = () => {
+    const departments = [...new Set(CERTIFICATE_MAPPINGS.map(c => c.department))];
+    return departments.sort();
+  };
+
   // Get available certificate roles for the selected department
   const getAvailableCertificateRoles = (department: string) => {
     if (!department) return [];
-    console.log(`Looking for certificate roles for department: "${department}"`);
-    console.log('Available certificate mappings:', CERTIFICATE_MAPPINGS.map(c => ({ dept: c.department, role: c.role })));
     const departmentMappings = CERTIFICATE_MAPPINGS.filter(c => c.department === department);
-    console.log('Filtered mappings:', departmentMappings);
     const certificateRoles = [...new Set(departmentMappings.map(c => c.role))];
-    console.log(`Certificate roles for ${department}:`, certificateRoles);
     return certificateRoles;
   };
 
@@ -1183,7 +1183,6 @@ export default function CaptureRecord() {
                         <Select
                           value={certificate.department}
                           onValueChange={(value) => {
-                            console.log(`Selected department: "${value}"`);
                             handleCertificateTypeChange(index, "department", value);
                             // Clear role and certificate name when department changes
                             handleCertificateTypeChange(index, "role", "");
@@ -1194,18 +1193,11 @@ export default function CaptureRecord() {
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
-                            {(() => {
-                              const depts = getAvailableDepartments();
-                              console.log('Available departments for certificate form:', depts);
-                              return depts.map((dept) => {
-                                console.log(`Rendering department option: "${dept}"`);
-                                return (
-                                  <SelectItem key={dept} value={dept}>
-                                    {dept}
-                                  </SelectItem>
-                                );
-                              });
-                            })()}
+                            {getAvailableCertificateDepartments().map((dept) => (
+                              <SelectItem key={dept} value={dept}>
+                                {dept}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
