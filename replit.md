@@ -132,8 +132,6 @@ Changelog:
 - July 7, 2025. Fixed K-level filter display to show proper K1-K5 format and ensured filter appears consistently when SAP department is selected
 - July 7, 2025. Redesigned CV template to match exact Alteram Solutions format with structured tables for Experience and Qualifications, professional summary paragraph, and detailed experience descriptions
 - July 9, 2025. Removed Certificate Type & Certificate Name form section from capture record page at user request - streamlined form to focus on core qualifications and experience fields
-- July 9, 2025. Recreated Certificate Type & Certificate Name form section under qualifications with improved professional design - features numbered certificate entries, clean layout, file upload capability, and visual status indicators
-- July 9, 2025. Enhanced certificate form with premium professional styling - added gradient header with certification icon, improved visual hierarchy with numbered badges, enhanced file upload styling with gradient buttons, success indicators with green accent panels, and hover effects for better user experience
 ```
 
 ## User Preferences
