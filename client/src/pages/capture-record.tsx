@@ -393,8 +393,10 @@ export default function CaptureRecord() {
 
   // Certificate handlers
   const handleCertificateChange = (index: number, field: string, value: string | File | null) => {
+    console.log('Certificate change:', index, field, value);
     const newCertificates = [...(formData.certificates || [])];
     newCertificates[index] = { ...newCertificates[index], [field]: value };
+    console.log('Updated certificates:', newCertificates);
     setFormData(prev => ({
       ...prev,
       certificates: newCertificates
@@ -430,6 +432,7 @@ export default function CaptureRecord() {
     const roles = CERTIFICATE_MAPPINGS
       .filter(mapping => mapping.department === department)
       .map(mapping => mapping.role);
+    console.log('Roles for', department, ':', roles);
     return [...new Set(roles)].sort();
   };
 
