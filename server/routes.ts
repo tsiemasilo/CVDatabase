@@ -311,17 +311,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new user profile
   app.post("/api/user-profiles", async (req, res) => {
     try {
+      console.log("Received user profile data:", req.body);
       const validatedData = insertUserProfileSchema.parse(req.body);
+      console.log("Validated data:", validatedData);
       const newProfile = await storage.createUserProfile(validatedData);
+      console.log("Created profile:", newProfile);
       res.status(201).json(newProfile);
     } catch (error) {
+      console.error("Error creating user profile:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           message: "Validation error", 
           errors: error.errors 
         });
       }
-      res.status(500).json({ message: "Failed to create user profile" });
+      res.status(500).json({ 
+        message: "Failed to create user profile",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 

@@ -75,8 +75,13 @@ export default function AccessUserProfiles() {
         phoneNumber: "",
       });
     },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to create user profile", variant: "destructive" });
+    onError: (error: any) => {
+      console.error("Frontend mutation error:", error);
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create user profile", 
+        variant: "destructive" 
+      });
     },
   });
 

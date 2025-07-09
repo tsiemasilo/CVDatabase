@@ -132,12 +132,12 @@ export class MemStorage implements IStorage {
       this.cvRecords.set(id, { ...cv, id });
     });
 
-    // Initialize sample user profiles
+    // Initialize sample user profiles with requested credentials
     const sampleUserProfiles: Omit<UserProfile, 'id'>[] = [
       {
-        username: "admin_user",
+        username: "admin",
         email: "admin@alteram.co.za",
-        password: "admin123", // In production, this should be hashed
+        password: "admin1", // In production, this should be hashed
         role: "admin",
         firstName: "System",
         lastName: "Administrator",
@@ -150,9 +150,9 @@ export class MemStorage implements IStorage {
         updatedAt: new Date("2024-12-01T00:00:00")
       },
       {
-        username: "hr_manager",
+        username: "mng",
         email: "manager@alteram.co.za",
-        password: "manager123",
+        password: "mng1",
         role: "manager",
         firstName: "Sarah",
         lastName: "Johnson",
@@ -165,9 +165,9 @@ export class MemStorage implements IStorage {
         updatedAt: new Date("2024-12-05T00:00:00")
       },
       {
-        username: "candidate_user",
-        email: "candidate@example.com",
-        password: "user123",
+        username: "user",
+        email: "user@example.com",
+        password: "user1",
         role: "user",
         firstName: "John",
         lastName: "Doe",
