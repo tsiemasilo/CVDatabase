@@ -1195,7 +1195,7 @@ export default function CaptureRecord() {
                             handleCertificateTypeChange(index, "certificateName", "");
                           }}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger id={`certDept-${index}`}>
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1222,7 +1222,7 @@ export default function CaptureRecord() {
                           }}
                           disabled={!certificate.department}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger id={`certRole-${index}`}>
                             <SelectValue placeholder={certificate.department ? "Select role" : "Select department first"} />
                           </SelectTrigger>
                           <SelectContent>
@@ -1241,7 +1241,7 @@ export default function CaptureRecord() {
                           onValueChange={(value) => handleCertificateTypeChange(index, "certificateName", value)}
                           disabled={!certificate.department || !certificate.role}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger id={`certName-${index}`}>
                             <SelectValue placeholder={certificate.department && certificate.role ? "Select certificate" : "Select department & role first"} />
                           </SelectTrigger>
                           <SelectContent>
