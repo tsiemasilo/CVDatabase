@@ -146,6 +146,7 @@ export default function CaptureRecord() {
     languages: [""],
     qualificationType: "",
     qualificationName: "",
+    certificateDepartment: "",
     certificateType: "",
     certificateName: "",
     certificateFile: null,
@@ -242,35 +243,16 @@ export default function CaptureRecord() {
     return selectedMapping ? selectedMapping.names : [];
   };
 
-  // Get certificate types for the selected department or all available
+  // Get certificate types for the selected certificate department
   const getAvailableCertificateTypes = () => {
-    // If department is selected, use that department's types
-    if (formData.department) {
-      return getCertificateTypesForDepartment(formData.department);
-    }
-    // Otherwise, show all available certificate types across all departments
-    const allTypes = new Set<string>();
-    ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].forEach(dept => {
-      getCertificateTypesForDepartment(dept).forEach(type => allTypes.add(type));
-    });
-    return Array.from(allTypes).sort();
+    if (!formData.certificateDepartment) return [];
+    return getCertificateTypesForDepartment(formData.certificateDepartment);
   };
 
-  // Get certificate names for the selected certificate type
+  // Get certificate names for the selected certificate type and department
   const getAvailableCertificateNames = () => {
-    if (!formData.certificateType) return [];
-    
-    // If department is selected, use that department's names
-    if (formData.department) {
-      return getCertificateNamesForType(formData.department, formData.certificateType);
-    }
-    
-    // Otherwise, show all available certificate names for this type across all departments
-    const allNames = new Set<string>();
-    ["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].forEach(dept => {
-      getCertificateNamesForType(dept, formData.certificateType).forEach(name => allNames.add(name));
-    });
-    return Array.from(allNames).sort();
+    if (!formData.certificateDepartment || !formData.certificateType) return [];
+    return getCertificateNamesForType(formData.certificateDepartment, formData.certificateType);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -510,6 +492,7 @@ export default function CaptureRecord() {
         languages: [""],
         qualificationType: "",
         qualificationName: "",
+        certificateDepartment: "",
         certificateType: "",
         certificateName: "",
         certificateFile: null
@@ -556,6 +539,7 @@ export default function CaptureRecord() {
         : "No qualifications listed", // Combine qualification type and name
       qualificationType: formData.qualificationType,
       qualificationName: formData.qualificationName,
+      certificateDepartment: formData.certificateDepartment,
       certificateType: formData.certificateType,
       certificateName: formData.certificateName
     };
@@ -1074,7 +1058,30 @@ export default function CaptureRecord() {
               {/* Certificates */}
               <div className="border rounded-lg p-4 bg-blue-50">
                 <h4 className="font-medium text-gray-800 mb-3">Certificates</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <Label htmlFor="certificateDepartment">Department</Label>
+                    <Select
+                      value={formData.certificateDepartment}
+                      onValueChange={(value) => {
+                        handleInputChange("certificateDepartment", value);
+                        // Clear certificate type and name when department changes
+                        handleInputChange("certificateType", "");
+                        handleInputChange("certificateName", "");
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["SAP", "ICT", "HR", "PROJECT MANAGEMENT", "SERVICE DESK"].map((dept) => (
+                          <SelectItem key={dept} value={dept}>
+                            {dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div>
                     <Label htmlFor="certificateType">Certificate Type</Label>
                     <Select
@@ -1084,9 +1091,10 @@ export default function CaptureRecord() {
                         // Clear certificate name when type changes
                         handleInputChange("certificateName", "");
                       }}
+                      disabled={!formData.certificateDepartment}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select certificate type" />
+                        <SelectValue placeholder={formData.certificateDepartment ? "Select certificate type" : "Select department first"} />
                       </SelectTrigger>
                       <SelectContent>
                         {getAvailableCertificateTypes().map((type) => (
@@ -1138,11 +1146,10 @@ export default function CaptureRecord() {
                   )}
                 </div>
                 
-                {formData.certificateType && formData.certificateName && (
+                {formData.certificateDepartment && formData.certificateType && formData.certificateName && (
                   <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
                     <p className="text-xs text-green-700">
-                      ✓ Selected: {formData.certificateName} ({formData.certificateType})
-                      {formData.department && ` - Department: ${formData.department}`}
+                      ✓ Selected: {formData.certificateName} ({formData.certificateType} - {formData.certificateDepartment})
                     </p>
                   </div>
                 )}
