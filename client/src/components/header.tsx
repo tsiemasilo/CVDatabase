@@ -99,15 +99,18 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleProfile}
-              className="btn-icon"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Button>
+            {/* Hide profile button for users */}
+            {user?.role !== 'user' && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleProfile}
+                className="btn-icon"
+              >
+                <User className="w-4 h-4" />
+                Profile
+              </Button>
+            )}
             <Button 
               variant="outline" 
               size="sm" 
