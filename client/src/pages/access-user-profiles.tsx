@@ -64,25 +64,6 @@ export default function AccessUserProfiles() {
     },
   });
 
-  // Check if user has permission to access this page - after all hooks are called
-  if (!permissions.canAccessUserProfiles) {
-    return (
-      <div className="container mx-auto p-6">
-        <Card className="max-w-md mx-auto mt-20">
-          <CardContent className="pt-6 text-center">
-            <ShieldAlert className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
-            <p className="text-gray-600">You don't have permission to access user profiles.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    console.error("Query error:", error);
-  }
-
   // Create user profile mutation
   const createUserMutation = useMutation({
     mutationFn: async (data: InsertUserProfile) => {
@@ -143,6 +124,25 @@ export default function AccessUserProfiles() {
       toast({ title: "Error", description: "Failed to update user profile", variant: "destructive" });
     },
   });
+
+  // Check if user has permission to access this page - after all hooks are called
+  if (!permissions.canAccessUserProfiles) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="max-w-md mx-auto mt-20">
+          <CardContent className="pt-6 text-center">
+            <ShieldAlert className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
+            <p className="text-gray-600">You don't have permission to access user profiles.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Query error:", error);
+  }
 
   // Check if user has permission to access this page - after all hooks are called
   if (!permissions.canAccessUserProfiles) {
