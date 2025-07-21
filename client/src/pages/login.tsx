@@ -64,17 +64,28 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl">
+    <div className="min-h-screen relative bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      {/* Background logo with low opacity */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <img 
+          src="/assets/alteram-logo.png"
+          alt="Alteram Background"
+          className="opacity-5 max-w-lg max-h-96 object-contain"
+        />
+      </div>
+      
+      <Card className="w-full max-w-md shadow-xl relative z-10">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
+            <img 
+              src="/assets/alteram-logo.png"
+              alt="Alteram Solutions"
+              className="h-16 w-auto"
+            />
           </div>
           <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
           <CardDescription>
-            Sign in to access the CV Management System
+            Sign in to access the Alteram CV Management System
           </CardDescription>
         </CardHeader>
         
