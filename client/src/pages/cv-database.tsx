@@ -7,15 +7,33 @@ import AddCVModal from "@/components/add-cv-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Download, X } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Download, X, ShieldAlert } from "lucide-react";
 import { DEPARTMENTS, DISCIPLINES, DOMAINS, CATEGORIES, ROLES, LANGUAGES, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, NQF_LEVELS, SAP_K_LEVELS } from "@shared/data";
 import { useAppContext } from "@/contexts/AppContext";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 
 export default function CVDatabase() {
   const { setActiveTab } = useAppContext();
+  const { permissions } = useRoleAccess();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Check if user has permission to view CVs
+  if (!permissions.canViewAllCVs) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="max-w-md mx-auto mt-20">
+          <CardContent className="pt-6 text-center">
+            <ShieldAlert className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
+            <p className="text-gray-600">You don't have permission to view CV records.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   
   // Additional filter states
   const [departmentFilter, setDepartmentFilter] = useState("");

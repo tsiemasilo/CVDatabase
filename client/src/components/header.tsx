@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
 import { useAppContext } from "@/contexts/AppContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function Header() {
   const { activeTab, setActiveTab } = useAppContext();
   const { user, logout } = useAuth();
+  const { canAccessTab } = useRoleAccess();
   const { toast } = useToast();
 
   const logoutMutation = useMutation({
@@ -37,7 +39,7 @@ export default function Header() {
     logoutMutation.mutate();
   };
 
-  const tabs = [
+  const allTabs = [
     "Landing page",
     "Qualifications", 
     "Positions | Roles",
@@ -45,6 +47,9 @@ export default function Header() {
     "Tenders",
     "Capture record"
   ];
+
+  // Filter tabs based on user role permissions
+  const tabs = allTabs.filter(tab => canAccessTab(tab));
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

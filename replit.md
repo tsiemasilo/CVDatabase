@@ -133,6 +133,12 @@ Changelog:
 - July 7, 2025. Redesigned CV template to match exact Alteram Solutions format with structured tables for Experience and Qualifications, professional summary paragraph, and detailed experience descriptions
 - July 9, 2025. Removed Certificate Type & Certificate Name form section from capture record page at user request - streamlined form to focus on core qualifications and experience fields
 - July 9, 2025. Implemented comprehensive Access User Profiles system with three distinct roles (Admin, Manager, User) including role-based permissions, user management functionality, and PostgreSQL database integration with full CRUD operations
+- July 21, 2025. Added comprehensive login page with professional design and session-based authentication system
+- July 21, 2025. Implemented role-based access control system with proper permissions for each user role:
+  * Admin: Full access to all features including user management, CV management, and system configuration
+  * Manager: Access to CV viewing/editing, positions/qualifications management, tenders, and capture records (no user management)
+  * User: Limited access to only capture records functionality (candidate/job seeker role)
+- July 21, 2025. Enhanced authentication system with express-session middleware and proper session management
 ```
 
 ## User Preferences
