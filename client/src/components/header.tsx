@@ -53,7 +53,7 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -82,7 +82,7 @@ export default function Header() {
           
           <div className="flex items-center">
             {user && (
-              <div className="text-sm text-gray-600" style={{ marginRight: '100px' }}>
+              <div className="text-sm text-gray-600" style={{ position: 'absolute', right: '200px', top: '50%', transform: 'translateY(-50%)' }}>
                 Welcome, <span className="font-medium">{user.firstName || user.username}</span>
                 <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                   {user.role}
