@@ -31,7 +31,7 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canCaptureRecords: true,
   },
   manager: {
-    canAccessUserProfiles: true,
+    canAccessUserProfiles: false,
     canCreateUsers: false,
     canEditUsers: false,
     canDeleteUsers: false,
@@ -61,7 +61,10 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
 export function useRoleAccess() {
   const { user } = useAuth();
   
-  const permissions = user ? ROLE_PERMISSIONS[user.role] : {
+
+  
+  const userRole = user?.role as UserRole;
+  const permissions = user && userRole && ROLE_PERMISSIONS[userRole] ? ROLE_PERMISSIONS[userRole] : {
     canAccessUserProfiles: false,
     canCreateUsers: false,
     canEditUsers: false,
@@ -102,6 +105,6 @@ export function useRoleAccess() {
     permissions,
     hasPermission,
     canAccessTab,
-    userRole: user?.role || null,
+    userRole: userRole || null,
   };
 }
