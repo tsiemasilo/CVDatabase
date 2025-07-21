@@ -31,7 +31,7 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canCaptureRecords: true,
   },
   manager: {
-    canAccessUserProfiles: false,
+    canAccessUserProfiles: true,
     canCreateUsers: false,
     canEditUsers: false,
     canDeleteUsers: false,
