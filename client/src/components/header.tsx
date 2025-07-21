@@ -53,7 +53,13 @@ export default function Header() {
   ];
 
   // Filter tabs based on user role permissions
-  const tabs = allTabs.filter(tab => canAccessTab(tab));
+  const tabs = allTabs.filter(tab => {
+    // For users, hide "Capture record" from navbar since it's their default page
+    if (user?.role === 'user' && tab === "Capture record") {
+      return false;
+    }
+    return canAccessTab(tab);
+  });
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

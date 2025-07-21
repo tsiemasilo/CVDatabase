@@ -13,6 +13,7 @@ import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 import { AppProvider, useAppContext, type ActiveTab } from "@/contexts/AppContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 function MainContent({ activeTab }: { activeTab: ActiveTab }) {
   switch (activeTab) {
@@ -34,9 +35,18 @@ function MainContent({ activeTab }: { activeTab: ActiveTab }) {
 }
 
 function AppContent() {
-  const { activeTab } = useAppContext();
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { activeTab, setActiveTab } = useAppContext();
+  const { isAuthenticated, isLoading, login, user } = useAuth();
   
+  // Set initial tab based on user role
+  useEffect(() => {
+    if (user && user.role === 'user') {
+      setActiveTab("Capture record");
+    } else if (user && (user.role === 'admin' || user.role === 'manager')) {
+      setActiveTab("Landing page");
+    }
+  }, [user, setActiveTab]);
+
   // Show loading spinner while checking authentication
   if (isLoading) {
     return (
