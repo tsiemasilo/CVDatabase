@@ -8,6 +8,57 @@ import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Authentication routes
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      const user = await storage.authenticateUser(username, password);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      // Store user session
+      if (req.session) {
+        req.session.user = user;
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      if (req.session) {
+        req.session.user = null;
+      }
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get("/api/auth/user", async (req, res) => {
+    try {
+      if (req.session?.user) {
+        res.json(req.session.user);
+      } else {
+        res.status(401).json({ message: "Not authenticated" });
+      }
+    } catch (error) {
+      console.error("Get user error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
   // Get all CV records
   app.get("/api/cv-records", async (req, res) => {
     try {

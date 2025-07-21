@@ -20,6 +20,9 @@ export interface IStorage {
   updateUserProfile(id: number, userProfile: Partial<InsertUserProfile>): Promise<UserProfile | undefined>;
   deleteUserProfile(id: number): Promise<boolean>;
   searchUserProfiles(searchTerm: string, roleFilter?: string): Promise<UserProfile[]>;
+  
+  // Authentication methods
+  authenticateUser(username: string, password: string): Promise<UserProfile | null>;
 }
 
 export class MemStorage implements IStorage {
@@ -336,6 +339,22 @@ export class MemStorage implements IStorage {
       
       return matchesSearch && matchesRole;
     });
+  }
+
+  // Authentication methods
+  async authenticateUser(username: string, password: string): Promise<UserProfile | null> {
+    const allProfiles = await this.getAllUserProfiles();
+    const user = allProfiles.find(profile => 
+      profile.username === username && profile.password === password && profile.isActive
+    );
+    
+    if (user) {
+      // Update last login time
+      await this.updateUserProfile(user.id, { lastLogin: new Date() });
+      return user;
+    }
+    
+    return null;
   }
 }
 

@@ -1,9 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
 import { useAppContext } from "@/contexts/AppContext";
+import { useAuth } from "@/hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
   const { activeTab, setActiveTab } = useAppContext();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/auth/logout");
+      return await response.json();
+    },
+    onSuccess: () => {
+      logout();
+      toast({ title: "Logged out successfully" });
+    },
+    onError: (error: any) => {
+      console.error("Logout error:", error);
+      // Still logout on client side even if server fails
+      logout();
+      toast({ title: "Logged out" });
+    },
+  });
 
   const handleProfile = () => {
     // TODO: Implement profile functionality
@@ -11,8 +34,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log("Logout clicked");
+    logoutMutation.mutate();
   };
 
   const tabs = [
@@ -40,7 +62,7 @@ export default function Header() {
               {tabs.map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => setActiveTab(tab as any)}
                   className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
                     activeTab === tab
                       ? "bg-orange-500 text-white"
@@ -53,6 +75,14 @@ export default function Header() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {user && (
+              <div className="text-sm text-gray-600">
+                Welcome, <span className="font-medium">{user.firstName || user.username}</span>
+                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  {user.role}
+                </span>
+              </div>
+            )}
             <Button 
               variant="outline" 
               size="sm" 
@@ -67,9 +97,10 @@ export default function Header() {
               size="sm" 
               onClick={handleLogout}
               className="btn-icon"
+              disabled={logoutMutation.isPending}
             >
               <LogOut className="w-4 h-4" />
-              Logout
+              {logoutMutation.isPending ? "Logging out..." : "Logout"}
             </Button>
           </div>
         </div>
