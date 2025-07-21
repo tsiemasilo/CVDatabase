@@ -79,9 +79,9 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center">
             {user && (
-              <div className="text-sm text-gray-600 mr-4">
+              <div className="text-sm text-gray-600 mr-8">
                 Welcome, <span className="font-medium">{user.firstName || user.username}</span>
                 <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                   {user.role}
