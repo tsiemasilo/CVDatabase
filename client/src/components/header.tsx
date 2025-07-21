@@ -3,7 +3,7 @@ import { User, LogOut } from "lucide-react";
 import { useAppContext } from "@/contexts/AppContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,6 +12,7 @@ export default function Header() {
   const { user, logout } = useAuth();
   const { canAccessTab } = useRoleAccess();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -19,20 +20,23 @@ export default function Header() {
       return await response.json();
     },
     onSuccess: () => {
+      // Clear all queries from cache
+      queryClient.clear();
       logout();
       toast({ title: "Logged out successfully" });
     },
     onError: (error: any) => {
       console.error("Logout error:", error);
       // Still logout on client side even if server fails
+      queryClient.clear();
       logout();
       toast({ title: "Logged out" });
     },
   });
 
   const handleProfile = () => {
-    // TODO: Implement profile functionality
-    console.log("Profile clicked");
+    // Navigate to Access User Profiles page to view current user's profile
+    setActiveTab("Access User Profiles");
   };
 
   const handleLogout = () => {

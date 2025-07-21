@@ -56,6 +56,8 @@ export function useAuth() {
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    // Redirect to login page after logout
+    window.location.href = "/login";
   };
 
   return {
