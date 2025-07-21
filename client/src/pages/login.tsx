@@ -70,7 +70,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         <img 
           src="/assets/alteram-logo.png"
           alt="Alteram Background"
-          className="opacity-5 max-w-lg max-h-96 object-contain"
+          className="opacity-5 w-full h-full object-contain"
         />
       </div>
       
