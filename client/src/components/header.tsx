@@ -79,34 +79,36 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {user && (
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 mr-4">
                 Welcome, <span className="font-medium">{user.firstName || user.username}</span>
                 <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                   {user.role}
                 </span>
               </div>
             )}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleProfile}
-              className="btn-icon"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleLogout}
-              className="btn-icon"
-              disabled={logoutMutation.isPending}
-            >
-              <LogOut className="w-4 h-4" />
-              {logoutMutation.isPending ? "Logging out..." : "Logout"}
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleProfile}
+                className="btn-icon"
+              >
+                <User className="w-4 h-4" />
+                Profile
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleLogout}
+                className="btn-icon"
+                disabled={logoutMutation.isPending}
+              >
+                <LogOut className="w-4 h-4" />
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </Button>
+            </div>
           </div>
         </div>
 
