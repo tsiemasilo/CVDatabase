@@ -71,7 +71,7 @@ export default function Header() {
                 </span>
               </div>
             )}
-            <div className="ml-16 flex space-x-3">
+            <div className="ml-16 flex space-x-3 mr-8">
               {tabs.map((tab) => (
                 <button
                   key={tab}
