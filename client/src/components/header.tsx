@@ -54,7 +54,7 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <img 
@@ -79,36 +79,38 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <div className="flex items-center">
-            {user && (
-              <div className="text-sm text-gray-600 pr-20">
-                Welcome, <span className="font-medium">{user.firstName || user.username}</span>
-                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                  {user.role}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center space-x-3">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleProfile}
-                className="btn-icon"
-              >
-                <User className="w-4 h-4" />
-                Profile
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleLogout}
-                className="btn-icon"
-                disabled={logoutMutation.isPending}
-              >
-                <LogOut className="w-4 h-4" />
-                {logoutMutation.isPending ? "Logging out..." : "Logout"}
-              </Button>
+          
+          <div className="flex-1"></div>
+          
+          {user && (
+            <div className="text-sm text-gray-600 mr-8">
+              Welcome, <span className="font-medium">{user.firstName || user.username}</span>
+              <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                {user.role}
+              </span>
             </div>
+          )}
+          
+          <div className="flex items-center space-x-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleProfile}
+              className="btn-icon"
+            >
+              <User className="w-4 h-4" />
+              Profile
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleLogout}
+              className="btn-icon"
+              disabled={logoutMutation.isPending}
+            >
+              <LogOut className="w-4 h-4" />
+              {logoutMutation.isPending ? "Logging out..." : "Logout"}
+            </Button>
           </div>
         </div>
 
