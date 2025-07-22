@@ -101,8 +101,8 @@ const initializeApp = async () => {
           let records;
           if (search || status) {
             records = await storage.searchCVRecords(
-              search as string || "", 
-              status as string
+              search || "", 
+              status || ""
             );
           } else {
             records = await storage.getAllCVRecords();
@@ -142,8 +142,8 @@ const initializeApp = async () => {
           let profiles;
           if (search || role) {
             profiles = await storage.searchUserProfiles(
-              search as string || "", 
-              role as string
+              search || "", 
+              role || ""
             );
           } else {
             profiles = await storage.getAllUserProfiles();
