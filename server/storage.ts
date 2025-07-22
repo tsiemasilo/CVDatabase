@@ -1,4 +1,6 @@
-import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile } from "@shared/schema";
+import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile, cvRecords, userProfiles } from "@shared/schema";
+import { db } from "./db";
+import { eq, like, or, and } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<any | undefined>;
@@ -358,4 +360,154 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  // User authentication methods
+  async getUser(id: number): Promise<any | undefined> {
+    const [user] = await db.select().from(userProfiles).where(eq(userProfiles.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<any | undefined> {
+    const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
+    return user;
+  }
+
+  async createUser(user: any): Promise<any> {
+    const [newUser] = await db.insert(userProfiles).values(user).returning();
+    return newUser;
+  }
+
+  // CV Records methods
+  async getAllCVRecords(): Promise<CVRecord[]> {
+    return await db.select().from(cvRecords).orderBy(cvRecords.submittedAt);
+  }
+
+  async getCVRecord(id: number): Promise<CVRecord | undefined> {
+    const [record] = await db.select().from(cvRecords).where(eq(cvRecords.id, id));
+    return record;
+  }
+
+  async createCVRecord(cvRecord: InsertCVRecord): Promise<CVRecord> {
+    const [newRecord] = await db.insert(cvRecords).values(cvRecord).returning();
+    return newRecord;
+  }
+
+  async updateCVRecord(id: number, cvRecord: Partial<InsertCVRecord>): Promise<CVRecord | undefined> {
+    const [updatedRecord] = await db
+      .update(cvRecords)
+      .set(cvRecord)
+      .where(eq(cvRecords.id, id))
+      .returning();
+    return updatedRecord;
+  }
+
+  async deleteCVRecord(id: number): Promise<boolean> {
+    const result = await db.delete(cvRecords).where(eq(cvRecords.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async searchCVRecords(searchTerm: string, statusFilter?: string): Promise<CVRecord[]> {
+    let query = db.select().from(cvRecords);
+    
+    const conditions = [];
+    
+    if (searchTerm) {
+      conditions.push(
+        or(
+          like(cvRecords.name, `%${searchTerm}%`),
+          like(cvRecords.surname, `%${searchTerm}%`),
+          like(cvRecords.email, `%${searchTerm}%`),
+          like(cvRecords.position, `%${searchTerm}%`),
+          like(cvRecords.department, `%${searchTerm}%`)
+        )
+      );
+    }
+    
+    if (statusFilter && statusFilter !== 'all') {
+      conditions.push(eq(cvRecords.status, statusFilter));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.orderBy(cvRecords.submittedAt);
+  }
+
+  // User Profile methods
+  async getAllUserProfiles(): Promise<UserProfile[]> {
+    return await db.select().from(userProfiles).orderBy(userProfiles.createdAt);
+  }
+
+  async getUserProfile(id: number): Promise<UserProfile | undefined> {
+    const [profile] = await db.select().from(userProfiles).where(eq(userProfiles.id, id));
+    return profile;
+  }
+
+  async createUserProfile(userProfile: InsertUserProfile): Promise<UserProfile> {
+    const [newProfile] = await db.insert(userProfiles).values(userProfile).returning();
+    return newProfile;
+  }
+
+  async updateUserProfile(id: number, userProfile: Partial<InsertUserProfile>): Promise<UserProfile | undefined> {
+    const [updatedProfile] = await db
+      .update(userProfiles)
+      .set(userProfile)
+      .where(eq(userProfiles.id, id))
+      .returning();
+    return updatedProfile;
+  }
+
+  async deleteUserProfile(id: number): Promise<boolean> {
+    const result = await db.delete(userProfiles).where(eq(userProfiles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async searchUserProfiles(searchTerm: string, roleFilter?: string): Promise<UserProfile[]> {
+    let query = db.select().from(userProfiles);
+    
+    const conditions = [];
+    
+    if (searchTerm) {
+      conditions.push(
+        or(
+          like(userProfiles.username, `%${searchTerm}%`),
+          like(userProfiles.email, `%${searchTerm}%`),
+          like(userProfiles.firstName, `%${searchTerm}%`),
+          like(userProfiles.lastName, `%${searchTerm}%`),
+          like(userProfiles.department, `%${searchTerm}%`)
+        )
+      );
+    }
+    
+    if (roleFilter && roleFilter !== 'all') {
+      conditions.push(eq(userProfiles.role, roleFilter));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.orderBy(userProfiles.createdAt);
+  }
+
+  // Authentication methods
+  async authenticateUser(username: string, password: string): Promise<UserProfile | null> {
+    const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
+    
+    if (user && user.password === password) {
+      // Update last login
+      await db
+        .update(userProfiles)
+        .set({ lastLogin: new Date() })
+        .where(eq(userProfiles.id, user.id));
+      
+      return user;
+    }
+    
+    return null;
+  }
+}
+
+export const storage = new DatabaseStorage();
