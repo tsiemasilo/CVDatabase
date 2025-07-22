@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { getStorage } from "./storage";
 import { insertCVRecordSchema, insertUserProfileSchema } from "@shared/schema";
 import { upload, deleteFile, getFileInfo } from "./uploads";
 import { z } from "zod";
@@ -17,6 +17,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
+      const storage = await getStorage();
       const user = await storage.authenticateUser(username, password);
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
@@ -62,6 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all CV records
   app.get("/api/cv-records", async (req, res) => {
     try {
+      const storage = await getStorage();
       const { search, status } = req.query;
       
       let records;
@@ -83,6 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a specific CV record
   app.get("/api/cv-records/:id", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid CV record ID" });
@@ -102,6 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new CV record with file upload
   app.post("/api/cv-records", upload.single('cvFile'), async (req, res) => {
     try {
+      const storage = await getStorage();
       const formData = { ...req.body };
       
       // If a file was uploaded, use the filename
@@ -136,6 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a CV record with optional file upload
   app.put("/api/cv-records/:id", upload.single('cvFile'), async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid CV record ID" });
@@ -187,37 +192,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete a CV record and its file
   app.delete("/api/cv-records/:id", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid CV record ID" });
       }
 
-      // Get record to delete associated file
+      // Get the record to delete associated file
       const record = await storage.getCVRecord(id);
       if (!record) {
         return res.status(404).json({ message: "CV record not found" });
       }
 
-      // Delete the record
+      // Delete the file if it exists
+      if (record.cvFile) {
+        deleteFile(record.cvFile);
+      }
+
       const deleted = await storage.deleteCVRecord(id);
       if (!deleted) {
         return res.status(404).json({ message: "CV record not found" });
       }
 
-      // Delete associated file if it exists
-      if (record.cvFile) {
-        deleteFile(record.cvFile);
-      }
-
-      res.status(204).send();
+      res.json({ message: "CV record deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete CV record" });
     }
   });
 
-  // Export CV records
+  // Export CV records as CSV
   app.get("/api/cv-records/export/csv", async (req, res) => {
     try {
+      const storage = await getStorage();
       const { search, status } = req.query;
       
       let records;
@@ -230,34 +236,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         records = await storage.getAllCVRecords();
       }
 
-      // Generate CSV content
-      const headers = ["ID", "Name", "Email", "Phone", "Position", "Department", "Experience", "Status", "Submitted"];
-      const csvContent = [
+      // Create CSV headers
+      const headers = [
+        "ID", "Name", "Surname", "Email", "Phone", "Position", 
+        "Department", "Experience", "Status", "Submitted At"
+      ];
+
+      // Convert records to CSV rows
+      const csvRows = [
         headers.join(","),
         ...records.map(record => [
           record.id,
           `"${record.name}"`,
-          record.email,
-          record.phone || "",
+          `"${record.surname || ''}"`,
+          `"${record.email}"`,
+          `"${record.phone || ''}"`,
           `"${record.position}"`,
-          record.department || "",
-          record.experience || "",
-          record.status,
-          new Date(record.submittedAt).toLocaleDateString()
+          `"${record.department || ''}"`,
+          record.experience || 0,
+          `"${record.status}"`,
+          `"${record.submittedAt}"`
         ].join(","))
       ].join("\n");
 
-      res.setHeader("Content-Type", "text/csv");
-      res.setHeader("Content-Disposition", "attachment; filename=cv_records.csv");
-      res.send(csvContent);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="cv-records.csv"');
+      res.send(csvRows);
     } catch (error) {
       res.status(500).json({ message: "Failed to export CV records" });
     }
   });
 
-  // File download endpoint
-  app.get("/api/cv-records/:id/download", async (req, res) => {
+  // Get CV file download
+  app.get("/api/cv-records/:id/file", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid CV record ID" });
@@ -271,24 +284,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filePath = path.join(process.cwd(), 'uploads', record.cvFile);
       const fileInfo = getFileInfo(record.cvFile);
       
-      if (!fileInfo.exists) {
+      if (!fileInfo) {
         return res.status(404).json({ message: "File not found on disk" });
       }
 
-      // Set appropriate headers for file download
-      res.setHeader('Content-Disposition', `attachment; filename="${record.name}_CV${path.extname(record.cvFile)}"`);
-      res.setHeader('Content-Type', 'application/octet-stream');
-      
+      res.setHeader('Content-Disposition', `attachment; filename="${record.cvFile}"`);
+      res.setHeader('Content-Type', fileInfo.mimetype);
       res.sendFile(filePath);
     } catch (error) {
-      console.error('File download error:', error);
-      res.status(500).json({ message: "Failed to download file" });
+      res.status(500).json({ message: "Failed to download CV file" });
     }
   });
 
-  // File info endpoint
-  app.get("/api/cv-records/:id/file-info", async (req, res) => {
+  // Get creative CV view data
+  app.get("/api/cv-records/:id/creative-view", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid CV record ID" });
@@ -299,29 +310,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "CV record not found" });
       }
 
-      if (!record.cvFile) {
-        return res.json({ hasFile: false });
-      }
-
-      const fileInfo = getFileInfo(record.cvFile);
-      res.json({
-        hasFile: true,
-        filename: record.cvFile,
-        originalName: `${record.name}_CV${path.extname(record.cvFile)}`,
-        exists: fileInfo.exists,
-        size: fileInfo.size,
-        uploadDate: fileInfo.uploadDate
-      });
+      res.json(record);
     } catch (error) {
-      res.status(500).json({ message: "Failed to get file info" });
+      res.status(500).json({ message: "Failed to fetch CV record" });
     }
   });
 
-  // User Profiles API Routes
-  
-  // Get all user profiles
+  // User Profile routes
   app.get("/api/user-profiles", async (req, res) => {
     try {
+      const storage = await getStorage();
       const { search, role } = req.query;
       
       let profiles;
@@ -343,6 +341,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a specific user profile
   app.get("/api/user-profiles/:id", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid user profile ID" });
@@ -362,30 +361,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new user profile
   app.post("/api/user-profiles", async (req, res) => {
     try {
-      console.log("Received user profile data:", req.body);
+      const storage = await getStorage();
       const validatedData = insertUserProfileSchema.parse(req.body);
-      console.log("Validated data:", validatedData);
       const newProfile = await storage.createUserProfile(validatedData);
-      console.log("Created profile:", newProfile);
       res.status(201).json(newProfile);
     } catch (error) {
-      console.error("Error creating user profile:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           message: "Validation error", 
           errors: error.errors 
         });
       }
-      res.status(500).json({ 
-        message: "Failed to create user profile",
-        error: error instanceof Error ? error.message : String(error)
-      });
+      res.status(500).json({ message: "Failed to create user profile" });
     }
   });
 
   // Update a user profile
   app.put("/api/user-profiles/:id", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid user profile ID" });
@@ -393,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const validatedData = insertUserProfileSchema.partial().parse(req.body);
       const updatedProfile = await storage.updateUserProfile(id, validatedData);
-      
+
       if (!updatedProfile) {
         return res.status(404).json({ message: "User profile not found" });
       }
@@ -413,6 +407,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete a user profile
   app.delete("/api/user-profiles/:id", async (req, res) => {
     try {
+      const storage = await getStorage();
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid user profile ID" });
@@ -423,7 +418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User profile not found" });
       }
 
-      res.status(204).send();
+      res.json({ message: "User profile deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete user profile" });
     }

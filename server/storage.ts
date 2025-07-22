@@ -494,21 +494,55 @@ export class DatabaseStorage implements IStorage {
 
   // Authentication methods
   async authenticateUser(username: string, password: string): Promise<UserProfile | null> {
-    const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
-    
-    if (user && user.password === password) {
-      // Update last login
-      await db
-        .update(userProfiles)
-        .set({ lastLogin: new Date() })
-        .where(eq(userProfiles.id, user.id));
+    try {
+      const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
       
-      return user;
+      if (user && user.password === password) {
+        // Update last login
+        await db
+          .update(userProfiles)
+          .set({ lastLogin: new Date() })
+          .where(eq(userProfiles.id, user.id));
+        
+        return user;
+      }
+      
+      return null;
+    } catch (error: any) {
+      console.log("Database authentication failed, using fallback");
+      throw new Error("Database connection failed");
     }
-    
-    return null;
   }
 }
 
-// Use database storage now that database is initialized
-export const storage = new DatabaseStorage();
+// Storage factory with database fallback
+class StorageFactory {
+  private static instance: IStorage;
+  
+  static async getStorage(): Promise<IStorage> {
+    if (!this.instance) {
+      try {
+        // Test database connection first
+        const testDb = new DatabaseStorage();
+        await testDb.getAllUserProfiles().then(() => {
+          console.log("✅ Database connection successful, using DatabaseStorage");
+          this.instance = testDb;
+        });
+      } catch (error) {
+        console.log("❌ Database connection failed, using MemStorage fallback");
+        this.instance = new MemStorage();
+      }
+    }
+    return this.instance;
+  }
+  
+  static reset() {
+    this.instance = undefined as any;
+  }
+}
+
+// Export a function to get storage
+export const getStorage = () => StorageFactory.getStorage();
+
+// For backward compatibility, export a storage instance (will be MemStorage initially)
+export const storage = new MemStorage();
