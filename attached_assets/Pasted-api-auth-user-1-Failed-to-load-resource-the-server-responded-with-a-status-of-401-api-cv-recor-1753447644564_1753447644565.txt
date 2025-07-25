@@ -1,0 +1,102 @@
+api/auth/user:1  Failed to load resource: the server responded with a status of 401 ()
+api/cv-records:1  Failed to load resource: the server responded with a status of 404 ()
+index-Dob3rOlC.js:345 CV creation error: Error: 404: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/cv-records</pre>
+</body>
+</html>
+
+    at WC (index-Dob3rOlC.js:40:96319)
+    at async xi (index-Dob3rOlC.js:40:96520)
+    at async Object.mutationFn (index-Dob3rOlC.js:345:13927)
+onError @ index-Dob3rOlC.js:345
+api/cv-records:1  Failed to load resource: the server responded with a status of 404 ()
+index-Dob3rOlC.js:345 CV creation error: Error: 404: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/cv-records</pre>
+</body>
+</html>
+
+    at WC (index-Dob3rOlC.js:40:96319)
+    at async xi (index-Dob3rOlC.js:40:96520)
+    at async Object.mutationFn (index-Dob3rOlC.js:345:13927)
+onError @ index-Dob3rOlC.js:345
+api/cv-records:1  Failed to load resource: the server responded with a status of 404 ()
+index-Dob3rOlC.js:345 CV creation error: Error: 404: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/cv-records</pre>
+</body>
+</html>
+
+    at WC (index-Dob3rOlC.js:40:96319)
+    at async xi (index-Dob3rOlC.js:40:96520)
+    at async Object.mutationFn (index-Dob3rOlC.js:345:13927)
+onError @ index-Dob3rOlC.js:345
+index-Dob3rOlC.js:40  POST https://cvdatabase.netlify.app/api/cv-records 404 (Not Found)
+xi @ index-Dob3rOlC.js:40
+mutationFn @ index-Dob3rOlC.js:345
+fn @ index-Dob3rOlC.js:40
+S @ index-Dob3rOlC.js:40
+start @ index-Dob3rOlC.js:40
+execute @ index-Dob3rOlC.js:40
+await in execute
+mutate @ index-Dob3rOlC.js:40
+(anonymous) @ index-Dob3rOlC.js:40
+F @ index-Dob3rOlC.js:345
+ik @ index-Dob3rOlC.js:37
+ak @ index-Dob3rOlC.js:37
+ok @ index-Dob3rOlC.js:37
+Fh @ index-Dob3rOlC.js:37
+kS @ index-Dob3rOlC.js:37
+(anonymous) @ index-Dob3rOlC.js:37
+em @ index-Dob3rOlC.js:40
+Jw @ index-Dob3rOlC.js:37
+sd @ index-Dob3rOlC.js:37
+kp @ index-Dob3rOlC.js:37
+bk @ index-Dob3rOlC.js:37
+index-Dob3rOlC.js:345 CV creation error: Error: 404: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/cv-records</pre>
+</body>
+</html>
+
+    at WC (index-Dob3rOlC.js:40:96319)
+    at async xi (index-Dob3rOlC.js:40:96520)
+    at async Object.mutationFn (index-Dob3rOlC.js:345:13927)
+onError @ index-Dob3rOlC.js:345
+execute @ index-Dob3rOlC.js:40
+await in execute
+mutate @ index-Dob3rOlC.js:40
+(anonymous) @ index-Dob3rOlC.js:40
+F @ index-Dob3rOlC.js:345
+ik @ index-Dob3rOlC.js:37
+ak @ index-Dob3rOlC.js:37
+ok @ index-Dob3rOlC.js:37
+Fh @ index-Dob3rOlC.js:37
+kS @ index-Dob3rOlC.js:37
+(anonymous) @ index-Dob3rOlC.js:37
+em @ index-Dob3rOlC.js:40
+Jw @ index-Dob3rOlC.js:37
+sd @ index-Dob3rOlC.js:37
+kp @ index-Dob3rOlC.js:37
+bk @ index-Dob3rOlC.js:37
