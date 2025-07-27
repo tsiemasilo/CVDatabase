@@ -199,7 +199,7 @@ export default function SuccessPage() {
 
             {/* Experience Details */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {record.experienceInSimilarRole !== undefined && (
+              {record.experienceInSimilarRole !== undefined && record.experienceInSimilarRole !== null && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -213,7 +213,7 @@ export default function SuccessPage() {
                 </Card>
               )}
               
-              {record.experienceWithITSMTools !== undefined && (
+              {record.experienceWithITSMTools !== undefined && record.experienceWithITSMTools !== null && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">

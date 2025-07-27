@@ -799,6 +799,8 @@ export default function CaptureRecord() {
       position: formData.position,
       department: formData.department,
       experience: parseInt(formData.yearsOfExperience) || 0,
+      experienceInSimilarRole: parseInt(formData.experienceInSimilarRole) || 0,
+      experienceWithITSMTools: parseInt(formData.experienceWithITSMTools) || 0,
       status: "active",
       cvFile: "",
       languages: validLanguages.join(", "), // Store languages in languages field
