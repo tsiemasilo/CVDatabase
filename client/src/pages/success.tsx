@@ -50,10 +50,12 @@ export default function SuccessPage() {
   }, []);
 
   // Fetch the submitted record details
-  const { data: record, isLoading } = useQuery<CVRecord>({
-    queryKey: ['/api/cv-records', submittedRecordId],
+  const { data: record, isLoading, error } = useQuery<CVRecord>({
+    queryKey: [`/api/cv-records/${submittedRecordId}`],
     enabled: !!submittedRecordId,
   });
+
+
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-ZA', {
@@ -101,6 +103,8 @@ export default function SuccessPage() {
             Thank you for your application. Your CV has been received and is being reviewed.
           </p>
         </div>
+
+
 
         {/* Record Details */}
         {record ? (
