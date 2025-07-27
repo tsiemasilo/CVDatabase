@@ -522,14 +522,13 @@ class StorageFactory {
   static async getStorage(): Promise<IStorage> {
     if (!this.instance) {
       try {
-        // Test database connection first
+        // Test database connection first by running a simple query
         const testDb = new DatabaseStorage();
-        await testDb.getAllUserProfiles().then(() => {
-          console.log("✅ Database connection successful, using DatabaseStorage");
-          this.instance = testDb;
-        });
+        await testDb.getAllUserProfiles();
+        console.log("✅ Database connection successful, using DatabaseStorage");
+        this.instance = testDb;
       } catch (error) {
-        console.log("❌ Database connection failed, using MemStorage fallback");
+        console.log("❌ Database connection failed, using MemStorage fallback", error);
         this.instance = new MemStorage();
       }
     }
