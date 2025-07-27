@@ -240,8 +240,14 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
             '<span class="font-bold text-blue-700">Role:</span> ' + (record.position || record.roleTitle || '') +
             (record.department ? ' | <span class="font-bold text-blue-700">Department:</span> ' + record.department : '') +
             (record.roleTitle ? ' | <span class="font-bold text-blue-700">Role Title:</span> ' + record.roleTitle : '') +
-            (record.sapKLevel ? ' | <span class="font-bold text-blue-700">K-Level:</span> ' + record.sapKLevel : '') +
+            (record.sapKLevel && record.sapKLevel.trim() !== '' ? ' | <span class="font-bold text-blue-700">K-Level:</span> ' + record.sapKLevel : '') +
           '</p>' +
+          '<!-- DEBUG INFO -->' +
+          '<div class="text-sm text-gray-500 mt-2">' +
+            'DEBUG - Department: "' + (record.department || 'empty') + '", ' +
+            'Role Title: "' + (record.roleTitle || 'empty') + '", ' +
+            'K-Level: "' + (record.sapKLevel || 'empty') + '"' +
+          '</div>' +
         '</div>' +
 
         '<!-- Name and ID Section -->' +
