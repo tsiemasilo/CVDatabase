@@ -151,6 +151,16 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
             
             <div className="relative z-10">
+              {/* Name and ID Section */}
+              <div className="space-y-2 mb-6">
+                <p className="text-lg">
+                  <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
+                </p>
+              </div>
+
               {/* Role */}
               <div className="mb-4">
                 <p className="text-lg font-medium text-gray-800">
@@ -169,16 +179,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 )}
                 <p className="text-lg font-medium text-gray-800 mt-2">
                   <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
-                </p>
-              </div>
-
-              {/* Name and ID Section */}
-              <div className="space-y-2 mb-6">
-                <p className="text-lg">
-                  <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
 
