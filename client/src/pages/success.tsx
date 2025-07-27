@@ -31,7 +31,6 @@ interface CVRecord {
 }
 
 export default function SuccessPage() {
-  const [location, navigate] = useLocation();
   const [submittedRecordId, setSubmittedRecordId] = useState<number | null>(null);
 
   // Get the record ID from URL parameters or localStorage
