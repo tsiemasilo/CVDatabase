@@ -161,9 +161,14 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   {record.roleTitle && (
                     <span> | <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}</span>
                   )}
-                  {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}</span>
-                  )}
+                </p>
+                {record.sapKLevel && record.sapKLevel.trim() !== '' && (
+                  <p className="text-lg font-medium text-gray-800 mt-2">
+                    <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}
+                  </p>
+                )}
+                <p className="text-lg font-medium text-gray-800 mt-2">
+                  <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
                 </p>
               </div>
 
