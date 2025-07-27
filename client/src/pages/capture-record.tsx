@@ -845,7 +845,10 @@ export default function CaptureRecord() {
       certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined
     };
 
-    console.log("Submitting CV data:", cvData);
+    console.log("Form data before submission:", formData);
+    console.log("Role title value:", formData.roleTitle);
+    console.log("SAP K-level value:", formData.sapKLevel);
+    console.log("Final CV data being submitted:", cvData);
     createCVMutation.mutate(cvData);
   };
 
