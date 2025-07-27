@@ -148,6 +148,7 @@ Changelog:
 - July 27, 2025. Improved CV template layout by moving K-level to a separate line and adding years of experience display underneath - enhanced readability with multi-line professional information format
 - July 27, 2025. Reorganized CV template structure by moving name/surname and ID/passport fields above the role section - improved logical flow with personal information displayed first
 - July 27, 2025. Added certificates section under years of experience in CV template - displays candidate certifications with proper formatting and bullet points
+- July 27, 2025. Swapped department and role order in CV template display - now shows Department | Role | Role Title format for better professional presentation
 ```
 
 ## User Preferences
