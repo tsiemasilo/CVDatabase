@@ -6,6 +6,16 @@
   NODE_VERSION = "18"
 
 [[redirects]]
+  from = "/api/cv-records/*"
+  to = "/.netlify/functions/cv-records"
+  status = 200
+  
+[[redirects]]
+  from = "/api/cv-records"
+  to = "/.netlify/functions/cv-records"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
