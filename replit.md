@@ -144,6 +144,7 @@ Changelog:
 - July 27, 2025. Synchronized database connections between Replit development environment and Netlify deployment using shared NETLIFY_DATABASE_URL - both environments now access the same user profiles and CV data
 - July 27, 2025. Fixed critical CV form submission bug where roleTitle and sapKLevel fields were showing "N/A" in database records - enhanced form submission logic to include all missing fields and added fallback role titles with improved SAP K-level auto-population
 - July 27, 2025. Enhanced CV template display to show department, role title, and K-level information alongside the role field - CV viewer now displays comprehensive professional information in formatted layout
+- July 27, 2025. Fixed CV template modal component to properly display department, role title, and K-level in the role section - enhanced professional information visibility with formatted display showing Role | Department | Role Title | K-Level
 ```
 
 ## User Preferences
