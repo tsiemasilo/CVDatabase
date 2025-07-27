@@ -124,13 +124,6 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   };
 
   const generateCVHTML = (record: CVRecord) => {
-    console.log("Generating CV for record:", record);
-    console.log("Role data:", {
-      position: record.position,
-      roleTitle: record.roleTitle,
-      department: record.department,
-      sapKLevel: record.sapKLevel
-    });
     const languages = record.languages ? record.languages.split(',').map(l => l.trim()).filter(Boolean) : [];
     const workExperiences = record.workExperience ? record.workExperience.split(';').map(exp => {
       const parts = exp.split('|');
@@ -242,12 +235,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
             (record.roleTitle ? ' | <span class="font-bold text-blue-700">Role Title:</span> ' + record.roleTitle : '') +
             (record.sapKLevel && record.sapKLevel.trim() !== '' ? ' | <span class="font-bold text-blue-700">K-Level:</span> ' + record.sapKLevel : '') +
           '</p>' +
-          '<!-- DEBUG INFO -->' +
-          '<div class="text-sm text-gray-500 mt-2">' +
-            'DEBUG - Department: "' + (record.department || 'empty') + '", ' +
-            'Role Title: "' + (record.roleTitle || 'empty') + '", ' +
-            'K-Level: "' + (record.sapKLevel || 'empty') + '"' +
-          '</div>' +
+
         '</div>' +
 
         '<!-- Name and ID Section -->' +
