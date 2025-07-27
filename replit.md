@@ -140,6 +140,8 @@ Changelog:
   * User: Limited access to only capture records functionality (candidate/job seeker role)
 - July 21, 2025. Enhanced authentication system with express-session middleware and proper session management
 - July 27, 2025. Implemented comprehensive CV submission success page with complete form review functionality - users now see their submitted CV details after successful submission and can navigate back to submit additional applications
+- July 27, 2025. Fixed CV submission data capture to include experienceInSimilarRole and experienceWithITSMTools fields - success page now displays years of experience in similar roles and ITSM tools properly
+- July 27, 2025. Synchronized database connections between Replit development environment and Netlify deployment using shared NETLIFY_DATABASE_URL - both environments now access the same user profiles and CV data
 ```
 
 ## User Preferences
