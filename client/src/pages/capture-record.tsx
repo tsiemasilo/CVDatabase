@@ -794,19 +794,28 @@ export default function CaptureRecord() {
 
     const cvData: InsertCVRecord = {
       name: fullName,
+      surname: formData.surname,
+      idPassport: formData.idPassportNumber,
+      gender: formData.gender,
       email: formData.email,
       phone: formData.contactNumber,
       position: formData.position,
+      roleTitle: formData.roleTitle,
       department: formData.department,
       experience: parseInt(formData.yearsOfExperience) || 0,
       experienceInSimilarRole: parseInt(formData.experienceInSimilarRole) || 0,
       experienceWithITSMTools: parseInt(formData.experienceWithITSMTools) || 0,
+      sapKLevel: formData.sapKLevel,
       status: "active",
       cvFile: "",
-      languages: validLanguages.join(", "), // Store languages in languages field
+      languages: validLanguages.join(", "),
       qualifications: formData.qualificationType && formData.qualificationName 
         ? `${formData.qualificationType} - ${formData.qualificationName}`
-        : "No qualifications listed" // Combine qualification type and name
+        : "No qualifications listed",
+      qualificationType: formData.qualificationType,
+      qualificationName: formData.qualificationName,
+      workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : null,
+      certificateTypes: formData.certificateTypes ? JSON.stringify(formData.certificateTypes) : null
     };
 
     console.log("Submitting CV data:", cvData);
