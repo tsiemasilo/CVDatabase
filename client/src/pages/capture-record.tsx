@@ -209,7 +209,24 @@ export default function CaptureRecord() {
   // Get role titles for the selected role from the positions|roles data
   const getAvailableRoleTitles = () => {
     if (!formData.position) return [];
-    if (departmentRoles.length === 0) return [];
+    if (departmentRoles.length === 0) {
+      // Fallback role titles if no data is loaded yet
+      const fallbackRoleTitles: Record<string, string[]> = {
+        "SAP ABAP Developer": ["Junior SAP ABAP Developer", "SAP ABAP Developer", "Senior SAP ABAP Developer"],
+        "SAP Functional Consultant": ["Junior SAP Functional Consultant", "SAP Functional Consultant", "Senior SAP Functional Consultant"],
+        "SAP Technical Consultant": ["Junior SAP Technical Consultant", "SAP Technical Consultant", "Senior SAP Technical Consultant"],
+        "IT Support Technician": ["Junior IT Support Technician", "IT Support Technician", "Senior IT Support Technician"],
+        "Network Administrator": ["Junior Network Administrator", "Network Administrator", "Senior Network Administrator"],
+        "Systems Analyst": ["Junior Systems Analyst", "Systems Analyst", "Senior Systems Analyst"],
+        "Junior Developer": ["Junior Developer", "Software Developer"],
+        "Software Developer": ["Software Developer", "Senior Software Developer"],
+        "Senior Developer": ["Senior Developer", "Lead Developer"],
+        "Project Coordinator": ["Project Coordinator", "Senior Project Coordinator"],
+        "Project Officer": ["Project Officer", "Senior Project Officer"],
+        "Project Manager": ["Project Manager", "Senior Project Manager"]
+      };
+      return fallbackRoleTitles[formData.position] || [formData.position];
+    }
     return departmentRoles
       .filter(role => role.role === formData.position && role.department === formData.department)
       .map(role => role.roleTitle)
@@ -218,7 +235,17 @@ export default function CaptureRecord() {
 
   // Get K-level for the selected role title from the positions|roles data
   const getKLevelForRoleTitle = (roleTitle: string) => {
-    if (!roleTitle || !formData.position || !formData.department || departmentRoles.length === 0) return "";
+    if (!roleTitle || !formData.position || !formData.department) return "";
+    
+    // For SAP department, determine K-level based on role title seniority
+    if (formData.department === "SAP") {
+      if (roleTitle.toLowerCase().includes("junior") || roleTitle.toLowerCase().includes("entry")) return "K1";
+      if (roleTitle.toLowerCase().includes("senior") || roleTitle.toLowerCase().includes("lead")) return "K4";
+      if (roleTitle.toLowerCase().includes("architect") || roleTitle.toLowerCase().includes("principal")) return "K5";
+      return "K3"; // Default for mid-level
+    }
+    
+    if (departmentRoles.length === 0) return "";
     const roleData = departmentRoles.find(role => 
       role.roleTitle === roleTitle && 
       role.role === formData.position && 
@@ -814,8 +841,8 @@ export default function CaptureRecord() {
         : "No qualifications listed",
       qualificationType: formData.qualificationType,
       qualificationName: formData.qualificationName,
-      workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : null,
-      certificateTypes: formData.certificateTypes ? JSON.stringify(formData.certificateTypes) : null
+      workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : undefined,
+      certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined
     };
 
     console.log("Submitting CV data:", cvData);
