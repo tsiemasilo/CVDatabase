@@ -753,38 +753,18 @@ export default function CaptureRecord() {
       const response = await apiRequest("POST", "/api/cv-records", data);
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (newRecord) => {
       toast({
         title: "Success",
         description: "CV record has been successfully captured.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
       
-      // Reset form
-      setFormData({
-        firstName: "",
-        secondName: "",
-        thirdName: "",
-        surname: "",
-        idPassportNumber: "",
-        gender: "",
-        yearsOfExperience: "",
-        sapKLevel: "",
-        contactNumber: "",
-        email: "",
-        position: "",
-        roleTitle: "",
-        department: "",
-        languages: [""],
-        qualificationType: "",
-        qualificationName: "",
-        qualificationCertificate: null,
-        otherQualifications: [{ name: "", certificate: null }],
-        certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
-        experienceInSimilarRole: "",
-        experienceWithITSMTools: "",
-        workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
-      });
+      // Store the record ID for the success page
+      localStorage.setItem('lastSubmittedRecordId', newRecord.id.toString());
+      
+      // Redirect to success page
+      window.location.href = `?success=true&recordId=${newRecord.id}`;
     },
     onError: (error: any) => {
       console.error("CV creation error:", error);

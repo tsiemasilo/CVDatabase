@@ -10,12 +10,26 @@ import Tenders from "@/pages/tenders";
 import CaptureRecord from "@/pages/capture-record";
 import AccessUserProfiles from "@/pages/access-user-profiles";
 import Login from "@/pages/login";
+import SuccessPage from "@/pages/success";
 import NotFound from "@/pages/not-found";
 import { AppProvider, useAppContext, type ActiveTab } from "@/contexts/AppContext";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function MainContent({ activeTab }: { activeTab: ActiveTab }) {
+  // Check if we should show success page
+  const [showSuccessPage, setShowSuccessPage] = useState(false);
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    setShowSuccessPage(success === 'true');
+  }, []);
+
+  if (showSuccessPage) {
+    return <SuccessPage />;
+  }
+
   switch (activeTab) {
     case "Landing page":
       return <CVDatabase />;
