@@ -180,6 +180,27 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 <p className="text-lg font-medium text-gray-800 mt-2">
                   <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
                 </p>
+                {record.certificateTypes && (
+                  <div className="mt-2">
+                    <p className="text-lg font-medium text-gray-800">
+                      <span className="font-bold text-blue-700">Certificates:</span>
+                    </p>
+                    <div className="ml-4 mt-1">
+                      {(() => {
+                        try {
+                          const certificates = JSON.parse(record.certificateTypes);
+                          return certificates.map((cert: any, index: number) => (
+                            <p key={index} className="text-base text-gray-700">
+                              • {cert.certificateName || cert.certificate}
+                            </p>
+                          ));
+                        } catch {
+                          return <p className="text-base text-gray-700">• {record.certificateTypes}</p>;
+                        }
+                      })()}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Experience Table */}
