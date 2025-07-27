@@ -231,6 +231,9 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
         '<div class="mb-4">' +
           '<p class="text-lg font-medium text-gray-800">' +
             '<span class="font-bold text-blue-700">Role:</span> ' + (record.position || record.roleTitle || '') +
+            (record.department ? ' | <span class="font-bold text-blue-700">Department:</span> ' + record.department : '') +
+            (record.roleTitle && record.roleTitle !== record.position ? ' | <span class="font-bold text-blue-700">Role Title:</span> ' + record.roleTitle : '') +
+            (record.sapKLevel ? ' | <span class="font-bold text-blue-700">K-Level:</span> ' + record.sapKLevel : '') +
           '</p>' +
         '</div>' +
 
