@@ -23,7 +23,26 @@ export async function apiRequest(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
+  // Handle different environments
+  const isProduction = window.location.hostname.includes('netlify.app');
+  let fetchUrl: string;
+  
+  if (isProduction) {
+    // Map API routes to individual Netlify functions
+    if (url === '/api/auth/login') {
+      fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/login';
+    } else if (url === '/api/cv-records') {
+      fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/cv-records';
+    } else if (url === '/api/health') {
+      fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/health';
+    } else {
+      fetchUrl = `https://cvdatabase.netlify.app/.netlify/functions/api${url.replace('/api', '')}`;
+    }
+  } else {
+    fetchUrl = url;
+  }
+
+  const res = await fetch(fetchUrl, {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
@@ -47,7 +66,27 @@ export const getQueryFn: <T>(options: {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(queryKey[0] as string, {
+    // Handle different environments
+    const isProduction = window.location.hostname.includes('netlify.app');
+    let fetchUrl: string;
+    
+    if (isProduction) {
+      const apiPath = queryKey[0] as string;
+      // Map API routes to individual Netlify functions
+      if (apiPath === '/api/auth/user') {
+        fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/user';
+      } else if (apiPath === '/api/cv-records') {
+        fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/cv-records';
+      } else if (apiPath === '/api/health') {
+        fetchUrl = 'https://cvdatabase.netlify.app/.netlify/functions/health';
+      } else {
+        fetchUrl = `https://cvdatabase.netlify.app/.netlify/functions/api${apiPath.replace('/api', '')}`;
+      }
+    } else {
+      fetchUrl = queryKey[0] as string;
+    }
+
+    const res = await fetch(fetchUrl, {
       headers,
       credentials: "include",
     });

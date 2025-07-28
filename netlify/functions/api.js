@@ -1,13 +1,14 @@
-const express = require('express');
-const serverless = require('serverless-http');
-const jwt = require('jsonwebtoken');
-const { Pool, neonConfig } = require('@neondatabase/serverless');
+import express from 'express';
+import serverless from 'serverless-http';
+import jwt from 'jsonwebtoken';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
 
 // Create Express app
 const app = express();
 
 // Configure Neon for serverless environment
-neonConfig.webSocketConstructor = require('ws');
+neonConfig.webSocketConstructor = ws;
 
 // Database connection - force database usage
 const pool = new Pool({ 
@@ -472,4 +473,4 @@ app.use((req, res) => {
 });
 
 // Netlify handler
-exports.handler = serverless(app);
+export const handler = serverless(app);
