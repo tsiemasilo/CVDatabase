@@ -1,9 +1,8 @@
 const express = require('express');
 const serverless = require('serverless-http');
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { Pool, neonConfig } = require('@neondatabase/serverless');
 
-// Create Express app
 const app = express();
 
 // Configure Neon for serverless environment
@@ -14,54 +13,278 @@ const pool = new Pool({
   connectionString: process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL 
 });
 
+// Test database connection on startup
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Database connection error:', err);
+  } else {
+    console.log('Database connected successfully');
+    release();
+  }
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// JWT functions
-const JWT_SECRET = process.env.JWT_SECRET || 'alteram-cv-secret-key-2025';
+// Simple JWT-like token generation for Netlify
+const SECRET_KEY = process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production';
 
-const generateToken = (user) => {
-  return jwt.sign(
-    { 
-      id: user.id, 
-      username: user.username, 
-      role: user.role.toLowerCase(),
-      email: user.email 
-    }, 
-    JWT_SECRET, 
-    { expiresIn: '24h' }
-  );
-};
+function generateToken(user) {
+  const payload = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+  };
+  const token = Buffer.from(JSON.stringify(payload)).toString('base64');
+  const signature = crypto.createHmac('sha256', SECRET_KEY).update(token).digest('hex');
+  return `${token}.${signature}`;
+}
 
-const verifyToken = (token) => {
+function verifyToken(token) {
   if (!token) return null;
+  
   try {
-    return jwt.verify(token, JWT_SECRET);
+    const [payload, signature] = token.split('.');
+    const expectedSignature = crypto.createHmac('sha256', SECRET_KEY).update(payload).digest('hex');
+    
+    if (signature !== expectedSignature) return null;
+    
+    const data = JSON.parse(Buffer.from(payload, 'base64').toString());
+    
+    if (Date.now() > data.exp) return null;
+    
+    return data;
   } catch (error) {
     return null;
   }
+}
+
+// In-memory storage for Netlify (since we can't use database connections reliably)
+const mockData = {
+  users: [
+    { id: 1, username: 'admin', password: 'admin1', email: 'admin@alteram.co.za', role: 'Admin' },
+    { id: 2, username: 'mng', password: 'mng1', email: 'manager@alteram.co.za', role: 'Manager' },
+    { id: 3, username: 'user', password: 'user1', email: 'user@alteram.co.za', role: 'User' },
+    { id: 4, username: 'tsiemasilo', password: 'tsie', email: 'tsiemasilo@alteram.co.za', role: 'User' }
+  ],
+  cvRecords: [
+    {
+      id: 1,
+      name: "John",
+      surname: "Doe",
+      idPassport: "8901234567890",
+      gender: "Male",
+      email: "john.doe@example.com",
+      phone: "+27123456789",
+      position: "SAP ABAP Developer",
+      roleTitle: "Senior ABAP Developer",
+      department: "SAP",
+      experience: 5,
+      experienceInSimilarRole: 3,
+      experienceWithITSMTools: 2,
+      sapKLevel: "K3",
+      qualifications: "Bachelor's degree in Computer Science",
+      qualificationType: "Bachelor's degree",
+      qualificationName: "Computer Science",
+      instituteName: "University of Witwatersrand",
+      yearCompleted: "2018",
+      languages: "English, Afrikaans",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "Tech Solutions Ltd",
+          position: "ABAP Developer",
+          roleTitle: "Senior ABAP Developer",
+          startDate: "01/2020",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "SAP",
+          role: "SAP ABAP Developer",
+          certificateName: "SAP ABAP Programming Certificate"
+        }
+      ]),
+      status: "active",
+      cvFile: "",
+      submittedAt: new Date("2024-01-15T10:00:00Z")
+    },
+    {
+      id: 2,
+      name: "Jane",
+      surname: "Smith",
+      idPassport: "9012345678901",
+      gender: "Female",
+      email: "jane.smith@example.com",
+      phone: "+27234567890",
+      position: "Junior Developer", 
+      roleTitle: "Frontend Developer",
+      department: "ICT",
+      experience: 2,
+      experienceInSimilarRole: 1,
+      experienceWithITSMTools: 1,
+      sapKLevel: "",
+      qualifications: "Diploma in Information Technology",
+      qualificationType: "Diploma",
+      qualificationName: "Information Technology",
+      instituteName: "Cape Peninsula University",
+      yearCompleted: "2022",
+      languages: "English, Xhosa",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "Web Design Co",
+          position: "Junior Developer",
+          roleTitle: "Frontend Developer",
+          startDate: "03/2022",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "DEVELOPMENT",
+          role: "Junior Developer",
+          certificateName: "React Basics Certificate"
+        }
+      ]),
+      status: "pending",
+      cvFile: "",
+      submittedAt: new Date("2024-02-20T14:30:00Z")
+    },
+    {
+      id: 3,
+      name: "David",
+      surname: "Brown",
+      idPassport: "7803154567890",
+      gender: "Male",
+      email: "david.brown@example.com",
+      phone: "+27345678901",
+      position: "SAP Consultant",
+      roleTitle: "Senior SAP Consultant",
+      department: "SAP",
+      experience: 7,
+      experienceInSimilarRole: 5,
+      experienceWithITSMTools: 3,
+      sapKLevel: "K4",
+      qualifications: "Master's in Information Systems",
+      qualificationType: "Master's degree",
+      qualificationName: "Information Systems",
+      instituteName: "University of Stellenbosch",
+      yearCompleted: "2015",
+      languages: "English, Afrikaans, German",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "SAP Solutions Inc",
+          position: "SAP Consultant",
+          roleTitle: "Senior SAP Consultant",
+          startDate: "06/2018",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "SAP",
+          role: "SAP Consultant",
+          certificateName: "SAP Certified Application Associate"
+        }
+      ]),
+      status: "active",
+      cvFile: "",
+      submittedAt: new Date("2024-03-10T09:15:00Z")
+    },
+    {
+      id: 4,
+      name: "Lisa",
+      surname: "Wilson",
+      idPassport: "8912075432109",
+      gender: "Female",
+      email: "lisa.wilson@example.com",
+      phone: "+27456789012",
+      position: "HR Specialist",
+      roleTitle: "Senior HR Specialist", 
+      department: "HR",
+      experience: 4,
+      experienceInSimilarRole: 3,
+      experienceWithITSMTools: 2,
+      sapKLevel: "",
+      qualifications: "Bachelor's in Human Resources",
+      qualificationType: "Bachelor's degree",
+      qualificationName: "Human Resources",
+      instituteName: "University of Johannesburg",
+      yearCompleted: "2020",
+      languages: "English, Zulu, Sotho",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "People Solutions",
+          position: "HR Specialist",
+          roleTitle: "Senior HR Specialist",
+          startDate: "02/2021",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "HR",
+          role: "HR Specialist",
+          certificateName: "SHRM-CP Certification"
+        }
+      ]),
+      status: "archived",
+      cvFile: "",
+      submittedAt: new Date("2024-04-05T11:45:00Z")
+    },
+    {
+      id: 5,
+      name: "Michael",
+      surname: "Taylor",
+      idPassport: "9306142345678",
+      gender: "Male", 
+      email: "michael.taylor@example.com",
+      phone: "+27567890123",
+      position: "Service Desk Analyst",
+      roleTitle: "Senior Service Desk Analyst",
+      department: "SERVICE DESK",
+      experience: 3,
+      experienceInSimilarRole: 2,
+      experienceWithITSMTools: 3,
+      sapKLevel: "",
+      qualifications: "Certificate in IT Support",
+      qualificationType: "Certificate",
+      qualificationName: "IT Support",
+      instituteName: "CTI Education Group",
+      yearCompleted: "2021",
+      languages: "English, Afrikaans",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "TechSupport Co",
+          position: "Service Desk Analyst",
+          roleTitle: "Senior Service Desk Analyst",
+          startDate: "01/2022",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "SERVICE DESK",
+          role: "Service Desk Analyst",
+          certificateName: "ITIL Foundation Certificate"
+        }
+      ]),
+      status: "pending",
+      cvFile: "",
+      submittedAt: new Date("2024-05-12T16:20:00Z")
+    }
+  ]
 };
 
-// Middleware to check authentication
-const requireAuth = (req, res, next) => {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  const user = verifyToken(token);
-  
-  if (!user) {
-    return res.status(401).json({ message: "Authentication required" });
-  }
-  
-  req.user = user;
-  next();
-};
-
-// Root path for health check
-app.get('/', (req, res) => {
-  res.json({ status: "OK", message: "CV Database API", timestamp: new Date().toISOString() });
-});
-
-// Authentication login
-app.post('/auth/login', async (req, res) => {
+// Authentication login handler
+const handleLogin = async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -69,9 +292,10 @@ app.post('/auth/login', async (req, res) => {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
+    let user = null;
+    
     // Use real database only
     const result = await pool.query('SELECT * FROM user_profiles WHERE username = $1 AND password = $2', [username, password]);
-    let user = null;
     if (result.rows.length > 0) {
       user = result.rows[0];
     }
@@ -87,7 +311,7 @@ app.post('/auth/login', async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role.toLowerCase(),
+      role: user.role.toLowerCase(), // Ensure lowercase role for frontend compatibility
       firstName: user.firstName || user.firstname,
       lastName: user.lastName || user.lastname,
       department: user.department
@@ -101,15 +325,19 @@ app.post('/auth/login', async (req, res) => {
     console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-});
+};
 
-// Authentication logout
-app.post('/auth/logout', (req, res) => {
+// Authentication routes
+app.post("/auth/login", handleLogin);
+app.post("/.netlify/functions/api/auth/login", handleLogin);
+
+const handleLogout = (req, res) => {
   res.json({ message: "Logged out successfully" });
-});
+};
+app.post("/auth/logout", handleLogout);
+app.post("/.netlify/functions/api/auth/logout", handleLogout);
 
-// Get current user
-app.get('/auth/user', async (req, res) => {
+const handleGetUser = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const user = verifyToken(token);
@@ -139,12 +367,30 @@ app.get('/auth/user', async (req, res) => {
     console.error("Auth user error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-});
+};
 
-// Get all CV records
-app.get('/cv-records', async (req, res) => {
+app.get("/auth/user", handleGetUser);
+app.get("/.netlify/functions/api/auth/user", handleGetUser);
+
+// Middleware to check authentication
+const requireAuth = (req, res, next) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const user = verifyToken(token);
+  
+  if (!user) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  
+  req.user = user;
+  next();
+};
+
+// CV Records routes with database connection
+const handleGetCVRecords = async (req, res) => {
   try {
     const { search, status, department, position } = req.query;
+    
+    let records;
     
     // Use real database only
     let query = 'SELECT * FROM cv_records';
@@ -178,21 +424,26 @@ app.get('/cv-records', async (req, res) => {
     query += ' ORDER BY id DESC';
     
     const result = await pool.query(query, params);
-    res.json(result.rows);
+    records = result.rows;
+    
+    res.json(records);
   } catch (error) {
     console.error("Error fetching CV records:", error);
     res.status(500).json({ message: "Failed to fetch CV records" });
   }
-});
+};
 
-// Get specific CV record
-app.get('/cv-records/:id', async (req, res) => {
+app.get("/cv-records", handleGetCVRecords);
+app.get("/.netlify/functions/api/cv-records", handleGetCVRecords);
+
+const handleGetCVRecord = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
+    let record;
     
     // Use real database only
     const result = await pool.query('SELECT * FROM cv_records WHERE id = $1', [id]);
-    const record = result.rows[0];
+    record = result.rows[0];
     
     if (!record) {
       return res.status(404).json({ message: "CV record not found" });
@@ -203,11 +454,15 @@ app.get('/cv-records/:id', async (req, res) => {
     console.error("Error fetching CV record:", error);
     res.status(500).json({ message: "Failed to fetch CV record" });
   }
-});
+};
 
-// Create new CV record
-app.post('/cv-records', async (req, res) => {
+app.get("/cv-records/:id", handleGetCVRecord);
+app.get("/.netlify/functions/api/cv-records/:id", handleGetCVRecord);
+
+const handleCreateCVRecord = async (req, res) => {
   try {
+    let newRecord;
+    
     // Use real database only
     const {
       name, surname, idPassport, gender, email, phone, position, roleTitle, 
@@ -236,15 +491,19 @@ app.post('/cv-records', async (req, res) => {
       certificateTypes, status || 'pending', cvFile || '', new Date()
     ]);
     
-    res.status(201).json(result.rows[0]);
+    newRecord = result.rows[0];
+    
+    res.status(201).json(newRecord);
   } catch (error) {
     console.error("Error creating CV record:", error);
     res.status(500).json({ message: "Failed to create CV record" });
   }
-});
+};
 
-// Update CV record
-app.put('/cv-records/:id', requireAuth, async (req, res) => {
+app.post("/cv-records", handleCreateCVRecord);
+app.post("/.netlify/functions/api/cv-records", handleCreateCVRecord);
+
+app.put("/cv-records/:id", requireAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     
@@ -270,8 +529,7 @@ app.put('/cv-records/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Delete CV record
-app.delete('/cv-records/:id', requireAuth, async (req, res) => {
+app.delete("/cv-records/:id", requireAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     
@@ -288,8 +546,8 @@ app.delete('/cv-records/:id', requireAuth, async (req, res) => {
   }
 });
 
-// CSV Export
-app.get('/cv-records/export/csv', requireAuth, async (req, res) => {
+// CSV Export route
+app.get("/cv-records/export/csv", requireAuth, async (req, res) => {
   try {
     const { search, status, department, position } = req.query;
     
@@ -348,7 +606,7 @@ app.get('/cv-records/export/csv', requireAuth, async (req, res) => {
         `"${record.status}"`,
         `"${record.qualifications || ''}"`,
         `"${record.languages || ''}"`,
-        `"${new Date(record.submitted_at).toISOString()}"`
+        `"${record.submittedAt.toISOString()}"`
       ];
       csvRows.push(row.join(','));
     });
@@ -365,7 +623,7 @@ app.get('/cv-records/export/csv', requireAuth, async (req, res) => {
 });
 
 // User Profiles routes (Admin only)
-app.get('/user-profiles', requireAuth, async (req, res) => {
+app.get("/user-profiles", requireAuth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: "Admin access required" });
@@ -382,8 +640,7 @@ app.get('/user-profiles', requireAuth, async (req, res) => {
   }
 });
 
-// Create user profile
-app.post('/user-profiles', requireAuth, async (req, res) => {
+app.post("/user-profiles", requireAuth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: "Admin access required" });
@@ -404,8 +661,7 @@ app.post('/user-profiles', requireAuth, async (req, res) => {
   }
 });
 
-// Update user profile
-app.put('/user-profiles/:id', requireAuth, async (req, res) => {
+app.put("/user-profiles/:id", requireAuth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: "Admin access required" });
@@ -432,8 +688,7 @@ app.put('/user-profiles/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Delete user profile
-app.delete('/user-profiles/:id', requireAuth, async (req, res) => {
+app.delete("/user-profiles/:id", requireAuth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: "Admin access required" });
@@ -454,12 +709,14 @@ app.delete('/user-profiles/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Health check
-app.get('/health', (req, res) => {
+// Health check endpoint
+const handleHealth = (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
-});
+};
+app.get("/health", handleHealth);
+app.get("/.netlify/functions/api/health", handleHealth);
 
-// Error handling middleware
+// Add error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ message: 'Internal server error' });
