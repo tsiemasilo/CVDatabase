@@ -14,9 +14,27 @@ interface CVTemplateModalProps {
 export default function CVTemplateModal({ record, onClose }: CVTemplateModalProps) {
   if (!record) return null;
 
-  // Parse work experiences from the record
-  const workExperiences = record.workExperiences ? JSON.parse(record.workExperiences) : [];
-  const otherQualifications = record.otherQualifications ? JSON.parse(record.otherQualifications) : [];
+  // Parse work experiences from the record with error handling
+  const workExperiences = (() => {
+    try {
+      return record.workExperiences ? JSON.parse(record.workExperiences) : [];
+    } catch (error) {
+      console.error('Error parsing workExperiences:', error);
+      console.log('Raw workExperiences data:', record.workExperiences);
+      return [];
+    }
+  })();
+  
+  const otherQualifications = (() => {
+    try {
+      return record.otherQualifications ? JSON.parse(record.otherQualifications) : [];
+    } catch (error) {
+      console.error('Error parsing otherQualifications:', error);
+      console.log('Raw otherQualifications data:', record.otherQualifications);
+      return [];
+    }
+  })();
+  
   const languages = record.languages ? record.languages.split(', ') : [];
 
   // Calculate total experience
@@ -196,7 +214,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                               • {cert.certificateName || cert.certificate}
                             </p>
                           ));
-                        } catch {
+                        } catch (error) {
+                          console.error('Error parsing certificateTypes:', error);
+                          console.log('Raw certificateTypes data:', record.certificateTypes);
                           return <p className="text-lg font-medium text-gray-800 leading-relaxed">• {record.certificateTypes}</p>;
                         }
                       })()}
