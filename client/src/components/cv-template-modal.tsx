@@ -314,7 +314,12 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
                 <div key={index} className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
+                    {(exp.roleTitle || exp.title) && (
+                      <span className="text-blue-700 font-medium ml-2">| {exp.roleTitle || exp.title}</span>
+                    )}
+                  </h3>
                   <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
                   <p className="text-gray-600 mb-3">
                     {(() => {
