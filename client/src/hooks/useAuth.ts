@@ -20,24 +20,12 @@ export function useAuth() {
   const { data: currentUser, isLoading, error } = useQuery({
     queryKey: ["/api/auth/user"],
     queryFn: async () => {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        return null; // No token, not authenticated
-      }
-      
-      const headers: Record<string, string> = {
-        'Authorization': `Bearer ${token}`
-      };
-      
       const res = await fetch("/api/auth/user", {
-        headers,
         credentials: "include",
       });
       
       if (res.status === 401) {
-        // Token is invalid, remove it
-        localStorage.removeItem('authToken');
-        return null;
+        return null; // Not authenticated
       }
       
       if (!res.ok) {

@@ -7,34 +7,25 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Simple JWT-like authentication for serverless functions
-import jwt from 'jsonwebtoken';
+// Session middleware for Netlify
+import MemoryStore from 'memorystore';
+import session from 'express-session';
 
-const JWT_SECRET = process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production';
+const MemStoreSession = MemoryStore(session);
 
-// Authentication middleware for serverless
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-  console.log('Auth header:', authHeader);
-  console.log('Token:', token);
-
-  if (!token) {
-    console.log('No token provided');
-    return res.status(401).json({ message: 'Not authenticated' });
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  store: new MemStoreSession({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    console.log('Decoded token:', decoded);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    console.log('Token verification failed:', error.message);
-    return res.status(401).json({ message: 'Invalid token' });
-  }
-};
+}));
 
 // Initialize routes
 let routesInitialized = false;
@@ -64,17 +55,12 @@ const initializeApp = async () => {
             return res.status(401).json({ message: "Invalid username or password" });
           }
 
-          // Generate JWT token
-          const token = jwt.sign(
-            { id: user.id, username: user.username, role: user.role }, 
-            JWT_SECRET, 
-            { expiresIn: '7d' }
-          );
+          // Store user session
+          if (req.session) {
+            req.session.user = user;
+          }
           
-          res.json({ 
-            ...user, 
-            token 
-          });
+          res.json(user);
         } catch (error) {
           console.error("Login error:", error);
           res.status(500).json({ message: "Internal server error" });
@@ -83,7 +69,9 @@ const initializeApp = async () => {
 
       app.post("/api/auth/logout", async (req, res) => {
         try {
-          // For JWT, logout is handled client-side by removing the token
+          if (req.session) {
+            req.session.user = null;
+          }
           res.json({ message: "Logged out successfully" });
         } catch (error) {
           console.error("Logout error:", error);
@@ -91,35 +79,21 @@ const initializeApp = async () => {
         }
       });
 
-      app.get("/api/auth/user", authenticateToken, async (req, res) => {
+      app.get("/api/auth/user", async (req, res) => {
         try {
-          const storage = await getStorage();
-          // Try to get user from user profiles first, then fall back to token data
-          let user = await storage.getUserProfile(req.user.id);
-          
-          if (!user) {
-            // If no user profile exists, create a basic user object from token data
-            user = {
-              id: req.user.id,
-              username: req.user.username,
-              role: req.user.role,
-              firstName: req.user.firstName || req.user.username,
-              lastName: req.user.lastName || '',
-              email: req.user.email || '',
-              department: req.user.department || '',
-              position: req.user.position || ''
-            };
+          if (req.session?.user) {
+            res.json(req.session.user);
+          } else {
+            res.status(401).json({ message: "Not authenticated" });
           }
-          
-          res.json(user);
         } catch (error) {
           console.error("Get user error:", error);
           res.status(500).json({ message: "Internal server error" });
         }
       });
       
-      // CV Records routes - protected for authenticated users
-      app.get("/api/cv-records", authenticateToken, async (req, res) => {
+      // CV Records routes
+      app.get("/api/cv-records", async (req, res) => {
         try {
           const storage = await getStorage();
           const { search, status } = req.query;
@@ -140,7 +114,7 @@ const initializeApp = async () => {
         }
       });
 
-      app.get("/api/cv-records/:id", authenticateToken, async (req, res) => {
+      app.get("/api/cv-records/:id", async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -160,7 +134,7 @@ const initializeApp = async () => {
       });
 
       // Create a new CV record
-      app.post("/api/cv-records", authenticateToken, async (req, res) => {
+      app.post("/api/cv-records", async (req, res) => {
         try {
           const storage = await getStorage();
           const formData = { ...req.body };
@@ -203,7 +177,7 @@ const initializeApp = async () => {
       });
 
       // Update a CV record
-      app.put("/api/cv-records/:id", authenticateToken, async (req, res) => {
+      app.put("/api/cv-records/:id", async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -237,7 +211,7 @@ const initializeApp = async () => {
       });
 
       // Delete a CV record
-      app.delete("/api/cv-records/:id", authenticateToken, async (req, res) => {
+      app.delete("/api/cv-records/:id", async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -257,7 +231,7 @@ const initializeApp = async () => {
       });
       
       // User profiles routes  
-      app.get("/api/user-profiles", authenticateToken, async (req, res) => {
+      app.get("/api/user-profiles", async (req, res) => {
         try {
           const storage = await getStorage();
           const { search, role } = req.query;
