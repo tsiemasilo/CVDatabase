@@ -174,29 +174,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
         '</div>'
       : '';
 
-    // Build skills section
-    const skillsSection = languages.length > 0
-      ? '<div class="mb-8">' +
-        '<h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>' +
-        '<p class="text-gray-700">' +
-        '<span class="font-semibold text-blue-700">Languages:</span> ' + languages.join(', ') +
-        (record.sapKLevel ? '. <span class="font-semibold text-blue-700">SAP Knowledge Level:</span> ' + record.sapKLevel : '') +
-        '</p>' +
-        '</div>'
-      : '';
 
-    // Build professional summary
-    const professionalSummary = record.qualifications
-      ? '<div class="mb-8">' +
-        '<p class="text-gray-700 leading-relaxed text-justify">' +
-        'A highly motivated professional with experience in ' + (record.department || 'various areas') + ', ' +
-        'demonstrating strong skills in ' + (record.position || 'their field') + '. ' +
-        (record.experience ? 'With ' + record.experience + ' years of experience, ' : '') +
-        'committed to delivering high-quality solutions and contributing to organizational success.' +
-        (record.sapKLevel ? ' Certified at SAP ' + record.sapKLevel + ' level.' : '') +
-        '</p>' +
-        '</div>'
-      : '';
 
     return (
       '<!-- Header with Alteram Logo and Branding -->' +
@@ -282,8 +260,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
           '</table>' +
         '</div>' +
 
-        professionalSummary +
-        skillsSection +
+
         experienceDetails +
 
         '<!-- Footer -->' +

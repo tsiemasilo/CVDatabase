@@ -305,30 +305,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 </table>
               </div>
 
-          {/* Professional Summary/Description */}
-          {record.qualifications && (
-            <div className="mt-8 mb-8 bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
-              <h2 className="text-xl font-bold text-blue-700 mb-3">Professional Summary</h2>
-              <p className="text-gray-700 leading-relaxed text-justify">
-                A highly motivated professional with experience in {record.department || 'various areas'}, 
-                demonstrating strong skills in {record.position || 'their field'}. 
-                {record.experience ? `With ${record.experience} years of experience, ` : ''}
-                committed to delivering high-quality solutions and contributing to organizational success.
-                {record.sapKLevel ? ` Certified at SAP ${record.sapKLevel} level.` : ''}
-              </p>
-            </div>
-          )}
 
-              {/* Skills Section */}
-              {languages.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>
-                  <p className="text-gray-700">
-                    <span className="font-semibold text-blue-700">Languages:</span> {languages.join(', ')}
-                    {record.sapKLevel && <span>. <span className="font-semibold text-blue-700">SAP Knowledge Level:</span> {record.sapKLevel}</span>}
-                  </p>
-                </div>
-              )}
 
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
