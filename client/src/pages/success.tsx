@@ -333,18 +333,7 @@ export default function SuccessPage() {
         )}
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <Button 
-            onClick={() => {
-              // Clear URL parameters and go back to capture record
-              window.history.replaceState({}, '', window.location.pathname);
-              window.location.reload();
-            }}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Application
-          </Button>
+        <div className="flex justify-center mt-8">
           <Button 
             variant="outline" 
             onClick={() => {
