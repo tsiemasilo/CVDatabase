@@ -1,7 +1,7 @@
 const { Pool } = require('@neondatabase/serverless');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'alteram-cv-secret-key-2025';
 
 // Use hardcoded database URL for consistency with deployed functions
 const DATABASE_URL = process.env.NETLIFY_DATABASE_URL || 'postgresql://neondb_owner:npg_JRUe57kuOgLz@ep-lucky-recipe-aes0pb5o-pooler.c-2.us-east-2.aws.neon.tech/neondb';
