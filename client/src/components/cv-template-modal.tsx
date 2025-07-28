@@ -23,42 +23,70 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       // Handle PostgreSQL array format if it's a string that looks like {"item1","item2"}
       if (typeof record.workExperiences === 'string' && record.workExperiences.startsWith('{') && record.workExperiences.endsWith('}')) {
         const arrayContent = record.workExperiences.slice(1, -1); // Remove { and }
+        
+        // Split by comma, but only at the top level (not inside quoted strings)
         const items = [];
         let current = '';
         let inQuotes = false;
-        let depth = 0;
+        let escapeNext = false;
         
         for (let i = 0; i < arrayContent.length; i++) {
           const char = arrayContent[i];
           
-          if (char === '"' && arrayContent[i-1] !== '\\') {
+          if (escapeNext) {
+            current += char;
+            escapeNext = false;
+            continue;
+          }
+          
+          if (char === '\\') {
+            current += char;
+            escapeNext = true;
+            continue;
+          }
+          
+          if (char === '"') {
             inQuotes = !inQuotes;
-            if (!inQuotes && depth === 0 && current.trim()) {
-              // End of a quoted item
+            current += char;
+            continue;
+          }
+          
+          if (char === ',' && !inQuotes) {
+            // End of an item
+            if (current.trim()) {
               try {
-                const parsed = JSON.parse(current);
+                // Remove surrounding quotes and unescape
+                let cleanItem = current.trim();
+                if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                  cleanItem = cleanItem.slice(1, -1);
+                }
+                // Unescape the JSON string
+                cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                const parsed = JSON.parse(cleanItem);
                 items.push(parsed);
               } catch (e) {
                 console.warn("Failed to parse item:", current);
               }
-              current = '';
-              continue;
             }
+            current = '';
+            continue;
           }
           
-          if (inQuotes) {
-            current += char;
-          } else if (char === '{') {
-            depth++;
-            current += char;
-          } else if (char === '}') {
-            depth--;
-            current += char;
-          } else if (char === ',' && depth === 0) {
-            // Skip comma separator
-            continue;
-          } else if (depth > 0) {
-            current += char;
+          current += char;
+        }
+        
+        // Handle the last item
+        if (current.trim()) {
+          try {
+            let cleanItem = current.trim();
+            if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+              cleanItem = cleanItem.slice(1, -1);
+            }
+            cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+            const parsed = JSON.parse(cleanItem);
+            items.push(parsed);
+          } catch (e) {
+            console.warn("Failed to parse final item:", current);
           }
         }
         
@@ -266,39 +294,65 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                             const items = [];
                             let current = '';
                             let inQuotes = false;
-                            let depth = 0;
+                            let escapeNext = false;
                             
                             for (let i = 0; i < arrayContent.length; i++) {
                               const char = arrayContent[i];
                               
-                              if (char === '"' && arrayContent[i-1] !== '\\') {
+                              if (escapeNext) {
+                                current += char;
+                                escapeNext = false;
+                                continue;
+                              }
+                              
+                              if (char === '\\') {
+                                current += char;
+                                escapeNext = true;
+                                continue;
+                              }
+                              
+                              if (char === '"') {
                                 inQuotes = !inQuotes;
-                                if (!inQuotes && depth === 0 && current.trim()) {
+                                current += char;
+                                continue;
+                              }
+                              
+                              if (char === ',' && !inQuotes) {
+                                if (current.trim()) {
                                   try {
-                                    const parsed = JSON.parse(current);
+                                    let cleanItem = current.trim();
+                                    if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                                      cleanItem = cleanItem.slice(1, -1);
+                                    }
+                                    cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                                    const parsed = JSON.parse(cleanItem);
                                     items.push(parsed);
                                   } catch (e) {
                                     console.warn("Failed to parse certificate item:", current);
                                   }
-                                  current = '';
-                                  continue;
                                 }
+                                current = '';
+                                continue;
                               }
                               
-                              if (inQuotes) {
-                                current += char;
-                              } else if (char === '{') {
-                                depth++;
-                                current += char;
-                              } else if (char === '}') {
-                                depth--;
-                                current += char;
-                              } else if (char === ',' && depth === 0) {
-                                continue;
-                              } else if (depth > 0) {
-                                current += char;
+                              current += char;
+                            }
+                            
+                            // Handle the last item
+                            if (current.trim()) {
+                              try {
+                                let cleanItem = current.trim();
+                                if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                                  cleanItem = cleanItem.slice(1, -1);
+                                }
+                                cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                                const parsed = JSON.parse(cleanItem);
+                                items.push(parsed);
+                              } catch (e) {
+                                console.warn("Failed to parse final certificate item:", current);
                               }
                             }
+                            
                             certificates = items;
                           } else {
                             certificates = JSON.parse(record.certificateTypes);

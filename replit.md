@@ -166,6 +166,9 @@ Changelog:
 - July 28, 2025. Resolved critical database connectivity issue - fixed Neon database endpoint that was disabled, CV records table now loads properly with all 5 records displaying correctly
 - July 28, 2025. Enhanced qualification data capture with instituteName and yearCompleted fields - added new form inputs and updated database schema to collect comprehensive educational background information
 - July 28, 2025. Fixed additional qualifications form inconsistency - added missing Institute Name and Year Completed fields to match primary qualification structure for comprehensive data collection
+- July 28, 2025. Updated CV template colors from blue to #000053 for proper Alteram branding - changed all headings, borders, and text colors to match company identity
+- July 28, 2025. Enhanced work experience form with role title field - added 3-column layout with Company Name, Position, and Role Title fields for detailed professional information capture
+- July 28, 2025. Fixed PostgreSQL array data parsing in CV template - implemented proper handling of escaped JSON strings in database array format for work experience and certificate data display
 ```
 
 ## User Preferences
