@@ -844,8 +844,8 @@ export default function CaptureRecord() {
       qualificationName: formData.qualificationName,
       instituteName: formData.instituteName,
       yearCompleted: formData.yearCompleted,
-      workExperiences: formData.workExperiences && formData.workExperiences.length > 0 ? JSON.stringify(formData.workExperiences) : "[]",
-      certificateTypes: formData.certificates && formData.certificates.length > 0 ? JSON.stringify(formData.certificates) : "[]"
+      workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : undefined,
+      certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined
     };
 
     console.log("Form data before submission:", formData);

@@ -14,74 +14,9 @@ interface CVTemplateModalProps {
 export default function CVTemplateModal({ record, onClose }: CVTemplateModalProps) {
   if (!record) return null;
 
-  // Parse work experiences safely - handle PostgreSQL array format
-  const workExperiences = (() => {
-    try {
-      let data = record.workExperiences || '[]';
-      console.log('Raw workExperiences data:', data);
-      
-      // If it's a PostgreSQL array format (starts with {), convert it
-      if (typeof data === 'string' && data.startsWith('{') && data.endsWith('}')) {
-        // Remove outer braces and split by comma, handling quoted strings
-        const arrayContent = data.slice(1, -1);
-        const items = [];
-        let current = '';
-        let inQuotes = false;
-        let escapeNext = false;
-        
-        for (let i = 0; i < arrayContent.length; i++) {
-          const char = arrayContent[i];
-          
-          if (escapeNext) {
-            current += char;
-            escapeNext = false;
-          } else if (char === '\\') {
-            escapeNext = true;
-          } else if (char === '"' && !escapeNext) {
-            inQuotes = !inQuotes;
-            if (!inQuotes && current.startsWith('"')) {
-              current = current.slice(1); // Remove opening quote
-            }
-          } else if (char === ',' && !inQuotes) {
-            if (current.trim()) {
-              try {
-                items.push(JSON.parse(current.trim()));
-              } catch (e) {
-                console.error('Error parsing work experience item:', current);
-              }
-            }
-            current = '';
-          } else {
-            current += char;
-          }
-        }
-        
-        // Add the last item
-        if (current.trim()) {
-          try {
-            items.push(JSON.parse(current.trim()));
-          } catch (e) {
-            console.error('Error parsing last work experience item:', current);
-          }
-        }
-        
-        console.log('Parsed PostgreSQL array items:', items);
-        return items;
-      }
-      
-      // Regular JSON parsing
-      const parsed = JSON.parse(data);
-      console.log('Parsed work experiences:', parsed);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error('Error parsing workExperiences:', error);
-      return [];
-    }
-  })();
-  
-  // Note: otherQualifications field doesn't exist in current schema
-  const otherQualifications: any[] = [];
-  
+  // Parse work experiences from the record
+  const workExperiences = record.workExperiences ? JSON.parse(record.workExperiences) : [];
+  const otherQualifications = record.otherQualifications ? JSON.parse(record.otherQualifications) : [];
   const languages = record.languages ? record.languages.split(', ') : [];
 
   // Calculate total experience
@@ -155,9 +90,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader>
-          <DialogTitle className="sr-only">CV Template for {record.name} {record.surname}</DialogTitle>
-        </DialogHeader>
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
@@ -258,71 +190,14 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     <div className="pl-4 space-y-1">
                       {(() => {
                         try {
-                          let data = record.certificateTypes || '[]';
-                          console.log('Raw certificateTypes data:', data);
-                          
-                          // If it's a PostgreSQL array format (starts with {), convert it
-                          if (typeof data === 'string' && data.startsWith('{') && data.endsWith('}')) {
-                            // Remove outer braces and split by comma, handling quoted strings
-                            const arrayContent = data.slice(1, -1);
-                            const items = [];
-                            let current = '';
-                            let inQuotes = false;
-                            let escapeNext = false;
-                            
-                            for (let i = 0; i < arrayContent.length; i++) {
-                              const char = arrayContent[i];
-                              
-                              if (escapeNext) {
-                                current += char;
-                                escapeNext = false;
-                              } else if (char === '\\') {
-                                escapeNext = true;
-                              } else if (char === '"' && !escapeNext) {
-                                inQuotes = !inQuotes;
-                                if (!inQuotes && current.startsWith('"')) {
-                                  current = current.slice(1); // Remove opening quote
-                                }
-                              } else if (char === ',' && !inQuotes) {
-                                if (current.trim()) {
-                                  try {
-                                    items.push(JSON.parse(current.trim()));
-                                  } catch (e) {
-                                    console.error('Error parsing certificate item:', current);
-                                  }
-                                }
-                                current = '';
-                              } else {
-                                current += char;
-                              }
-                            }
-                            
-                            // Add the last item
-                            if (current.trim()) {
-                              try {
-                                items.push(JSON.parse(current.trim()));
-                              } catch (e) {
-                                console.error('Error parsing last certificate item:', current);
-                              }
-                            }
-                            
-                            return items.map((cert: any, index: number) => (
-                              <p key={index} className="text-lg font-medium text-gray-800 leading-relaxed">
-                                • {cert.certificateName || cert.certificate}
-                              </p>
-                            ));
-                          }
-                          
-                          // Regular JSON parsing
-                          const certificates = JSON.parse(data);
+                          const certificates = JSON.parse(record.certificateTypes);
                           return certificates.map((cert: any, index: number) => (
                             <p key={index} className="text-lg font-medium text-gray-800 leading-relaxed">
                               • {cert.certificateName || cert.certificate}
                             </p>
                           ));
-                        } catch (error) {
-                          console.error('Error parsing certificateTypes:', error);
-                          return <p className="text-lg font-medium text-gray-800 leading-relaxed">• No certificates available</p>;
+                        } catch {
+                          return <p className="text-lg font-medium text-gray-800 leading-relaxed">• {record.certificateTypes}</p>;
                         }
                       })()}
                     </div>

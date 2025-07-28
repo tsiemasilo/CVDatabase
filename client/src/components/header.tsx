@@ -20,8 +20,6 @@ export default function Header() {
       return await response.json();
     },
     onSuccess: () => {
-      // Clear the token from localStorage
-      localStorage.removeItem('authToken');
       // Clear all queries from cache
       queryClient.clear();
       logout();
@@ -29,8 +27,6 @@ export default function Header() {
     },
     onError: (error: any) => {
       console.error("Logout error:", error);
-      // Clear token even if logout request fails
-      localStorage.removeItem('authToken');
       // Still logout on client side even if server fails
       queryClient.clear();
       logout();
