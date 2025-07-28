@@ -289,7 +289,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                         <td className="border border-blue-300 px-4 py-2">-</td>
                         <td className="border border-blue-300 px-4 py-2">-</td>
                       </tr>
-                    ) : (
+                    ) : null}
+                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                      <tr key={index} className="hover:bg-blue-50">
+                        <td className="border border-blue-300 px-4 py-2">{qual.name || qual.type}</td>
+                        <td className="border border-blue-300 px-4 py-2">-</td>
+                        <td className="border border-blue-300 px-4 py-2">-</td>
+                      </tr>
+                    ))}
+                    {!record.qualifications && otherQualifications.length === 0 && (
                       <tr>
                         <td className="border border-blue-300 px-4 py-2" colSpan={3}>No qualifications recorded</td>
                       </tr>
