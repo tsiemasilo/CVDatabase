@@ -19,29 +19,6 @@ export function useAuth() {
   // Query to check current authentication status
   const { data: currentUser, isLoading, error } = useQuery({
     queryKey: ["/api/auth/user"],
-    queryFn: async () => {
-      const token = localStorage.getItem('authToken');
-      const headers: Record<string, string> = {};
-      
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const res = await fetch("/api/auth/user", {
-        headers,
-        credentials: "include",
-      });
-      
-      if (res.status === 401) {
-        return null; // Not authenticated
-      }
-      
-      if (!res.ok) {
-        throw new Error(`${res.status}: ${res.statusText}`);
-      }
-      
-      return await res.json();
-    },
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -49,7 +26,7 @@ export function useAuth() {
   useEffect(() => {
     if (currentUser) {
       setIsAuthenticated(true);
-      setUser(currentUser);
+      setUser(currentUser as AuthUser);
     } else {
       setIsAuthenticated(false);
       setUser(null);
