@@ -178,6 +178,7 @@ Changelog:
 - July 28, 2025. Fixed CV template PostgreSQL array parsing for work experience and certificates - implemented proper handling of double-encoded JSON strings from database arrays, resolving empty fields and malformed JSON display issues in CV templates
 - July 28, 2025. Completely removed mock data dependencies from Netlify serverless function - forced exclusive use of active Neon PostgreSQL database for all CV records, user authentication, and profiles, eliminating synthetic data display issues
 - July 28, 2025. Complete rewrite of Netlify serverless function with proper routing structure - created clean Express app without route duplication issues, implemented proper JWT authentication, and fixed all CRUD operations to use PostgreSQL exclusively
+- July 28, 2025. Connected application to specific Neon database (ep-lucky-recipe-aes0pb5o-pooler endpoint) - both local development and Netlify functions now use the same PostgreSQL database URL with hardcoded fallback for consistent connectivity
 ```
 
 ## User Preferences

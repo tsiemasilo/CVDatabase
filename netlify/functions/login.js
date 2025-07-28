@@ -5,9 +5,9 @@ import ws from 'ws';
 // Configure Neon for serverless environment
 neonConfig.webSocketConstructor = ws;
 
-// Database connection
+// Database connection - use specific database
 const pool = new Pool({ 
-  connectionString: process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL 
+  connectionString: process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_JRUe57kuOgLz@ep-lucky-recipe-aes0pb5o-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'alteram-cv-secret-key-2025';
