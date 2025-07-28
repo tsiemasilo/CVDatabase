@@ -207,7 +207,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Experience Table */}
               <div className="mt-8 mb-8">
-                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience Summary
+</h2>
                 <table className="w-full border-collapse border border-blue-300 shadow-sm">
                   <thead>
                     <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
