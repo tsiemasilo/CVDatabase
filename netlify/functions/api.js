@@ -1,29 +1,46 @@
 const express = require('express');
 const serverless = require('serverless-http');
-const session = require('express-session');
-const MemoryStore = require('memorystore');
+const crypto = require('crypto');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session middleware for Netlify
-const MemStoreSession = MemoryStore(session);
+// Simple JWT-like token generation for Netlify
+const SECRET_KEY = process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production';
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  store: new MemStoreSession({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+function generateToken(user) {
+  const payload = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+  };
+  const token = Buffer.from(JSON.stringify(payload)).toString('base64');
+  const signature = crypto.createHmac('sha256', SECRET_KEY).update(token).digest('hex');
+  return `${token}.${signature}`;
+}
+
+function verifyToken(token) {
+  if (!token) return null;
+  
+  try {
+    const [payload, signature] = token.split('.');
+    const expectedSignature = crypto.createHmac('sha256', SECRET_KEY).update(payload).digest('hex');
+    
+    if (signature !== expectedSignature) return null;
+    
+    const data = JSON.parse(Buffer.from(payload, 'base64').toString());
+    
+    if (Date.now() > data.exp) return null;
+    
+    return data;
+  } catch (error) {
+    return null;
   }
-}));
+}
 
 // In-memory storage for Netlify (since we can't use database connections reliably)
 const mockData = {
@@ -136,9 +153,10 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Store user session
-    req.session.userId = user.id;
-    req.session.user = {
+    // Generate token
+    const token = generateToken(user);
+    
+    const userData = {
       id: user.id,
       username: user.username,
       email: user.email,
@@ -146,12 +164,8 @@ app.post("/api/auth/login", async (req, res) => {
     };
 
     res.json({
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      }
+      user: userData,
+      token: token
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -160,17 +174,20 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.post("/api/auth/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Could not log out" });
-    }
-    res.json({ message: "Logged out successfully" });
-  });
+  res.json({ message: "Logged out successfully" });
 });
 
 app.get("/api/auth/user", (req, res) => {
-  if (req.session.user) {
-    res.json(req.session.user);
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const user = verifyToken(token);
+  
+  if (user) {
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
@@ -178,9 +195,14 @@ app.get("/api/auth/user", (req, res) => {
 
 // Middleware to check authentication
 const requireAuth = (req, res, next) => {
-  if (!req.session.user) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const user = verifyToken(token);
+  
+  if (!user) {
     return res.status(401).json({ message: "Authentication required" });
   }
+  
+  req.user = user;
   next();
 };
 
@@ -361,7 +383,7 @@ app.get("/api/cv-records/export/csv", requireAuth, async (req, res) => {
 // User Profiles routes (Admin only)
 app.get("/api/user-profiles", requireAuth, async (req, res) => {
   try {
-    if (req.session.user.role !== 'Admin') {
+    if (req.user.role !== 'Admin') {
       return res.status(403).json({ message: "Admin access required" });
     }
     
@@ -374,7 +396,7 @@ app.get("/api/user-profiles", requireAuth, async (req, res) => {
 
 app.post("/api/user-profiles", requireAuth, async (req, res) => {
   try {
-    if (req.session.user.role !== 'Admin') {
+    if (req.user.role !== 'Admin') {
       return res.status(403).json({ message: "Admin access required" });
     }
     
@@ -393,7 +415,7 @@ app.post("/api/user-profiles", requireAuth, async (req, res) => {
 
 app.put("/api/user-profiles/:id", requireAuth, async (req, res) => {
   try {
-    if (req.session.user.role !== 'Admin') {
+    if (req.user.role !== 'Admin') {
       return res.status(403).json({ message: "Admin access required" });
     }
     
@@ -418,7 +440,7 @@ app.put("/api/user-profiles/:id", requireAuth, async (req, res) => {
 
 app.delete("/api/user-profiles/:id", requireAuth, async (req, res) => {
   try {
-    if (req.session.user.role !== 'Admin') {
+    if (req.user.role !== 'Admin') {
       return res.status(403).json({ message: "Admin access required" });
     }
     

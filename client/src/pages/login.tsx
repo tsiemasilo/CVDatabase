@@ -27,15 +27,20 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       const response = await apiRequest("POST", "/api/auth/login", data);
       return await response.json();
     },
-    onSuccess: (user) => {
+    onSuccess: (result) => {
+      // Store the token in localStorage
+      if (result.token) {
+        localStorage.setItem('authToken', result.token);
+      }
+      
       // Invalidate the auth user query to refresh authentication state
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
       toast({ 
         title: "Login successful", 
-        description: `Welcome back, ${user.firstName || user.username}!` 
+        description: `Welcome back, ${result.user.username}!` 
       });
-      onLoginSuccess(user);
+      onLoginSuccess(result.user);
     },
     onError: (error: any) => {
       toast({ 
