@@ -150,9 +150,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10">
+            <div className="relative z-10 space-y-4">
               {/* Name and ID Section */}
-              <div className="space-y-2 mb-6">
+              <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800">
                   <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
@@ -161,8 +161,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 </p>
               </div>
 
-              {/* Role */}
-              <div className="mb-4">
+              {/* Role Information */}
+              <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800">
                   {record.department && (
                     <span><span className="font-bold text-blue-700">Department:</span> {record.department}</span>
@@ -172,20 +172,23 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     <span> | <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}</span>
                   )}
                 </p>
+                
                 {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                  <p className="text-lg font-medium text-gray-800 mt-2">
+                  <p className="text-lg font-medium text-gray-800">
                     <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}
                   </p>
                 )}
-                <p className="text-lg font-medium text-gray-800 mt-2">
+                
+                <p className="text-lg font-medium text-gray-800">
                   <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
                 </p>
+                
                 {record.certificateTypes && (
-                  <div className="mt-2">
+                  <div>
                     <p className="text-lg font-medium text-gray-800">
                       <span className="font-bold text-blue-700">Certificates:</span>
                     </p>
-                    <div className="ml-4 mt-1">
+                    <div className="pl-6 space-y-1">
                       {(() => {
                         try {
                           const certificates = JSON.parse(record.certificateTypes);
