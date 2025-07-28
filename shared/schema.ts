@@ -20,6 +20,8 @@ export const cvRecords = pgTable("cv_records", {
   qualifications: text("qualifications"),
   qualificationType: text("qualification_type"),
   qualificationName: text("qualification_name"),
+  instituteName: text("institute_name"),
+  yearCompleted: text("year_completed"),
   languages: text("languages"),
   workExperiences: text("work_experiences"), // JSON string
   certificateTypes: text("certificate_types"), // JSON string for hierarchical certificate data
@@ -48,6 +50,8 @@ export const insertCVRecordSchema = createInsertSchema(cvRecords).omit({
   qualifications: z.string().optional(),
   qualificationType: z.string().optional(),
   qualificationName: z.string().optional(),
+  instituteName: z.string().optional(),
+  yearCompleted: z.string().optional(),
   languages: z.string().optional(),
   workExperiences: z.string().optional(),
   certificateTypes: z.string().optional(),

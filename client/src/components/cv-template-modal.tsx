@@ -285,8 +285,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     {record.qualifications ? (
                       <tr className="hover:bg-blue-50 transition-colors">
                         <td className="border border-blue-300 px-6 py-3 align-top">{record.qualifications}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
+                        <td className="border border-blue-300 px-6 py-3 align-top text-center">{record.instituteName || '-'}</td>
+                        <td className="border border-blue-300 px-6 py-3 align-top text-center">{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
                     {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (

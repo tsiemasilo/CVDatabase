@@ -146,6 +146,8 @@ export default function CaptureRecord() {
     languages: [""],
     qualificationType: "",
     qualificationName: "",
+    instituteName: "",
+    yearCompleted: "",
     qualificationCertificate: null as File | null,
     otherQualifications: [] as Array<{ name: string; certificate: File | null }>,
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
@@ -840,6 +842,8 @@ export default function CaptureRecord() {
         : "No qualifications listed",
       qualificationType: formData.qualificationType,
       qualificationName: formData.qualificationName,
+      instituteName: formData.instituteName,
+      yearCompleted: formData.yearCompleted,
       workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : undefined,
       certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined
     };
@@ -1334,6 +1338,30 @@ export default function CaptureRecord() {
                         ))}
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+                
+                {/* Institute Name and Year Completed */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="instituteName">Institute Name</Label>
+                    <Input
+                      id="instituteName"
+                      value={formData.instituteName || ""}
+                      onChange={(e) => setFormData(prev => ({ ...prev, instituteName: e.target.value }))}
+                      placeholder="Enter institute name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="yearCompleted">Year Completed</Label>
+                    <Input
+                      id="yearCompleted"
+                      value={formData.yearCompleted || ""}
+                      onChange={(e) => setFormData(prev => ({ ...prev, yearCompleted: e.target.value }))}
+                      placeholder="e.g., 2023"
+                      className="mt-1"
+                    />
                   </div>
                 </div>
                 
