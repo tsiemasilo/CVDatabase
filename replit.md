@@ -155,6 +155,7 @@ Changelog:
 - July 28, 2025. Enhanced CV template table with correct field mapping (companyName) and MM/yyyy date format parsing - company names and duration now display properly with robust error handling
 - July 28, 2025. Removed "Other Qualifications" section from capture record form - streamlined qualifications to only primary qualification with certificate upload
 - July 28, 2025. Added back "Add Another Qualification" button functionality - users can now add additional qualifications while maintaining the simplified primary qualification structure
+- July 28, 2025. Reorganized qualification form layout - additional qualifications now display within the same card as primary qualification for cleaner UI structure
 ```
 
 ## User Preferences

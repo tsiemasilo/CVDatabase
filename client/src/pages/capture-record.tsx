@@ -1358,12 +1358,68 @@ export default function CaptureRecord() {
                 </div>
               </div>
 
+              {/* Additional Qualifications */}
+              {(formData.otherQualifications && formData.otherQualifications.length > 0) && (
+                <div className="space-y-4 mt-6">
+                  {formData.otherQualifications.map((qualification, index) => (
+                    <div key={index} className="border rounded-lg p-6 bg-gray-50">
+                      <div className="flex justify-between items-center mb-4">
+                        <h5 className="font-medium text-gray-700 text-base">
+                          Additional Qualification {index + 1}
+                        </h5>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeOtherQualification(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`otherQualName${index}`}>Qualification Name *</Label>
+                          <Input
+                            id={`otherQualName${index}`}
+                            value={qualification.name || ""}
+                            onChange={(e) => handleOtherQualificationChange(index, 'name', e.target.value)}
+                            placeholder="Enter qualification name"
+                            className="mt-1"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor={`otherQualCert${index}`}>Upload Certificate (Optional)</Label>
+                          <Input
+                            id={`otherQualCert${index}`}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) => handleFileUpload('otherQualificationCertificate', e.target.files?.[0] || null, index)}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Accepted formats: PDF, JPG, PNG (Max 10MB)
+                          </p>
+                          {qualification.certificate && (
+                            <p className="text-xs text-green-600 mt-1">
+                              ✓ Certificate uploaded: {(qualification.certificate as File).name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Add Another Qualification Button */}
               <Button
                 type="button"
                 variant="outline"
                 onClick={addOtherQualification}
-                className="w-full"
+                className="w-full mt-4"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Another Qualification
@@ -1375,69 +1431,6 @@ export default function CaptureRecord() {
 
             </CardContent>
           </Card>
-
-          {/* Other Qualifications */}
-          {(formData.otherQualifications && formData.otherQualifications.length > 0) && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
-                  Additional Qualifications
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {formData.otherQualifications.map((qualification, index) => (
-                  <div key={index} className="border rounded-lg p-6 bg-gray-50">
-                    <div className="flex justify-between items-center mb-4">
-                      <h5 className="font-medium text-gray-700 text-base">
-                        Qualification {index + 1}
-                      </h5>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeOtherQualification(index)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor={`otherQualName${index}`}>Qualification Name *</Label>
-                        <Input
-                          id={`otherQualName${index}`}
-                          value={qualification.name || ""}
-                          onChange={(e) => handleOtherQualificationChange(index, 'name', e.target.value)}
-                          placeholder="Enter qualification name"
-                          className="mt-1"
-                        />
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor={`otherQualCert${index}`}>Upload Certificate (Optional)</Label>
-                        <Input
-                          id={`otherQualCert${index}`}
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) => handleFileUpload('otherQualificationCertificate', e.target.files?.[0] || null, index)}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Accepted formats: PDF, JPG, PNG (Max 10MB)
-                        </p>
-                        {qualification.certificate && (
-                          <p className="text-xs text-green-600 mt-1">
-                            ✓ Certificate uploaded: {(qualification.certificate as File).name}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
 
           {/* Certificates */}
           <Card>
