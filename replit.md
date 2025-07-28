@@ -163,6 +163,8 @@ Changelog:
 - July 28, 2025. Fixed alignment and spacing issues in CV template - reduced spacing between ID and Department sections for better visual flow and professional presentation
 - July 28, 2025. Added institute name and year completed fields to capture record form - enhanced qualification data collection with proper database schema updates and CV template display integration
 - July 28, 2025. Enhanced CV template alignment and spacing - improved section spacing, table padding, professional summary styling, and overall visual consistency for better presentation
+- July 28, 2025. Resolved critical database connectivity issue - fixed Neon database endpoint that was disabled, CV records table now loads properly with all 5 records displaying correctly
+- July 28, 2025. Enhanced qualification data capture with instituteName and yearCompleted fields - added new form inputs and updated database schema to collect comprehensive educational background information
 ```
 
 ## User Preferences
