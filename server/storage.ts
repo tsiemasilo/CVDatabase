@@ -66,6 +66,8 @@ export class MemStorage implements IStorage {
         qualifications: "Bachelor of Computer Science",
         qualificationType: "Degree",
         qualificationName: "Bachelor of Computer Science",
+        instituteName: "University of Cape Town",
+        yearCompleted: "2019",
         languages: "English, Afrikaans",
         workExperiences: JSON.stringify([
           { companyName: "Tech Corp", position: "Junior Developer", startDate: "01/2020", endDate: "12/2022", isCurrentRole: false },
@@ -93,6 +95,8 @@ export class MemStorage implements IStorage {
         qualifications: "MBA, PMP Certification",
         qualificationType: "Postgraduate Degree",
         qualificationName: "Master of Business Administration",
+        instituteName: "GIBS Business School",
+        yearCompleted: "2016",
         languages: "English, Zulu",
         workExperiences: JSON.stringify([
           { companyName: "ConsultCorp", position: "Project Coordinator", startDate: "03/2018", endDate: "06/2021", isCurrentRole: false },
@@ -120,6 +124,8 @@ export class MemStorage implements IStorage {
         qualifications: "SAP Certified Application Associate",
         qualificationType: "Professional Certification",
         qualificationName: "SAP Certified Application Associate - ABAP",
+        instituteName: "SAP Training Center",
+        yearCompleted: "2020",
         languages: "English, Mandarin",
         workExperiences: JSON.stringify([
           { companyName: "SAP Solutions", position: "Junior SAP Developer", startDate: "06/2019", endDate: "05/2022", isCurrentRole: false },
@@ -237,6 +243,8 @@ export class MemStorage implements IStorage {
       qualifications: insertCVRecord.qualifications || null,
       qualificationType: insertCVRecord.qualificationType || null,
       qualificationName: insertCVRecord.qualificationName || null,
+      instituteName: insertCVRecord.instituteName || null,
+      yearCompleted: insertCVRecord.yearCompleted || null,
       languages: insertCVRecord.languages || null,
       workExperiences: insertCVRecord.workExperiences || null,
       certificateTypes: insertCVRecord.certificateTypes || null,
