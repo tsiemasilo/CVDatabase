@@ -160,6 +160,7 @@ Changelog:
 - July 28, 2025. Reorganized CV template professional information display - Role, Role Title, and K-Level now all appear on same line with Role Title positioned in the middle for optimal layout
 - July 28, 2025. Restructured CV template layout - Department, Role, Role Title, and K-Level now display as separate lines for improved readability and professional presentation
 - July 28, 2025. Combined Role, Role Title, and K-Level on same line in CV template - consolidated professional role information for more compact display while keeping Department separate
+- July 28, 2025. Fixed alignment and spacing issues in CV template - reduced spacing between ID and Department sections for better visual flow and professional presentation
 - July 28, 2025. Enhanced CV template alignment and spacing - improved section spacing, table padding, professional summary styling, and overall visual consistency for better presentation
 ```
 
