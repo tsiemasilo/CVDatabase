@@ -153,7 +153,7 @@ export default function CaptureRecord() {
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
-    workExperiences: [{ companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
+    workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }]
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -367,7 +367,7 @@ export default function CaptureRecord() {
   const addWorkExperience = () => {
     setFormData(prev => ({
       ...prev,
-      workExperiences: [...(prev.workExperiences || []), { companyName: "", position: "", startDate: "", endDate: "", isCurrentRole: false }]
+      workExperiences: [...(prev.workExperiences || []), { companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }]
     }));
   };
 
@@ -1130,7 +1130,7 @@ export default function CaptureRecord() {
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                       <Label htmlFor={`company-${index}`}>Company Name *</Label>
                       <Input
@@ -1156,6 +1156,18 @@ export default function CaptureRecord() {
                       {errors[`workExperience${index}Position`] && (
                         <p className="text-red-500 text-sm mt-1">{errors[`workExperience${index}Position`]}</p>
                       )}
+                    </div>
+                    <div>
+                      <Label htmlFor={`roleTitle-${index}`}>Role Title</Label>
+                      <Input
+                        id={`roleTitle-${index}`}
+                        placeholder="Enter specific role title"
+                        value={experience.roleTitle || ''}
+                        onChange={(e) => handleWorkExperienceChange(index, "roleTitle", e.target.value)}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Optional: Specific title/designation for this role
+                      </p>
                     </div>
                   </div>
                   

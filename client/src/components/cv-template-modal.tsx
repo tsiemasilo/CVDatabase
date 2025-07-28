@@ -316,8 +316,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">
                     {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
-                    {(exp.roleTitle || exp.title || record.roleTitle) && (
-                      <span className="text-blue-700 font-medium ml-2">| {exp.roleTitle || exp.title || record.roleTitle}</span>
+                    {(exp.roleTitle || exp.title) && (
+                      <span className="text-blue-700 font-medium ml-2">| {exp.roleTitle || exp.title}</span>
                     )}
                   </h3>
                   <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
