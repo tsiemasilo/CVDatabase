@@ -153,10 +153,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             <div className="relative z-10">
               {/* Name and ID Section */}
               <div className="space-y-2 mb-6">
-                <p className="text-lg">
+                <p className="text-lg font-medium text-gray-800">
                   <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
-                <p className="text-lg">
+                <p className="text-lg font-medium text-gray-800">
                   <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
@@ -190,12 +190,12 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                         try {
                           const certificates = JSON.parse(record.certificateTypes);
                           return certificates.map((cert: any, index: number) => (
-                            <p key={index} className="text-base text-gray-700">
+                            <p key={index} className="text-lg font-medium text-gray-800">
                               • {cert.certificateName || cert.certificate}
                             </p>
                           ));
                         } catch {
-                          return <p className="text-base text-gray-700">• {record.certificateTypes}</p>;
+                          return <p className="text-lg font-medium text-gray-800">• {record.certificateTypes}</p>;
                         }
                       })()}
                     </div>
