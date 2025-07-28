@@ -172,6 +172,8 @@ Changelog:
 - July 28, 2025. Enhanced JSON serialization to use empty arrays as defaults instead of undefined values to prevent malformed JSON
 - July 28, 2025. Added DialogTitle accessibility fix to eliminate screen reader warnings in CV template modal
 - July 28, 2025. Removed references to non-existent otherQualifications field to fix TypeScript errors
+- July 28, 2025. Implemented JWT-based authentication system for Netlify serverless compatibility - replaced session management with token-based auth including Authorization Bearer headers and localStorage token storage
+- July 28, 2025. Fixed login authentication errors - corrected frontend response handling where server returns user object directly instead of wrapped in user property, resolving "cannot read properties of undefined (reading username)" error
 ```
 
 ## User Preferences
