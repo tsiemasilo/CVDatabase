@@ -168,6 +168,10 @@ Changelog:
 - July 28, 2025. Fixed additional qualifications form inconsistency - added missing Institute Name and Year Completed fields to match primary qualification structure for comprehensive data collection
 - July 28, 2025. Enhanced work experience form with role title field - added 3-column layout with Company Name, Position, and Role Title fields for more detailed work history capture
 - July 28, 2025. Updated CV template branding - changed all blue colors (#007bff, blue-700) to Alteram brand color #000053 throughout CV template including headings, labels, table headers, and borders
+- July 28, 2025. Fixed critical JSON parsing errors in CV template causing blank pages on Netlify deployment - added comprehensive error handling for workExperiences and certificateTypes fields
+- July 28, 2025. Enhanced JSON serialization to use empty arrays as defaults instead of undefined values to prevent malformed JSON
+- July 28, 2025. Added DialogTitle accessibility fix to eliminate screen reader warnings in CV template modal
+- July 28, 2025. Removed references to non-existent otherQualifications field to fix TypeScript errors
 ```
 
 ## User Preferences

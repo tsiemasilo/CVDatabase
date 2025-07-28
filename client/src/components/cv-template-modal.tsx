@@ -25,15 +25,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
   })();
   
-  const otherQualifications = (() => {
-    try {
-      return record.otherQualifications ? JSON.parse(record.otherQualifications) : [];
-    } catch (error) {
-      console.error('Error parsing otherQualifications:', error);
-      console.log('Raw otherQualifications data:', record.otherQualifications);
-      return [];
-    }
-  })();
+  // Note: otherQualifications field doesn't exist in current schema
+  const otherQualifications: any[] = [];
   
   const languages = record.languages ? record.languages.split(', ') : [];
 
@@ -108,6 +101,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader>
+          <DialogTitle className="sr-only">CV Template for {record.name} {record.surname}</DialogTitle>
+        </DialogHeader>
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
