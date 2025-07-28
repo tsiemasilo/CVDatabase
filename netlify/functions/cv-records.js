@@ -51,11 +51,15 @@ export const handler = async (event, context) => {
 
   try {
     if (event.httpMethod === 'GET') {
-      // Get all CV records from database only
+      // Get all CV records from database using exact column names from schema
       const result = await pool.query(`
-        SELECT id, name, surname, email, phone, department, "roleTitle", "sapKLevel", experience, 
-               status, cv_file, submitted_at, "idPassport", languages, qualifications, "workExperiences", 
-               certificates, "experienceInSimilarRole", "experienceWithITSMTools"
+        SELECT id, name, surname, email, phone, department, position, 
+               role_title as "roleTitle", sap_k_level as "sapKLevel", experience, 
+               status, cv_file, submitted_at, id_passport as "idPassport", 
+               languages, qualifications, work_experiences as "workExperiences", 
+               certificate_types as certificates, experience_similar_role as "experienceInSimilarRole", 
+               experience_itsm_tools as "experienceWithITSMTools", institute_name as "instituteName",
+               year_completed as "yearCompleted"
         FROM cv_records 
         ORDER BY submitted_at DESC
       `);
