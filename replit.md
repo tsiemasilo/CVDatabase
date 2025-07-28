@@ -156,6 +156,7 @@ Changelog:
 - July 28, 2025. Removed "Other Qualifications" section from capture record form - streamlined qualifications to only primary qualification with certificate upload
 - July 28, 2025. Added back "Add Another Qualification" button functionality - users can now add additional qualifications while maintaining the simplified primary qualification structure
 - July 28, 2025. Reorganized qualification form layout - additional qualifications now display within the same card as primary qualification for cleaner UI structure
+- July 28, 2025. Swapped K-Level and Role Title positions in CV template - K-Level now appears on same line as Department/Role, Role Title moved to separate line for better readability
 ```
 
 ## User Preferences
