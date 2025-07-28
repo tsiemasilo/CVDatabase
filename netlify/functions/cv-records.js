@@ -53,7 +53,7 @@ export const handler = async (event, context) => {
     if (event.httpMethod === 'GET') {
       // Get all CV records from database only
       const result = await pool.query(`
-        SELECT id, name, surname, email, phone, department, role, "roleTitle", "sapKLevel", experience, 
+        SELECT id, name, surname, email, phone, department, "roleTitle", "sapKLevel", experience, 
                status, cv_file, submitted_at, "idPassport", languages, qualifications, "workExperiences", 
                certificates, "experienceInSimilarRole", "experienceWithITSMTools"
         FROM cv_records 
