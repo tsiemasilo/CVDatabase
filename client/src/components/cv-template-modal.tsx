@@ -140,64 +140,69 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative">
+          <div className="px-8 py-6 font-sans relative min-h-screen">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
                 src={alteramLogoPath} 
                 alt="Alteram Solutions Watermark" 
-                className="w-96 h-auto"
+                className="w-80 h-auto"
               />
             </div>
             
-            <div className="relative z-10 space-y-6">
-              {/* Name and ID Section */}
-              <div className="space-y-3">
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
-                </p>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
-                </p>
-              </div>
-
-              {/* Role Information */}
-              <div className="space-y-3">
-                {record.department && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold text-blue-700">Department:</span> {record.department}
-                  </p>
-                )}
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Role:</span> {record.position || record.roleTitle || ''}
-                  {record.roleTitle && (
-                    <span> | <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}</span>
-                  )}
-                  {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}</span>
-                  )}
-                </p>
+            <div className="relative z-10 max-w-4xl mx-auto">
+              {/* Personal Information Section */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Personal Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-base font-medium text-gray-800 mb-2">
+                      <span className="font-bold text-blue-700 inline-block w-32">Name:</span> {record.name} {record.surname || ''}
+                    </p>
+                    <p className="text-base font-medium text-gray-800 mb-2">
+                      <span className="font-bold text-blue-700 inline-block w-32">ID/Passport:</span> {record.idPassport || ''}
+                    </p>
+                  </div>
+                  <div>
+                    {record.department && (
+                      <p className="text-base font-medium text-gray-800 mb-2">
+                        <span className="font-bold text-blue-700 inline-block w-32">Department:</span> {record.department}
+                      </p>
+                    )}
+                    <p className="text-base font-medium text-gray-800 mb-2">
+                      <span className="font-bold text-blue-700 inline-block w-32">Experience:</span> {record.experience || 0} years
+                    </p>
+                  </div>
+                </div>
                 
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
-                </p>
+                <div className="mt-4">
+                  <p className="text-base font-medium text-gray-800 mb-2">
+                    <span className="font-bold text-blue-700 inline-block w-32">Role:</span> {record.position || record.roleTitle || ''}
+                    {record.roleTitle && (
+                      <span> | <span className="font-bold text-blue-700">Title:</span> {record.roleTitle}</span>
+                    )}
+                    {record.sapKLevel && record.sapKLevel.trim() !== '' && (
+                      <span> | <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}</span>
+                    )}
+                  </p>
+                </div>
                 
                 {record.certificateTypes && (
                   <div className="mt-4">
-                    <p className="text-lg font-medium text-gray-800 leading-relaxed mb-2">
+                    <p className="text-base font-medium text-gray-800 mb-2">
                       <span className="font-bold text-blue-700">Certificates:</span>
                     </p>
-                    <div className="pl-4 space-y-1">
+                    <div className="ml-6">
                       {(() => {
                         try {
                           const certificates = JSON.parse(record.certificateTypes);
                           return certificates.map((cert: any, index: number) => (
-                            <p key={index} className="text-lg font-medium text-gray-800 leading-relaxed">
+                            <p key={index} className="text-base font-medium text-gray-800 mb-1">
                               • {cert.certificateName || cert.certificate}
                             </p>
                           ));
                         } catch {
-                          return <p className="text-lg font-medium text-gray-800 leading-relaxed">• {record.certificateTypes}</p>;
+                          return <p className="text-base font-medium text-gray-800">• {record.certificateTypes}</p>;
                         }
                       })()}
                     </div>
@@ -206,22 +211,23 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Experience Table */}
-              <div className="mt-8 mb-8">
-                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
-                <table className="w-full border-collapse border border-blue-300 shadow-sm">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Position</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Company</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Duration</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
-                      <tr key={index} className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.position || exp.role || ''}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Work Experience</h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-blue-300 rounded-lg overflow-hidden shadow-sm">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Position</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Company</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
+                        <tr key={index} className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-sm">{exp.position || exp.role || ''}</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-sm">{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-sm">
                           {(() => {
                             try {
                               if (!exp.startDate) return '';
@@ -261,72 +267,85 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                           })()}
                         </td>
                       </tr>
-                    )) : (
-                      <tr>
-                        <td className="border border-blue-300 px-6 py-4 text-center text-gray-500 italic" colSpan={3}>No work experience recorded</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      )) : (
+                        <tr>
+                          <td className="border border-blue-300 px-4 py-4 text-center text-gray-500 italic text-sm" colSpan={3}>No work experience recorded</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {/* Qualification Table */}
-              <div className="mt-8 mb-8">
-                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Qualification</h2>
-                <table className="w-full border-collapse border border-blue-300 shadow-sm">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Qualifications</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Institution</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Year Completed</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {record.qualifications ? (
-                      <tr className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{record.qualifications}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Qualifications</h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-blue-300 rounded-lg overflow-hidden shadow-sm">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Qualifications</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Institution</th>
+                        <th className="border border-blue-300 px-4 py-3 text-left font-bold text-white text-sm">Year Completed</th>
                       </tr>
-                    ) : null}
-                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{qual.name || qual.type}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                      </tr>
-                    ))}
-                    {!record.qualifications && otherQualifications.length === 0 && (
-                      <tr>
-                        <td className="border border-blue-300 px-6 py-4 text-center text-gray-500 italic" colSpan={3}>No qualifications recorded</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {record.qualifications ? (
+                        <tr className="hover:bg-blue-50 transition-colors bg-gray-50">
+                          <td className="border border-blue-300 px-4 py-3 align-top text-sm">{record.qualifications}</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-center text-sm">-</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-center text-sm">-</td>
+                        </tr>
+                      ) : null}
+                      {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                        <tr key={index} className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-sm">{qual.name || qual.type}</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-center text-sm">-</td>
+                          <td className="border border-blue-300 px-4 py-3 align-top text-center text-sm">-</td>
+                        </tr>
+                      ))}
+                      {!record.qualifications && otherQualifications.length === 0 && (
+                        <tr>
+                          <td className="border border-blue-300 px-4 py-4 text-center text-gray-500 italic text-sm" colSpan={3}>No qualifications recorded</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-          {/* Professional Summary/Description */}
-          {record.qualifications && (
-            <div className="mt-8 mb-8 bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
-              <h2 className="text-xl font-bold text-blue-700 mb-3">Professional Summary</h2>
-              <p className="text-gray-700 leading-relaxed text-justify">
-                A highly motivated professional with experience in {record.department || 'various areas'}, 
-                demonstrating strong skills in {record.position || 'their field'}. 
-                {record.experience ? `With ${record.experience} years of experience, ` : ''}
-                committed to delivering high-quality solutions and contributing to organizational success.
-                {record.sapKLevel ? ` Certified at SAP ${record.sapKLevel} level.` : ''}
-              </p>
-            </div>
-          )}
+              {/* Professional Summary */}
+              {record.qualifications && (
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 mb-6">
+                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Professional Summary</h2>
+                  <p className="text-gray-700 leading-relaxed text-justify text-base">
+                    A highly motivated professional with experience in {record.department || 'various areas'}, 
+                    demonstrating strong skills in {record.position || 'their field'}. 
+                    {record.experience ? `With ${record.experience} years of experience, ` : ''}
+                    committed to delivering high-quality solutions and contributing to organizational success.
+                    {record.sapKLevel ? ` Certified at SAP ${record.sapKLevel} level.` : ''}
+                  </p>
+                </div>
+              )}
 
               {/* Skills Section */}
               {languages.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills</h2>
-                  <p className="text-gray-700">
-                    <span className="font-semibold text-blue-700">Languages:</span> {languages.join(', ')}
-                    {record.sapKLevel && <span>. <span className="font-semibold text-blue-700">SAP Knowledge Level:</span> {record.sapKLevel}</span>}
-                  </p>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Skills & Languages</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-base font-medium text-gray-800">
+                        <span className="font-bold text-blue-700">Languages:</span> {languages.join(', ')}
+                      </p>
+                    </div>
+                    {record.sapKLevel && (
+                      <div>
+                        <p className="text-base font-medium text-gray-800">
+                          <span className="font-bold text-blue-700">SAP Knowledge Level:</span> {record.sapKLevel}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -357,18 +376,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           )}
 
               {/* Footer */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">
+              <div className="text-center mt-8 pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-6 rounded-lg shadow-sm">
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
                     alt="Alteram Solutions" 
-                    className="h-8 w-auto"
+                    className="h-10 w-auto"
                   />
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-orange-600">
+                    <p className="text-base font-semibold text-orange-600">
                       CV Generated by Alteram Solutions
                     </p>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       Philip Henry Arnold | Garth Solomon Madella
                     </p>
                   </div>
