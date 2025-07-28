@@ -154,10 +154,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               {/* Name and ID Section */}
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Name and Surname:</span> {record.name} {record.surname || ''}
+                  <span className="font-bold" style={{ color: '#000053' }}>Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Id/Passport:</span> {record.idPassport || ''}
+                  <span className="font-bold" style={{ color: '#000053' }}>Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
 
@@ -165,27 +165,27 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               <div className="space-y-2">
                 {record.department && (
                   <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold text-blue-700">Department:</span> {record.department}
+                    <span className="font-bold" style={{ color: '#000053' }}>Department:</span> {record.department}
                   </p>
                 )}
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Role:</span> {record.position || record.roleTitle || ''}
+                  <span className="font-bold" style={{ color: '#000053' }}>Role:</span> {record.position || record.roleTitle || ''}
                   {record.roleTitle && (
-                    <span> | <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}</span>
+                    <span> | <span className="font-bold" style={{ color: '#000053' }}>Role Title:</span> {record.roleTitle}</span>
                   )}
                   {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}</span>
+                    <span> | <span className="font-bold" style={{ color: '#000053' }}>K-Level:</span> {record.sapKLevel}</span>
                   )}
                 </p>
                 
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
+                  <span className="font-bold" style={{ color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
                 </p>
                 
                 {record.certificateTypes && (
                   <div className="mt-4">
                     <p className="text-lg font-medium text-gray-800 leading-relaxed mb-2">
-                      <span className="font-bold text-blue-700">Certificates:</span>
+                      <span className="font-bold" style={{ color: '#000053' }}>Certificates:</span>
                     </p>
                     <div className="pl-4 space-y-1">
                       {(() => {
@@ -207,22 +207,22 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Experience Table */}
               <div className="mt-8 mb-8">
-                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience Summary
+                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience Summary
 </h2>
-                <table className="w-full border-collapse border border-blue-300 shadow-sm">
+                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
                   <thead>
-                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Position</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Company</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Duration</th>
+                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Position</th>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Company</th>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Duration</th>
                     </tr>
                   </thead>
                   <tbody>
                     {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
-                      <tr key={index} className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.position || exp.role || ''}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top">
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.position || exp.role || ''}</td>
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>
                           {(() => {
                             try {
                               if (!exp.startDate) return '';
@@ -264,7 +264,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                       </tr>
                     )) : (
                       <tr>
-                        <td className="border border-blue-300 px-6 py-4 text-center text-gray-500 italic" colSpan={3}>No work experience recorded</td>
+                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No work experience recorded</td>
                       </tr>
                     )}
                   </tbody>
@@ -273,33 +273,33 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Qualification Table */}
               <div className="mt-8 mb-8">
-                <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Qualification</h2>
-                <table className="w-full border-collapse border border-blue-300 shadow-sm">
+                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Qualification</h2>
+                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
                   <thead>
-                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Qualifications</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Institution</th>
-                      <th className="border border-blue-300 px-6 py-3 text-left font-bold text-white">Year Completed</th>
+                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Qualifications</th>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Institution</th>
+                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Year Completed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {record.qualifications ? (
-                      <tr className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{record.qualifications}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">{record.instituteName || '-'}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">{record.yearCompleted || '-'}</td>
+                      <tr className="hover:bg-gray-50 transition-colors">
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
                     {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{qual.name || qual.type}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
                       </tr>
                     ))}
                     {!record.qualifications && otherQualifications.length === 0 && (
                       <tr>
-                        <td className="border border-blue-300 px-6 py-4 text-center text-gray-500 italic" colSpan={3}>No qualifications recorded</td>
+                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
                       </tr>
                     )}
                   </tbody>
@@ -311,13 +311,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
+                  <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">
                     {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
                     {(exp.roleTitle || exp.title) && (
-                      <span className="text-blue-700 font-medium ml-2">| {exp.roleTitle || exp.title}</span>
+                      <span className="font-medium ml-2" style={{ color: '#000053' }}>| {exp.roleTitle || exp.title}</span>
                     )}
                   </h3>
                   <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
