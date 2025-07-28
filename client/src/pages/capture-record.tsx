@@ -379,7 +379,31 @@ export default function CaptureRecord() {
     }
   };
 
+  const handleOtherQualificationChange = (index: number, field: string, value: string | File | null) => {
+    const newOtherQualifications = [...(formData.otherQualifications || [])];
+    newOtherQualifications[index] = { ...newOtherQualifications[index], [field]: value };
+    setFormData(prev => ({
+      ...prev,
+      otherQualifications: newOtherQualifications
+    }));
+  };
 
+  const addOtherQualification = () => {
+    setFormData(prev => ({
+      ...prev,
+      otherQualifications: [...(prev.otherQualifications || []), { name: "", certificate: null }]
+    }));
+  };
+
+  const removeOtherQualification = (index: number) => {
+    if ((formData.otherQualifications || []).length > 1) {
+      const newOtherQualifications = (formData.otherQualifications || []).filter((_, i) => i !== index);
+      setFormData(prev => ({
+        ...prev,
+        otherQualifications: newOtherQualifications
+      }));
+    }
+  };
 
   const handleFileUpload = (field: string, file: File | null, index?: number) => {
     if (field === 'qualificationCertificate') {
@@ -388,6 +412,8 @@ export default function CaptureRecord() {
         qualificationCertificate: file
       }));
 
+    } else if (field === 'otherQualificationCertificate' && index !== undefined) {
+      handleOtherQualificationChange(index, 'certificate', file);
     } else if (field === 'certificateFile' && index !== undefined) {
       handleCertificateChange(index, 'certificateFile', file);
     }
@@ -1333,6 +1359,17 @@ export default function CaptureRecord() {
                   )}
                 </div>
               </div>
+
+              {/* Add Another Qualification Button */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addOtherQualification}
+                className="w-full"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Another Qualification
+              </Button>
 
 
 

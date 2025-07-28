@@ -154,6 +154,7 @@ Changelog:
 - July 28, 2025. Fixed CV template table display issues - resolved company field not showing and invalid date formatting in experience table with proper date validation and multiple field fallbacks
 - July 28, 2025. Enhanced CV template table with correct field mapping (companyName) and MM/yyyy date format parsing - company names and duration now display properly with robust error handling
 - July 28, 2025. Removed "Other Qualifications" section from capture record form - streamlined qualifications to only primary qualification with certificate upload
+- July 28, 2025. Added back "Add Another Qualification" button functionality - users can now add additional qualifications while maintaining the simplified primary qualification structure
 ```
 
 ## User Preferences
