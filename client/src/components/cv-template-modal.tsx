@@ -220,15 +220,34 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   <tbody>
                     {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
                       <tr key={index} className="hover:bg-blue-50">
-                        <td className="border border-blue-300 px-4 py-2">{exp.position || ''}</td>
-                        <td className="border border-blue-300 px-4 py-2">{exp.company || ''}</td>
+                        <td className="border border-blue-300 px-4 py-2">{exp.position || exp.role || ''}</td>
+                        <td className="border border-blue-300 px-4 py-2">{exp.company || exp.employer || exp.organization || ''}</td>
                         <td className="border border-blue-300 px-4 py-2">
-                      {exp.startDate ? 
-                        `${new Date(exp.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} - ${
-                          exp.isCurrentRole ? 'Present' : 
-                          (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present')
-                          }` : ''
-                        }
+                          {(() => {
+                            try {
+                              if (!exp.startDate) return '';
+                              
+                              const startDate = new Date(exp.startDate);
+                              if (isNaN(startDate.getTime())) return '';
+                              
+                              const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                              
+                              if (exp.isCurrentRole) {
+                                return `${startFormatted} - Present`;
+                              }
+                              
+                              if (exp.endDate) {
+                                const endDate = new Date(exp.endDate);
+                                if (isNaN(endDate.getTime())) return `${startFormatted} - Present`;
+                                const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                                return `${startFormatted} - ${endFormatted}`;
+                              }
+                              
+                              return `${startFormatted} - Present`;
+                            } catch (error) {
+                              return '';
+                            }
+                          })()}
                         </td>
                       </tr>
                     )) : (

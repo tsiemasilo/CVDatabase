@@ -151,6 +151,7 @@ Changelog:
 - July 27, 2025. Swapped department and role order in CV template display - now shows Department | Role | Role Title format for better professional presentation
 - July 27, 2025. Standardized fonts and styling across CV template sections - unified text-lg font-medium text-gray-800 for consistent professional appearance
 - July 27, 2025. Fixed alignment and spacing issues in CV template - improved layout with consistent spacing, proper indentation, and organized section structure
+- July 28, 2025. Fixed CV template table display issues - resolved company field not showing and invalid date formatting in experience table with proper date validation and multiple field fallbacks
 ```
 
 ## User Preferences
