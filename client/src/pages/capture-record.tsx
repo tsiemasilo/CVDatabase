@@ -393,7 +393,7 @@ export default function CaptureRecord() {
   const addOtherQualification = () => {
     setFormData(prev => ({
       ...prev,
-      otherQualifications: [...(prev.otherQualifications || []), { name: "", certificate: null }]
+      otherQualifications: [...(prev.otherQualifications || []), { name: "", instituteName: "", yearCompleted: "", certificate: null }]
     }));
   };
 
@@ -1414,6 +1414,30 @@ export default function CaptureRecord() {
                             value={qualification.name || ""}
                             onChange={(e) => handleOtherQualificationChange(index, 'name', e.target.value)}
                             placeholder="Enter qualification name"
+                            className="mt-1"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor={`otherInstName${index}`}>Institute Name</Label>
+                          <Input
+                            id={`otherInstName${index}`}
+                            value={qualification.instituteName || ""}
+                            onChange={(e) => handleOtherQualificationChange(index, 'instituteName', e.target.value)}
+                            placeholder="Enter institute name"
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <Label htmlFor={`otherYearComp${index}`}>Year Completed</Label>
+                          <Input
+                            id={`otherYearComp${index}`}
+                            value={qualification.yearCompleted || ""}
+                            onChange={(e) => handleOtherQualificationChange(index, 'yearCompleted', e.target.value)}
+                            placeholder="e.g., 2020"
                             className="mt-1"
                           />
                         </div>
