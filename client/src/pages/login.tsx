@@ -27,15 +27,20 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       const response = await apiRequest("POST", "/api/auth/login", data);
       return await response.json();
     },
-    onSuccess: (user) => {
+    onSuccess: (data) => {
+      // Store JWT token for Netlify deployment
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
+      
       // Invalidate the auth user query to refresh authentication state
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
       toast({ 
         title: "Login successful", 
-        description: `Welcome back, ${user.firstName || user.username}!` 
+        description: `Welcome back, ${data.firstName || data.username}!` 
       });
-      onLoginSuccess(user);
+      onLoginSuccess(data);
     },
     onError: (error: any) => {
       toast({ 

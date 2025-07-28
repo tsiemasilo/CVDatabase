@@ -169,6 +169,7 @@ Changelog:
 - July 28, 2025. Updated CV template colors from blue to #000053 for proper Alteram branding - changed all headings, borders, and text colors to match company identity
 - July 28, 2025. Enhanced work experience form with role title field - added 3-column layout with Company Name, Position, and Role Title fields for detailed professional information capture
 - July 28, 2025. Fixed PostgreSQL array data parsing in CV template - implemented proper handling of escaped JSON strings in database array format for work experience and certificate data display
+- July 28, 2025. Fixed Netlify authentication by implementing JWT token-based authentication system - replaced session-based auth with JWT tokens stored in localStorage for serverless function compatibility, ensuring persistent authentication across function invocations
 ```
 
 ## User Preferences

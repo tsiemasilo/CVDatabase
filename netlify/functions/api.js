@@ -7,25 +7,28 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session middleware for Netlify
-import MemoryStore from 'memorystore';
-import session from 'express-session';
+// Simple JWT-like authentication for serverless functions
+import jwt from 'jsonwebtoken';
 
-const MemStoreSession = MemoryStore(session);
+const JWT_SECRET = process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production';
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  store: new MemStoreSession({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+// Authentication middleware for serverless
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ message: 'Not authenticated' });
   }
-}));
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};
 
 // Initialize routes
 let routesInitialized = false;
@@ -55,12 +58,17 @@ const initializeApp = async () => {
             return res.status(401).json({ message: "Invalid username or password" });
           }
 
-          // Store user session
-          if (req.session) {
-            req.session.user = user;
-          }
+          // Generate JWT token
+          const token = jwt.sign(
+            { id: user.id, username: user.username, role: user.role }, 
+            JWT_SECRET, 
+            { expiresIn: '7d' }
+          );
           
-          res.json(user);
+          res.json({ 
+            ...user, 
+            token 
+          });
         } catch (error) {
           console.error("Login error:", error);
           res.status(500).json({ message: "Internal server error" });
@@ -69,9 +77,7 @@ const initializeApp = async () => {
 
       app.post("/api/auth/logout", async (req, res) => {
         try {
-          if (req.session) {
-            req.session.user = null;
-          }
+          // For JWT, logout is handled client-side by removing the token
           res.json({ message: "Logged out successfully" });
         } catch (error) {
           console.error("Logout error:", error);
@@ -79,13 +85,14 @@ const initializeApp = async () => {
         }
       });
 
-      app.get("/api/auth/user", async (req, res) => {
+      app.get("/api/auth/user", authenticateToken, async (req, res) => {
         try {
-          if (req.session?.user) {
-            res.json(req.session.user);
-          } else {
-            res.status(401).json({ message: "Not authenticated" });
+          const storage = await getStorage();
+          const user = await storage.getUserProfile(req.user.id);
+          if (!user) {
+            return res.status(404).json({ message: "User not found" });
           }
+          res.json(user);
         } catch (error) {
           console.error("Get user error:", error);
           res.status(500).json({ message: "Internal server error" });
