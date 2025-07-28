@@ -314,15 +314,46 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   <h2 className="text-xl font-bold text-blue-700 mb-4 border-b-2 border-orange-400 pb-2">Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
                 <div key={index} className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{exp.company || 'Company'}</h3>
-                  <p className="font-semibold text-gray-800">{exp.position || 'Position'}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}</h3>
+                  <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
                   <p className="text-gray-600 mb-3">
-                    {exp.startDate ? 
-                      `${new Date(exp.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – ${
-                        exp.isCurrentRole ? 'Present' : 
-                        (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present')
-                      }` : ''
-                    }
+                    {(() => {
+                      try {
+                        if (!exp.startDate) return '';
+                        
+                        // Handle MM/yyyy format from sample data
+                        let startDate;
+                        if (exp.startDate.includes('/')) {
+                          const [month, year] = exp.startDate.split('/');
+                          startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                        } else {
+                          startDate = new Date(exp.startDate);
+                        }
+                        
+                        if (isNaN(startDate.getTime())) return '';
+                        
+                        const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        
+                        if (exp.isCurrentRole || !exp.endDate || exp.endDate === '') {
+                          return `${startFormatted} - Present`;
+                        }
+                        
+                        // Handle MM/yyyy format for end date
+                        let endDate;
+                        if (exp.endDate.includes('/')) {
+                          const [month, year] = exp.endDate.split('/');
+                          endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                        } else {
+                          endDate = new Date(exp.endDate);
+                        }
+                        
+                        if (isNaN(endDate.getTime())) return `${startFormatted} - Present`;
+                        const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        return `${startFormatted} - ${endFormatted}`;
+                      } catch (error) {
+                        return '';
+                      }
+                    })()}
                   </p>
                   {exp.description && (
                     <p className="text-gray-700 leading-relaxed text-justify">
