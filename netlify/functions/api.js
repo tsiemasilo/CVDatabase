@@ -113,9 +113,9 @@ const mockData = {
       gender: "Female",
       email: "jane.smith@example.com",
       phone: "+27234567890",
-      position: "Junior Developer",
+      position: "Junior Developer", 
       roleTitle: "Frontend Developer",
-      department: "DEVELOPMENT",
+      department: "ICT",
       experience: 2,
       experienceInSimilarRole: 1,
       experienceWithITSMTools: 1,
@@ -198,7 +198,7 @@ const mockData = {
       email: "lisa.wilson@example.com",
       phone: "+27456789012",
       position: "HR Specialist",
-      roleTitle: "Senior HR Specialist",
+      roleTitle: "Senior HR Specialist", 
       department: "HR",
       experience: 4,
       experienceInSimilarRole: 3,
@@ -741,6 +741,18 @@ app.delete("/api/user-profiles/:id", requireAuth, async (req, res) => {
 // Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
+// Handle 404 for unmatched routes
+app.use((req, res) => {
+  console.log('404 - Route not found:', req.method, req.path);
+  res.status(404).json({ message: `Route ${req.method} ${req.path} not found` });
 });
 
 // Netlify handler
