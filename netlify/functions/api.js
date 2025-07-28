@@ -17,15 +17,21 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
+  console.log('Auth header:', authHeader);
+  console.log('Token:', token);
+
   if (!token) {
+    console.log('No token provided');
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Decoded token:', decoded);
     req.user = decoded;
     next();
   } catch (error) {
+    console.log('Token verification failed:', error.message);
     return res.status(401).json({ message: 'Invalid token' });
   }
 };
@@ -88,10 +94,23 @@ const initializeApp = async () => {
       app.get("/api/auth/user", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
-          const user = await storage.getUserProfile(req.user.id);
+          // Try to get user from user profiles first, then fall back to token data
+          let user = await storage.getUserProfile(req.user.id);
+          
           if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            // If no user profile exists, create a basic user object from token data
+            user = {
+              id: req.user.id,
+              username: req.user.username,
+              role: req.user.role,
+              firstName: req.user.firstName || req.user.username,
+              lastName: req.user.lastName || '',
+              email: req.user.email || '',
+              department: req.user.department || '',
+              position: req.user.position || ''
+            };
           }
+          
           res.json(user);
         } catch (error) {
           console.error("Get user error:", error);
@@ -99,8 +118,8 @@ const initializeApp = async () => {
         }
       });
       
-      // CV Records routes
-      app.get("/api/cv-records", async (req, res) => {
+      // CV Records routes - protected for authenticated users
+      app.get("/api/cv-records", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const { search, status } = req.query;
@@ -121,7 +140,7 @@ const initializeApp = async () => {
         }
       });
 
-      app.get("/api/cv-records/:id", async (req, res) => {
+      app.get("/api/cv-records/:id", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -141,7 +160,7 @@ const initializeApp = async () => {
       });
 
       // Create a new CV record
-      app.post("/api/cv-records", async (req, res) => {
+      app.post("/api/cv-records", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const formData = { ...req.body };
@@ -184,7 +203,7 @@ const initializeApp = async () => {
       });
 
       // Update a CV record
-      app.put("/api/cv-records/:id", async (req, res) => {
+      app.put("/api/cv-records/:id", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -218,7 +237,7 @@ const initializeApp = async () => {
       });
 
       // Delete a CV record
-      app.delete("/api/cv-records/:id", async (req, res) => {
+      app.delete("/api/cv-records/:id", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const id = parseInt(req.params.id);
@@ -238,7 +257,7 @@ const initializeApp = async () => {
       });
       
       // User profiles routes  
-      app.get("/api/user-profiles", async (req, res) => {
+      app.get("/api/user-profiles", authenticateToken, async (req, res) => {
         try {
           const storage = await getStorage();
           const { search, role } = req.query;

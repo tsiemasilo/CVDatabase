@@ -28,7 +28,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.session.user = user;
       }
       
-      res.json(user);
+      // Also generate JWT token for consistency with Netlify
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.SESSION_SECRET || 'dev-secret-key';
+      
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          department: user.department,
+          position: user.position
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      
+      res.json({ 
+        ...user, 
+        token 
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Internal server error" });
