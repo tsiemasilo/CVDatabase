@@ -134,6 +134,132 @@ const mockData = {
       status: "pending",
       cvFile: "",
       submittedAt: new Date("2024-02-20T14:30:00Z")
+    },
+    {
+      id: 3,
+      name: "David",
+      surname: "Brown",
+      idPassport: "7803154567890",
+      gender: "Male",
+      email: "david.brown@example.com",
+      phone: "+27345678901",
+      position: "SAP Consultant",
+      roleTitle: "Senior SAP Consultant",
+      department: "SAP",
+      experience: 7,
+      experienceInSimilarRole: 5,
+      experienceWithITSMTools: 3,
+      sapKLevel: "K4",
+      qualifications: "Master's in Information Systems",
+      qualificationType: "Master's degree",
+      qualificationName: "Information Systems",
+      instituteName: "University of Stellenbosch",
+      yearCompleted: "2015",
+      languages: "English, Afrikaans, German",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "SAP Solutions Inc",
+          position: "SAP Consultant",
+          roleTitle: "Senior SAP Consultant",
+          startDate: "06/2018",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "SAP",
+          role: "SAP Consultant",
+          certificateName: "SAP Certified Application Associate"
+        }
+      ]),
+      status: "active",
+      cvFile: "",
+      submittedAt: new Date("2024-03-10T09:15:00Z")
+    },
+    {
+      id: 4,
+      name: "Lisa",
+      surname: "Wilson",
+      idPassport: "8912075432109",
+      gender: "Female",
+      email: "lisa.wilson@example.com",
+      phone: "+27456789012",
+      position: "HR Specialist",
+      roleTitle: "Senior HR Specialist",
+      department: "HR",
+      experience: 4,
+      experienceInSimilarRole: 3,
+      experienceWithITSMTools: 2,
+      sapKLevel: "",
+      qualifications: "Bachelor's in Human Resources",
+      qualificationType: "Bachelor's degree",
+      qualificationName: "Human Resources",
+      instituteName: "University of Johannesburg",
+      yearCompleted: "2020",
+      languages: "English, Zulu, Sotho",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "People Solutions",
+          position: "HR Specialist",
+          roleTitle: "Senior HR Specialist",
+          startDate: "02/2021",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "HR",
+          role: "HR Specialist",
+          certificateName: "SHRM-CP Certification"
+        }
+      ]),
+      status: "archived",
+      cvFile: "",
+      submittedAt: new Date("2024-04-05T11:45:00Z")
+    },
+    {
+      id: 5,
+      name: "Michael",
+      surname: "Taylor",
+      idPassport: "9306142345678",
+      gender: "Male", 
+      email: "michael.taylor@example.com",
+      phone: "+27567890123",
+      position: "Service Desk Analyst",
+      roleTitle: "Senior Service Desk Analyst",
+      department: "SERVICE DESK",
+      experience: 3,
+      experienceInSimilarRole: 2,
+      experienceWithITSMTools: 3,
+      sapKLevel: "",
+      qualifications: "Certificate in IT Support",
+      qualificationType: "Certificate",
+      qualificationName: "IT Support",
+      instituteName: "CTI Education Group",
+      yearCompleted: "2021",
+      languages: "English, Afrikaans",
+      workExperiences: JSON.stringify([
+        {
+          companyName: "TechSupport Co",
+          position: "Service Desk Analyst",
+          roleTitle: "Senior Service Desk Analyst",
+          startDate: "01/2022",
+          endDate: "12/2024",
+          isCurrentRole: true
+        }
+      ]),
+      certificateTypes: JSON.stringify([
+        {
+          department: "SERVICE DESK",
+          role: "Service Desk Analyst",
+          certificateName: "ITIL Foundation Certificate"
+        }
+      ]),
+      status: "pending",
+      cvFile: "",
+      submittedAt: new Date("2024-05-12T16:20:00Z")
     }
   ]
 };
