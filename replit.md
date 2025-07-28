@@ -157,6 +157,7 @@ Changelog:
 - July 28, 2025. Added back "Add Another Qualification" button functionality - users can now add additional qualifications while maintaining the simplified primary qualification structure
 - July 28, 2025. Reorganized qualification form layout - additional qualifications now display within the same card as primary qualification for cleaner UI structure
 - July 28, 2025. Swapped K-Level and Role Title positions in CV template - K-Level now appears on same line as Department/Role, Role Title moved to separate line for better readability
+- July 28, 2025. Reorganized CV template professional information display - Role, Role Title, and K-Level now all appear on same line with Role Title positioned in the middle for optimal layout
 ```
 
 ## User Preferences
