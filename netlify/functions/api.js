@@ -8,13 +8,20 @@ const app = express();
 // Configure Neon for serverless environment
 neonConfig.webSocketConstructor = require('ws');
 
-// Database connection
-let pool;
-if (process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL) {
-  pool = new Pool({ 
-    connectionString: process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL 
-  });
-}
+// Database connection - force database usage
+const pool = new Pool({ 
+  connectionString: process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL 
+});
+
+// Test database connection on startup
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Database connection error:', err);
+  } else {
+    console.log('Database connected successfully');
+    release();
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -287,21 +294,10 @@ app.post("/api/auth/login", async (req, res) => {
 
     let user = null;
     
-    // Try database first
-    if (pool) {
-      try {
-        const result = await pool.query('SELECT * FROM user_profiles WHERE username = $1 AND password = $2', [username, password]);
-        if (result.rows.length > 0) {
-          user = result.rows[0];
-        }
-      } catch (dbError) {
-        console.log("Database authentication failed, trying mock data");
-      }
-    }
-    
-    // Fallback to mock data
-    if (!user) {
-      user = mockData.users.find(u => u.username === username && u.password === password);
+    // Use real database only
+    const result = await pool.query('SELECT * FROM user_profiles WHERE username = $1 AND password = $2', [username, password]);
+    if (result.rows.length > 0) {
+      user = result.rows[0];
     }
     
     if (!user) {
@@ -341,34 +337,23 @@ app.get("/api/auth/user", async (req, res) => {
     const user = verifyToken(token);
     
     if (user) {
-      // Try to get user from database first
-      if (pool) {
-        try {
-          const result = await pool.query('SELECT * FROM user_profiles WHERE username = $1', [user.username]);
-          if (result.rows.length > 0) {
-            const dbUser = result.rows[0];
-            return res.json({
-              id: dbUser.id,
-              username: dbUser.username,
-              email: dbUser.email,
-              role: dbUser.role.toLowerCase(),
-              firstName: dbUser.firstName,
-              lastName: dbUser.lastName,
-              department: dbUser.department
-            });
-          }
-        } catch (dbError) {
-          console.log("Database query failed, using token data");
-        }
+      // Get user from database
+      const result = await pool.query('SELECT * FROM user_profiles WHERE username = $1', [user.username]);
+      if (result.rows.length > 0) {
+        const dbUser = result.rows[0];
+        return res.json({
+          id: dbUser.id,
+          username: dbUser.username,
+          email: dbUser.email,
+          role: dbUser.role.toLowerCase(),
+          firstName: dbUser.firstName || dbUser.firstname,
+          lastName: dbUser.lastName || dbUser.lastname,
+          department: dbUser.department
+        });
       }
       
-      // Fallback to token data
-      res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role.toLowerCase()
-      });
+      // If user not found in database, return error
+      res.status(401).json({ message: "User not found in database" });
     } else {
       res.status(401).json({ message: "Not authenticated" });
     }
@@ -398,67 +383,39 @@ app.get("/api/cv-records", async (req, res) => {
     
     let records;
     
-    if (pool) {
-      // Use real database
-      let query = 'SELECT * FROM cv_records';
-      let params = [];
-      let conditions = [];
-      
-      if (search) {
-        conditions.push(`(name ILIKE $${params.length + 1} OR surname ILIKE $${params.length + 1} OR email ILIKE $${params.length + 1})`);
-        params.push(`%${search}%`);
-      }
-      
-      if (status && status !== 'all') {
-        conditions.push(`status = $${params.length + 1}`);
-        params.push(status);
-      }
-      
-      if (department && department !== 'all') {
-        conditions.push(`department = $${params.length + 1}`);
-        params.push(department);
-      }
-      
-      if (position && position !== 'all') {
-        conditions.push(`position = $${params.length + 1}`);
-        params.push(position);
-      }
-      
-      if (conditions.length > 0) {
-        query += ' WHERE ' + conditions.join(' AND ');
-      }
-      
-      query += ' ORDER BY id DESC';
-      
-      const result = await pool.query(query, params);
-      records = result.rows;
-    } else {
-      // Fallback to mock data if no database connection
-      records = [...mockData.cvRecords];
-      
-      // Apply filters for mock data
-      if (search) {
-        const searchLower = search.toLowerCase();
-        records = records.filter(record => 
-          record.name.toLowerCase().includes(searchLower) ||
-          (record.surname && record.surname.toLowerCase().includes(searchLower)) ||
-          record.email.toLowerCase().includes(searchLower) ||
-          (record.phone && record.phone.includes(search))
-        );
-      }
-      
-      if (status && status !== 'all') {
-        records = records.filter(record => record.status === status);
-      }
-      
-      if (department && department !== 'all') {
-        records = records.filter(record => record.department === department);
-      }
-      
-      if (position && position !== 'all') {
-        records = records.filter(record => record.position === position);
-      }
+    // Use real database only
+    let query = 'SELECT * FROM cv_records';
+    let params = [];
+    let conditions = [];
+    
+    if (search) {
+      conditions.push(`(name ILIKE $${params.length + 1} OR surname ILIKE $${params.length + 1} OR email ILIKE $${params.length + 1})`);
+      params.push(`%${search}%`);
     }
+    
+    if (status && status !== 'all') {
+      conditions.push(`status = $${params.length + 1}`);
+      params.push(status);
+    }
+    
+    if (department && department !== 'all') {
+      conditions.push(`department = $${params.length + 1}`);
+      params.push(department);
+    }
+    
+    if (position && position !== 'all') {
+      conditions.push(`position = $${params.length + 1}`);
+      params.push(position);
+    }
+    
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+    
+    query += ' ORDER BY id DESC';
+    
+    const result = await pool.query(query, params);
+    records = result.rows;
     
     res.json(records);
   } catch (error) {
@@ -472,14 +429,9 @@ app.get("/api/cv-records/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     let record;
     
-    if (pool) {
-      // Use real database
-      const result = await pool.query('SELECT * FROM cv_records WHERE id = $1', [id]);
-      record = result.rows[0];
-    } else {
-      // Fallback to mock data
-      record = mockData.cvRecords.find(r => r.id === id);
-    }
+    // Use real database only
+    const result = await pool.query('SELECT * FROM cv_records WHERE id = $1', [id]);
+    record = result.rows[0];
     
     if (!record) {
       return res.status(404).json({ message: "CV record not found" });
@@ -496,45 +448,35 @@ app.post("/api/cv-records", async (req, res) => {
   try {
     let newRecord;
     
-    if (pool) {
-      // Use real database
-      const {
-        name, surname, idPassport, gender, email, phone, position, roleTitle, 
-        department, experience, experienceInSimilarRole, experienceWithITSMTools,
-        sapKLevel, qualifications, qualificationType, qualificationName, 
-        instituteName, yearCompleted, languages, workExperiences, 
-        certificateTypes, status, cvFile
-      } = req.body;
-      
-      const result = await pool.query(`
-        INSERT INTO cv_records (
-          name, surname, id_passport, gender, email, phone, position, role_title,
-          department, experience, experience_in_similar_role, experience_with_itsm_tools,
-          sap_k_level, qualifications, qualification_type, qualification_name,
-          institute_name, year_completed, languages, work_experiences,
-          certificate_types, status, cv_file, submitted_at
-        ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
-          $17, $18, $19, $20, $21, $22, $23, $24
-        ) RETURNING *
-      `, [
-        name, surname, idPassport, gender, email, phone, position, roleTitle,
-        department, experience, experienceInSimilarRole, experienceWithITSMTools,
-        sapKLevel, qualifications, qualificationType, qualificationName,
-        instituteName, yearCompleted, languages, workExperiences,
-        certificateTypes, status || 'pending', cvFile || '', new Date()
-      ]);
-      
-      newRecord = result.rows[0];
-    } else {
-      // Fallback to mock data
-      newRecord = {
-        id: Math.max(...mockData.cvRecords.map(r => r.id)) + 1,
-        ...req.body,
-        submittedAt: new Date()
-      };
-      mockData.cvRecords.push(newRecord);
-    }
+    // Use real database only
+    const {
+      name, surname, idPassport, gender, email, phone, position, roleTitle, 
+      department, experience, experienceInSimilarRole, experienceWithITSMTools,
+      sapKLevel, qualifications, qualificationType, qualificationName, 
+      instituteName, yearCompleted, languages, workExperiences, 
+      certificateTypes, status, cvFile
+    } = req.body;
+    
+    const result = await pool.query(`
+      INSERT INTO cv_records (
+        name, surname, id_passport, gender, email, phone, position, role_title,
+        department, experience, experience_in_similar_role, experience_with_itsm_tools,
+        sap_k_level, qualifications, qualification_type, qualification_name,
+        institute_name, year_completed, languages, work_experiences,
+        certificate_types, status, cv_file, submitted_at
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
+        $17, $18, $19, $20, $21, $22, $23, $24
+      ) RETURNING *
+    `, [
+      name, surname, idPassport, gender, email, phone, position, roleTitle,
+      department, experience, experienceInSimilarRole, experienceWithITSMTools,
+      sapKLevel, qualifications, qualificationType, qualificationName,
+      instituteName, yearCompleted, languages, workExperiences,
+      certificateTypes, status || 'pending', cvFile || '', new Date()
+    ]);
+    
+    newRecord = result.rows[0];
     
     res.status(201).json(newRecord);
   } catch (error) {
@@ -655,16 +597,9 @@ app.get("/api/user-profiles", requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Admin access required" });
     }
     
-    let profiles;
-    
-    if (pool) {
-      // Use real database
-      const result = await pool.query('SELECT * FROM user_profiles ORDER BY id');
-      profiles = result.rows.map(u => ({ ...u, password: undefined }));
-    } else {
-      // Fallback to mock data
-      profiles = mockData.users.map(u => ({ ...u, password: undefined }));
-    }
+    // Use real database only
+    const result = await pool.query('SELECT * FROM user_profiles ORDER BY id');
+    const profiles = result.rows.map(u => ({ ...u, password: undefined }));
     
     res.json(profiles);
   } catch (error) {
