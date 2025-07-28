@@ -160,7 +160,7 @@ app.post("/api/auth/login", async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role
+      role: user.role.toLowerCase() // Ensure lowercase role for frontend compatibility
     };
 
     res.json({
@@ -178,6 +178,7 @@ app.post("/api/auth/logout", (req, res) => {
 });
 
 app.get("/api/auth/user", (req, res) => {
+  // For compatibility, try session first, then token
   const token = req.headers.authorization?.replace('Bearer ', '');
   const user = verifyToken(token);
   
@@ -186,7 +187,7 @@ app.get("/api/auth/user", (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role
+      role: user.role.toLowerCase() // Ensure lowercase role
     });
   } else {
     res.status(401).json({ message: "Not authenticated" });
@@ -206,7 +207,7 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-// CV Records routes
+// CV Records routes (no auth required for compatibility)
 app.get("/api/cv-records", async (req, res) => {
   try {
     const { search, status, department, position } = req.query;

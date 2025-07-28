@@ -20,7 +20,15 @@ export function useAuth() {
   const { data: currentUser, isLoading, error } = useQuery({
     queryKey: ["/api/auth/user"],
     queryFn: async () => {
+      const token = localStorage.getItem('authToken');
+      const headers: Record<string, string> = {};
+      
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch("/api/auth/user", {
+        headers,
         credentials: "include",
       });
       

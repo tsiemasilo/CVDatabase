@@ -27,13 +27,21 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       const response = await apiRequest("POST", "/api/auth/login", data);
       return await response.json();
     },
-    onSuccess: (user) => {
-      console.log("Login result:", user); // Debug log
+    onSuccess: (result) => {
+      console.log("Login result:", result); // Debug log
+      
+      // Handle both server structures: direct user object OR {user, token}
+      const user = result.user || result;
+      const token = result.token;
+      
+      // Store token if provided (for Netlify deployment)
+      if (token) {
+        localStorage.setItem('authToken', token);
+      }
       
       // Invalidate the auth user query to refresh authentication state
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
-      // The server returns the user object directly, not wrapped
       const username = user?.username || user?.email || 'User';
       
       toast({ 
