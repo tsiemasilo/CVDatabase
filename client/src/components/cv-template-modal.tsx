@@ -16,7 +16,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   // Parse work experiences from the record
   const workExperiences = record.workExperiences ? JSON.parse(record.workExperiences) : [];
-  const otherQualifications = record.otherQualifications ? JSON.parse(record.otherQualifications) : [];
   const languages = record.languages ? record.languages.split(', ') : [];
 
   // Calculate total experience
@@ -221,43 +220,82 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
                       <tr key={index} className="hover:bg-blue-50 transition-colors">
                         <td className="border border-blue-300 px-6 py-3 align-top">{exp.position || exp.role || ''}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
+                        <td className="border border-blue-300 px-6 py-3 align-top">{exp.companyName || exp.company || exp.employer || exp.organization || 'N/A'}</td>
                         <td className="border border-blue-300 px-6 py-3 align-top">
                           {(() => {
                             try {
-                              if (!exp.startDate) return '';
+                              if (!exp.startDate) return 'N/A';
                               
-                              // Handle MM/yyyy format from sample data
-                              let startDate;
-                              if (exp.startDate.includes('/')) {
-                                const [month, year] = exp.startDate.split('/');
-                                startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                              // Handle different date formats
+                              let startFormatted = '';
+                              if (typeof exp.startDate === 'string') {
+                                if (exp.startDate.includes('/')) {
+                                  // Handle MM/yyyy format
+                                  const [month, year] = exp.startDate.split('/');
+                                  if (month && year && !isNaN(parseInt(month)) && !isNaN(parseInt(year))) {
+                                    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                                    const monthIndex = parseInt(month) - 1;
+                                    if (monthIndex >= 0 && monthIndex < 12) {
+                                      startFormatted = `${months[monthIndex]} ${year}`;
+                                    } else {
+                                      startFormatted = exp.startDate;
+                                    }
+                                  } else {
+                                    startFormatted = exp.startDate;
+                                  }
+                                } else {
+                                  // Try to parse as regular date
+                                  const date = new Date(exp.startDate);
+                                  if (!isNaN(date.getTime())) {
+                                    startFormatted = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                                  } else {
+                                    startFormatted = exp.startDate;
+                                  }
+                                }
                               } else {
-                                startDate = new Date(exp.startDate);
+                                startFormatted = String(exp.startDate);
                               }
-                              
-                              if (isNaN(startDate.getTime())) return '';
-                              
-                              const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                               
                               if (exp.isCurrentRole || !exp.endDate || exp.endDate === '') {
                                 return `${startFormatted} - Present`;
                               }
                               
-                              // Handle MM/yyyy format for end date
-                              let endDate;
-                              if (exp.endDate.includes('/')) {
-                                const [month, year] = exp.endDate.split('/');
-                                endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                              // Handle end date
+                              let endFormatted = '';
+                              if (typeof exp.endDate === 'string') {
+                                if (exp.endDate.includes('/')) {
+                                  // Handle MM/yyyy format
+                                  const [month, year] = exp.endDate.split('/');
+                                  if (month && year && !isNaN(parseInt(month)) && !isNaN(parseInt(year))) {
+                                    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                                    const monthIndex = parseInt(month) - 1;
+                                    if (monthIndex >= 0 && monthIndex < 12) {
+                                      endFormatted = `${months[monthIndex]} ${year}`;
+                                    } else {
+                                      endFormatted = exp.endDate;
+                                    }
+                                  } else {
+                                    endFormatted = exp.endDate;
+                                  }
+                                } else {
+                                  // Try to parse as regular date
+                                  const date = new Date(exp.endDate);
+                                  if (!isNaN(date.getTime())) {
+                                    endFormatted = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                                  } else {
+                                    endFormatted = exp.endDate;
+                                  }
+                                }
                               } else {
-                                endDate = new Date(exp.endDate);
+                                endFormatted = String(exp.endDate);
                               }
                               
-                              if (isNaN(endDate.getTime())) return `${startFormatted} - Present`;
-                              const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                               return `${startFormatted} - ${endFormatted}`;
                             } catch (error) {
-                              return '';
+                              console.error('Date parsing error:', error);
+                              return 'N/A';
                             }
                           })()}
                         </td>
@@ -290,14 +328,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                         <td className="border border-blue-300 px-6 py-3 align-top text-center">{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
-                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-blue-50 transition-colors">
-                        <td className="border border-blue-300 px-6 py-3 align-top">{qual.name || qual.type}</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                        <td className="border border-blue-300 px-6 py-3 align-top text-center">-</td>
-                      </tr>
-                    ))}
-                    {!record.qualifications && otherQualifications.length === 0 && (
+                    {!record.qualifications && (
                       <tr>
                         <td className="border border-blue-300 px-6 py-4 text-center text-gray-500 italic" colSpan={3}>No qualifications recorded</td>
                       </tr>
