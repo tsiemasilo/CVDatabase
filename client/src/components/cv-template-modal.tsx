@@ -163,18 +163,24 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Role Information */}
               <div className="space-y-2">
+                {record.department && (
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="font-bold text-blue-700">Department:</span> {record.department}
+                  </p>
+                )}
                 <p className="text-lg font-medium text-gray-800">
-                  {record.department && (
-                    <span><span className="font-bold text-blue-700">Department:</span> {record.department}</span>
-                  )}
-                  <span>{record.department ? ' | ' : ''}<span className="font-bold text-blue-700">Role:</span> {record.position || record.roleTitle || ''}</span>
-                  {record.roleTitle && (
-                    <span> | <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}</span>
-                  )}
-                  {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}</span>
-                  )}
+                  <span className="font-bold text-blue-700">Role:</span> {record.position || record.roleTitle || ''}
                 </p>
+                {record.roleTitle && (
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="font-bold text-blue-700">Role Title:</span> {record.roleTitle}
+                  </p>
+                )}
+                {record.sapKLevel && record.sapKLevel.trim() !== '' && (
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="font-bold text-blue-700">K-Level:</span> {record.sapKLevel}
+                  </p>
+                )}
                 
                 <p className="text-lg font-medium text-gray-800">
                   <span className="font-bold text-blue-700">Years of Experience:</span> {record.experience || 0} years
