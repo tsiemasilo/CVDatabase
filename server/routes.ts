@@ -6,6 +6,13 @@ import { upload, deleteFile, getFileInfo } from "./uploads";
 import { z } from "zod";
 import path from "path";
 
+// Extend session type to include user property
+declare module 'express-session' {
+  interface SessionData {
+    user?: any;
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Authentication routes
@@ -289,7 +296,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.setHeader('Content-Disposition', `attachment; filename="${record.cvFile}"`);
-      res.setHeader('Content-Type', fileInfo.mimetype);
+      // Determine mimetype based on file extension
+      const ext = path.extname(record.cvFile).toLowerCase();
+      let mimetype = 'application/octet-stream';
+      if (ext === '.pdf') mimetype = 'application/pdf';
+      else if (ext === '.doc') mimetype = 'application/msword';
+      else if (ext === '.docx') mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      
+      res.setHeader('Content-Type', mimetype);
       res.sendFile(filePath);
     } catch (error) {
       res.status(500).json({ message: "Failed to download CV file" });

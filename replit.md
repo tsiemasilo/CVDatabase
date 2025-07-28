@@ -169,6 +169,9 @@ Changelog:
 - July 28, 2025. Updated CV template colors from blue to #000053 for proper Alteram branding - changed all headings, borders, and text colors to match company identity
 - July 28, 2025. Enhanced work experience form with role title field - added 3-column layout with Company Name, Position, and Role Title fields for detailed professional information capture
 - July 28, 2025. Fixed PostgreSQL array data parsing in CV template - implemented proper handling of escaped JSON strings in database array format for work experience and certificate data display
+- July 28, 2025. Resolved form submission TypeScript errors - fixed useEffect return type, Set iteration issues, and interface type mismatches in capture record form
+- July 28, 2025. Fixed server-side session and file upload TypeScript errors - added proper session type declarations and file mimetype handling for CV downloads
+- July 28, 2025. Enhanced PostgreSQL array parsing in CV template with improved escape handling - work experience and certificate data now parse correctly from database format
 ```
 
 ## User Preferences

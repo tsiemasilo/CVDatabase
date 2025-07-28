@@ -126,7 +126,9 @@ export default function CaptureRecord() {
     const style = document.createElement('style');
     style.textContent = checkboxStyles;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   const [formData, setFormData] = useState({
@@ -149,7 +151,7 @@ export default function CaptureRecord() {
     instituteName: "",
     yearCompleted: "",
     qualificationCertificate: null as File | null,
-    otherQualifications: [] as Array<{ name: string; certificate: File | null }>,
+    otherQualifications: [] as Array<{ name: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
@@ -181,7 +183,7 @@ export default function CaptureRecord() {
       // Fallback to default departments if no data is loaded yet
       return ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
     }
-    const uniqueDepartments = [...new Set(departmentRoles.map(role => role.department))];
+    const uniqueDepartments = Array.from(new Set(departmentRoles.map(role => role.department)));
     console.log('Available departments:', uniqueDepartments);
     return uniqueDepartments.sort();
   };
