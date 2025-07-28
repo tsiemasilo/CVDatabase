@@ -152,6 +152,7 @@ Changelog:
 - July 27, 2025. Standardized fonts and styling across CV template sections - unified text-lg font-medium text-gray-800 for consistent professional appearance
 - July 27, 2025. Fixed alignment and spacing issues in CV template - improved layout with consistent spacing, proper indentation, and organized section structure
 - July 28, 2025. Fixed CV template table display issues - resolved company field not showing and invalid date formatting in experience table with proper date validation and multiple field fallbacks
+- July 28, 2025. Enhanced CV template table with correct field mapping (companyName) and MM/yyyy date format parsing - company names and duration now display properly with robust error handling
 ```
 
 ## User Preferences
