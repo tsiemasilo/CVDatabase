@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download, LogOut } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface CVRecord {
   id: number;
@@ -32,6 +33,24 @@ interface CVRecord {
 
 export default function SuccessPage() {
   const [submittedRecordId, setSubmittedRecordId] = useState<number | null>(null);
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('/api/auth/logout', { method: 'POST' });
+    },
+    onSuccess: () => {
+      // Clear local storage and redirect to landing page
+      localStorage.removeItem('lastSubmittedRecordId');
+      window.location.href = '/';
+    },
+    onError: (error) => {
+      console.error('Logout error:', error);
+      // Even on error, redirect to home to ensure user is logged out
+      localStorage.removeItem('lastSubmittedRecordId');
+      window.location.href = '/';
+    }
+  });
 
   // Get the record ID from URL parameters or localStorage
   useEffect(() => {
@@ -366,13 +385,13 @@ export default function SuccessPage() {
           <Button 
             variant="outline" 
             onClick={() => {
-              // Navigate to logout
-              window.location.href = '/api/auth/logout';
+              logoutMutation.mutate();
             }}
+            disabled={logoutMutation.isPending}
             className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
           >
             <LogOut className="h-4 w-4" />
-            Logout
+            {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
           </Button>
         </div>
       </div>
