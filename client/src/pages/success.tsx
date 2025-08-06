@@ -78,10 +78,11 @@ export default function SuccessPage() {
     }
   }, []);
 
-  // Fetch the submitted record details
+  // Fetch the submitted record details only if user is authenticated
   const { data: record, isLoading, error } = useQuery<CVRecord>({
     queryKey: [`/api/cv-records/${submittedRecordId}`],
     enabled: !!submittedRecordId,
+    retry: false, // Don't retry on auth failures
   });
 
 
@@ -106,7 +107,7 @@ export default function SuccessPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -350,13 +351,21 @@ export default function SuccessPage() {
           </div>
         ) : (
           <Card>
-            <CardContent className="text-center py-12">
+            <CardHeader>
+              <CardTitle className="text-green-600">CV Successfully Submitted!</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center py-6">
               <p className="text-gray-600 mb-4">
-                Unable to load your submission details at this time.
-              </p>
-              <p className="text-sm text-gray-500">
                 Your CV has been successfully submitted and saved in our system.
               </p>
+              <p className="text-sm text-gray-500">
+                Thank you for your application. Our HR team will review your submission and contact you soon.
+              </p>
+              {submittedRecordId && (
+                <p className="text-xs text-gray-400 mt-4">
+                  Reference ID: {submittedRecordId}
+                </p>
+              )}
             </CardContent>
           </Card>
         )}
