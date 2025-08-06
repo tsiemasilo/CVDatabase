@@ -143,7 +143,7 @@ export default function CaptureRecord() {
       instituteName: "",
       yearCompleted: "",
       qualificationCertificate: null as File | null,
-      otherQualifications: [] as Array<{ name: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
+      otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
       certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
       experienceInSimilarRole: "",
       experienceWithITSMTools: "",
@@ -182,7 +182,7 @@ export default function CaptureRecord() {
     instituteName: "",
     yearCompleted: "",
     qualificationCertificate: null as File | null,
-    otherQualifications: [] as Array<{ name: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
+    otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
@@ -322,6 +322,13 @@ export default function CaptureRecord() {
     return selectedMapping ? selectedMapping.names : [];
   };
 
+  // Get qualification names for a specific qualification type (for additional qualifications)
+  const getQualificationNamesByType = (qualificationType: string) => {
+    if (!qualificationType) return [];
+    const selectedMapping = QUALIFICATION_MAPPINGS.find(q => q.type === qualificationType);
+    return selectedMapping ? selectedMapping.names : [];
+  };
+
   const handleInputChange = (field: string, value: string) => {
     console.log(`Field ${field} changed to:`, value);
     setFormData(prev => {
@@ -439,7 +446,7 @@ export default function CaptureRecord() {
   const addOtherQualification = () => {
     setFormData(prev => ({
       ...prev,
-      otherQualifications: [...(prev.otherQualifications || []), { name: "", instituteName: "", yearCompleted: "", certificate: null }]
+      otherQualifications: [...(prev.otherQualifications || []), { qualificationType: "", qualificationName: "", instituteName: "", yearCompleted: "", certificate: null }]
     }));
   };
 
@@ -1490,18 +1497,52 @@ export default function CaptureRecord() {
                         </Button>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                          <Label htmlFor={`otherQualName${index}`}>Qualification Name *</Label>
-                          <Input
-                            id={`otherQualName${index}`}
-                            value={qualification.name || ""}
-                            onChange={(e) => handleOtherQualificationChange(index, 'name', e.target.value)}
-                            placeholder="Enter qualification name"
-                            className="mt-1"
-                          />
+                          <Label htmlFor={`otherQualType${index}`}>Qualification Type</Label>
+                          <Select
+                            value={qualification.qualificationType || ""}
+                            onValueChange={(value) => {
+                              handleOtherQualificationChange(index, 'qualificationType', value);
+                              // Clear qualification name when type changes
+                              handleOtherQualificationChange(index, 'qualificationName', "");
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select qualification type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {QUALIFICATION_TYPES.map((type) => (
+                                <SelectItem key={type} value={type}>
+                                  {type}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
-                        
+                        <div>
+                          <Label htmlFor={`otherQualName${index}`}>Qualification Name</Label>
+                          <Select
+                            value={qualification.qualificationName || ""}
+                            onValueChange={(value) => handleOtherQualificationChange(index, 'qualificationName', value)}
+                            disabled={!qualification.qualificationType}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder={qualification.qualificationType ? "Select qualification name" : "Select qualification type first"} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {qualification.qualificationType && getQualificationNamesByType(qualification.qualificationType).map((name) => (
+                                <SelectItem key={name} value={name}>
+                                  {name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      {/* Institute Name and Year Completed */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor={`otherInstName${index}`}>Institute Name</Label>
                           <Input
@@ -1509,12 +1550,8 @@ export default function CaptureRecord() {
                             value={qualification.instituteName || ""}
                             onChange={(e) => handleOtherQualificationChange(index, 'instituteName', e.target.value)}
                             placeholder="Enter institute name"
-                            className="mt-1"
                           />
                         </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
                           <Label htmlFor={`otherYearComp${index}`}>Year Completed</Label>
                           <Input
@@ -1522,9 +1559,12 @@ export default function CaptureRecord() {
                             value={qualification.yearCompleted || ""}
                             onChange={(e) => handleOtherQualificationChange(index, 'yearCompleted', e.target.value)}
                             placeholder="e.g., 2020"
-                            className="mt-1"
                           />
                         </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div></div>
                         
                         <div>
                           <Label htmlFor={`otherQualCert${index}`}>Upload Certificate (Optional)</Label>
