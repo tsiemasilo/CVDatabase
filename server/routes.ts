@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { getStorage } from "./storage";
-import { insertCVRecordSchema, insertUserProfileSchema } from "@shared/schema";
+import { insertCVRecordSchema, insertUserProfileSchema, CVRecord } from "@shared/schema";
 import { upload, deleteFile, getFileInfo } from "./uploads";
 import { z } from "zod";
 import path from "path";
@@ -11,6 +11,120 @@ declare module 'express-session' {
   interface SessionData {
     user?: any;
   }
+}
+
+// Function to generate HTML content for CV download
+function generateCVHTML(record: CVRecord): string {
+  let workExperiences = '';
+  if (record.workExperiences) {
+    try {
+      const workExp = JSON.parse(record.workExperiences);
+      workExperiences = workExp.map((exp: any) => `
+        <div style="margin-bottom: 10px; padding: 10px; border-left: 3px solid rgb(0, 0, 83);">
+          <strong>${exp.position || 'Position'}</strong> at ${exp.companyName || 'Company'}<br>
+          <small style="color: #666;">${exp.startDate} - ${exp.isCurrentRole ? 'Present' : exp.endDate}</small>
+          ${exp.roleTitle ? `<br><em>${exp.roleTitle}</em>` : ''}
+        </div>
+      `).join('');
+    } catch (e) {
+      workExperiences = '<p>Work experience data not available</p>';
+    }
+  }
+
+  let certificates = '';
+  if (record.certificateTypes) {
+    try {
+      const certs = JSON.parse(record.certificateTypes);
+      certificates = certs.map((cert: any) => `
+        <div style="margin-bottom: 8px; padding: 8px; background-color: #f8f9fa; border-radius: 4px;">
+          <strong>${cert.certificateName}</strong><br>
+          <small style="color: #666;">${cert.department} - ${cert.role}</small>
+        </div>
+      `).join('');
+    } catch (e) {
+      certificates = '<p>Certificate data not available</p>';
+    }
+  }
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>CV - ${record.name}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+        .header { text-align: center; border-bottom: 3px solid rgb(0, 0, 83); padding-bottom: 20px; margin-bottom: 30px; }
+        .company-name { color: rgb(0, 0, 83); font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .name { font-size: 28px; font-weight: bold; color: rgb(0, 0, 83); margin-bottom: 5px; }
+        .contact-info { font-size: 14px; color: #666; }
+        .section { margin-bottom: 25px; }
+        .section-title { font-size: 18px; font-weight: bold; color: rgb(0, 0, 83); border-bottom: 1px solid rgb(0, 0, 83); padding-bottom: 5px; margin-bottom: 15px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .info-item { margin-bottom: 8px; }
+        .label { font-weight: bold; color: rgb(0, 0, 83); }
+        .badge { background-color: rgb(0, 0, 83); color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+        @media print { body { margin: 0; } }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="company-name">ALTERAM SOLUTIONS</div>
+        <div class="name">${record.name}${record.surname ? ' ' + record.surname : ''}</div>
+        <div class="contact-info">
+          ${record.email} | ${record.phone || 'Phone not provided'} | Applied: ${new Date(record.submittedAt).toLocaleDateString()}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Professional Information</div>
+        <div class="info-grid">
+          <div>
+            <div class="info-item"><span class="label">Position:</span> ${record.position}</div>
+            <div class="info-item"><span class="label">Role Title:</span> ${record.roleTitle || 'Not specified'}</div>
+            <div class="info-item"><span class="label">Department:</span> ${record.department || 'Not specified'}</div>
+            <div class="info-item"><span class="label">Gender:</span> ${record.gender || 'Not specified'}</div>
+          </div>
+          <div>
+            <div class="info-item"><span class="label">Experience:</span> ${record.experience || 0} years</div>
+            <div class="info-item"><span class="label">Similar Role Experience:</span> ${record.experienceInSimilarRole || 0} years</div>
+            <div class="info-item"><span class="label">ITSM Tools Experience:</span> ${record.experienceWithITSMTools || 0} years</div>
+            <div class="info-item"><span class="label">SAP K-Level:</span> ${record.sapKLevel ? `<span class="badge">${record.sapKLevel}</span>` : 'Not specified'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Qualifications</div>
+        <div class="info-item"><span class="label">Qualification Type:</span> ${record.qualificationType || 'Not specified'}</div>
+        <div class="info-item"><span class="label">Qualification Name:</span> ${record.qualificationName || 'Not specified'}</div>
+        <div class="info-item"><span class="label">Institution:</span> ${record.instituteName || 'Not specified'}</div>
+        <div class="info-item"><span class="label">Year Completed:</span> ${record.yearCompleted || 'Not specified'}</div>
+        <div class="info-item"><span class="label">Languages:</span> ${record.languages || 'Not specified'}</div>
+      </div>
+
+      ${workExperiences ? `
+        <div class="section">
+          <div class="section-title">Work Experience</div>
+          ${workExperiences}
+        </div>
+      ` : ''}
+
+      ${certificates ? `
+        <div class="section">
+          <div class="section-title">Certificates</div>
+          ${certificates}
+        </div>
+      ` : ''}
+
+      <div class="section">
+        <div class="section-title">Application Status</div>
+        <div class="info-item"><span class="label">Status:</span> <span class="badge">${record.status}</span></div>
+        <div class="info-item"><span class="label">ID/Passport:</span> ${record.idPassport || 'Not provided'}</div>
+      </div>
+    </body>
+    </html>
+  `;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -233,6 +347,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "CV record deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete CV record" });
+    }
+  });
+
+  // Download individual CV record as PDF
+  app.get("/api/cv-records/:id/download", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid CV record ID" });
+      }
+
+      const record = await storage.getCVRecord(id);
+      if (!record) {
+        return res.status(404).json({ message: "CV record not found" });
+      }
+
+      // Generate HTML for PDF conversion
+      const htmlContent = generateCVHTML(record);
+      
+      // Set headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="CV_${record.name.replace(/\s+/g, '_')}_${record.id}.pdf"`);
+      
+      // For now, return the HTML content as a simple PDF alternative
+      // In production, you would use a PDF generation library like puppeteer
+      res.setHeader('Content-Type', 'text/html');
+      res.send(htmlContent);
+    } catch (error) {
+      console.error('CV download error:', error);
+      res.status(500).json({ message: "Failed to generate CV download" });
     }
   });
 

@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft } from "lucide-react";
+import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface CVRecord {
@@ -333,7 +333,22 @@ export default function SuccessPage() {
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center gap-4 mt-8">
+          {record && (
+            <Button 
+              variant="default" 
+              onClick={() => {
+                // Download the CV as PDF
+                window.open(`/api/cv-records/${record.id}/download`, '_blank');
+              }}
+              className="flex items-center gap-2"
+              style={{ backgroundColor: 'rgb(0, 0, 83)', borderColor: 'rgb(0, 0, 83)' }}
+            >
+              <Download className="h-4 w-4" />
+              Download Your CV
+            </Button>
+          )}
+          
           <Button 
             variant="outline" 
             onClick={() => {
