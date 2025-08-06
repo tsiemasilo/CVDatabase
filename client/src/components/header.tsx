@@ -75,10 +75,21 @@ export default function Header() {
             </div>
             {user && (
               <div className="ml-8 text-sm text-gray-600">
-                Welcome, <span className="font-medium">{user.firstName || user.username}</span>
-                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                  {user.role}
-                </span>
+                {user.role === 'user' ? (
+                  <>
+                    Welcome
+                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {user.role}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Welcome, <span className="font-medium">{user.firstName || user.username}</span>
+                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {user.role}
+                    </span>
+                  </>
+                )}
               </div>
             )}
             <div className="ml-16 flex space-x-3 mr-8">
