@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download } from "lucide-react";
+import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download, LogOut } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface CVRecord {
@@ -123,7 +123,7 @@ export default function SuccessPage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-gray-500" />
                       <span className="font-medium">Name:</span>
-                      <span>{record.name}</span>
+                      <span>{record.name}{record.surname ? ' ' + record.surname : ''}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-500" />
@@ -361,6 +361,18 @@ export default function SuccessPage() {
           >
             <FileText className="h-4 w-4" />
             Submit Another Application
+          </Button>
+
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              // Navigate to logout
+              window.location.href = '/api/auth/logout';
+            }}
+            className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
           </Button>
         </div>
       </div>
