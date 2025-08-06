@@ -180,8 +180,8 @@ export class MemStorage implements IStorage {
         email: "user@example.com",
         password: "user1",
         role: "user",
-        firstName: "John",
-        lastName: "Doe",
+        firstName: "David",
+        lastName: "Smith",
         department: "SAP",
         position: "SAP Developer",
         phoneNumber: "083 123 4567",
@@ -189,6 +189,21 @@ export class MemStorage implements IStorage {
         lastLogin: new Date("2025-01-09T10:00:00"),
         createdAt: new Date("2024-12-10T00:00:00"),
         updatedAt: new Date("2024-12-10T00:00:00")
+      },
+      {
+        username: "tsiemasilo",
+        email: "tsiemasilo@gmail.com",
+        password: "tsie",
+        role: "user",
+        firstName: "Tsie",
+        lastName: "Masilo",
+        department: "DEVELOPMENT",
+        position: "Developer",
+        phoneNumber: "082 806 9568",
+        isActive: true,
+        lastLogin: new Date("2025-01-09T10:30:00"),
+        createdAt: new Date("2024-12-15T00:00:00"),
+        updatedAt: new Date("2024-12-15T00:00:00")
       }
     ];
 
