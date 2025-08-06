@@ -816,14 +816,14 @@ export default function CaptureRecord() {
       return;
     }
 
-    const fullName = [formData.firstName, formData.secondName, formData.thirdName, formData.surname]
+    const firstNames = [formData.firstName, formData.secondName, formData.thirdName]
       .filter(name => name.trim() !== "")
       .join(" ");
 
     const validLanguages = (formData.languages || []).filter(lang => lang.trim() !== "");
 
     const cvData: InsertCVRecord = {
-      name: fullName,
+      name: firstNames,
       surname: formData.surname,
       idPassport: formData.idPassportNumber,
       gender: formData.gender,

@@ -57,3 +57,6 @@ The application uses a full-stack architecture with clear separation of concerns
 - Vite (with React plugin)
 - TypeScript
 - Replit Cartographer plugin
+
+## Recent Updates
+- August 6, 2025. Fixed duplicate surname issue in CV template - separated first names from surname in form submission to prevent surname appearing twice in CV display
