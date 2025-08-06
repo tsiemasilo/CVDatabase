@@ -120,11 +120,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         formData.cvFile = req.file.filename;
       }
       
-      // Convert experience to number if it exists
+      // Convert numeric fields from strings to numbers
       if (formData.experience) {
         formData.experience = parseInt(formData.experience);
       }
+      if (formData.experienceInSimilarRole) {
+        formData.experienceInSimilarRole = parseInt(formData.experienceInSimilarRole);
+      }
+      if (formData.experienceWithITSMTools) {
+        formData.experienceWithITSMTools = parseInt(formData.experienceWithITSMTools);
+      }
       
+      console.log('Form data after conversion:', formData);
       const validatedData = insertCVRecordSchema.parse(formData);
       const newRecord = await storage.createCVRecord(validatedData);
       res.status(201).json(newRecord);
@@ -135,11 +142,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       if (error instanceof z.ZodError) {
+        console.error('Validation error details:', error.errors);
         return res.status(400).json({ 
           message: "Validation error", 
           errors: error.errors 
         });
       }
+      console.error('CV creation error:', error);
       res.status(500).json({ message: "Failed to create CV record" });
     }
   });
