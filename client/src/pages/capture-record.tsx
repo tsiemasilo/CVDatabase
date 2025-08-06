@@ -11,7 +11,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
 import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS } from "@shared/data";
 
-// Custom checkbox styles
+// Custom checkbox styles and dropdown z-index fix
 const checkboxStyles = `
   .checkbox-container {
     display: flex;
@@ -104,6 +104,19 @@ const checkboxStyles = `
 
   .ios-checkbox input:checked + .checkbox-wrapper {
     animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Ensure Select dropdowns appear above all other elements */
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
+
+  [data-radix-select-content] {
+    z-index: 9999 !important;
+  }
+
+  .radix-select-trigger {
+    z-index: auto;
   }
 `;
 
@@ -1378,13 +1391,13 @@ export default function CaptureRecord() {
           </Card>
 
           {/* Qualifications & Certificates */}
-          <Card>
+          <Card className="overflow-visible">
             <CardHeader>
               <CardTitle className="text-lg font-semibold" style={{ color: 'rgb(0, 0, 83)' }}>
                 Qualifications & Certificates
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 overflow-visible">
               {/* Primary Qualification */}
               <div className="border rounded-lg p-4 bg-gray-50">
                 <h4 className="font-medium text-gray-800 mb-3">Primary Qualification</h4>
@@ -1479,9 +1492,9 @@ export default function CaptureRecord() {
 
               {/* Additional Qualifications */}
               {(formData.otherQualifications && formData.otherQualifications.length > 0) && (
-                <div className="space-y-4 mt-6">
+                <div className="space-y-4 mt-6 relative">
                   {formData.otherQualifications.map((qualification, index) => (
-                    <div key={index} className="border rounded-lg p-6 bg-gray-50">
+                    <div key={index} className="border rounded-lg p-6 bg-gray-50 relative z-10">
                       <div className="flex justify-between items-center mb-4">
                         <h5 className="font-medium text-gray-700 text-base">
                           Additional Qualification {index + 1}
@@ -1498,7 +1511,7 @@ export default function CaptureRecord() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
+                        <div className="relative z-20">
                           <Label htmlFor={`otherQualType${index}`}>Qualification Type</Label>
                           <Select
                             value={qualification.qualificationType || ""}
@@ -1511,7 +1524,7 @@ export default function CaptureRecord() {
                             <SelectTrigger>
                               <SelectValue placeholder="Select qualification type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-50">
                               {QUALIFICATION_TYPES.map((type) => (
                                 <SelectItem key={type} value={type}>
                                   {type}
@@ -1520,7 +1533,7 @@ export default function CaptureRecord() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div>
+                        <div className="relative z-20">
                           <Label htmlFor={`otherQualName${index}`}>Qualification Name</Label>
                           <Select
                             value={qualification.qualificationName || ""}
@@ -1530,7 +1543,7 @@ export default function CaptureRecord() {
                             <SelectTrigger>
                               <SelectValue placeholder={qualification.qualificationType ? "Select qualification name" : "Select qualification type first"} />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-50">
                               {qualification.qualificationType && getQualificationNamesByType(qualification.qualificationType).map((name) => (
                                 <SelectItem key={name} value={name}>
                                   {name}
