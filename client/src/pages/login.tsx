@@ -31,10 +31,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       // Invalidate the auth user query to refresh authentication state
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
-      toast({ 
-        title: "Login successful", 
-        description: `Welcome back, ${user.firstName || user.username}!` 
-      });
+      // Removed welcome toast notification
       onLoginSuccess(user);
     },
     onError: (error: any) => {
