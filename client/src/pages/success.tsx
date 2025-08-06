@@ -37,7 +37,17 @@ export default function SuccessPage() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest('/api/auth/logout', { method: 'POST' });
+      const response = await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+      return response.json();
     },
     onSuccess: () => {
       // Clear local storage and redirect to landing page
