@@ -120,6 +120,37 @@ interface DepartmentRole {
 export default function CaptureRecord() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Force clear form function
+  const clearForm = () => {
+    setFormData({
+      firstName: "",
+      secondName: "",
+      thirdName: "",
+      surname: "",
+      idPassportNumber: "",
+      gender: "",
+      yearsOfExperience: "",
+      sapKLevel: "",
+      contactNumber: "",
+      email: "",
+      position: "",
+      roleTitle: "",
+      department: "",
+      languages: [""],
+      qualificationType: "",
+      qualificationName: "",
+      instituteName: "",
+      yearCompleted: "",
+      qualificationCertificate: null as File | null,
+      otherQualifications: [] as Array<{ name: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
+      certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
+      experienceInSimilarRole: "",
+      experienceWithITSMTools: "",
+      workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }]
+    });
+    console.log('Form manually cleared');
+  };
 
   // Inject custom checkbox styles
   useEffect(() => {
@@ -163,8 +194,12 @@ export default function CaptureRecord() {
 
 
 
-  // Load departments and roles from localStorage (same source as positions|roles page)
+  // Clear any cached form data and load departments and roles
   useEffect(() => {
+    // Clear any potential cached form data
+    localStorage.removeItem('captureFormData');
+    sessionStorage.removeItem('captureFormData');
+    
     const savedRecords = localStorage.getItem('departmentRoles');
     if (savedRecords) {
       try {
@@ -175,6 +210,14 @@ export default function CaptureRecord() {
         setDepartmentRoles([]);
       }
     }
+    
+    // Log initial form state to verify it's clean
+    console.log('Initial form state on component mount:', {
+      firstName: "",
+      secondName: "",
+      thirdName: "",
+      surname: ""
+    });
   }, []);
 
   // Get unique departments from the positions|roles data
@@ -280,6 +323,7 @@ export default function CaptureRecord() {
   };
 
   const handleInputChange = (field: string, value: string) => {
+    console.log(`Field ${field} changed to:`, value);
     setFormData(prev => {
       const updated = {
         ...prev,
@@ -864,8 +908,20 @@ export default function CaptureRecord() {
     <div className="bg-gray-50 font-sans min-h-screen">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Capture Record</h1>
-          <p className="text-gray-600 mt-1">Add a new CV record to the database</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Capture Record</h1>
+              <p className="text-gray-600 mt-1">Add a new CV record to the database</p>
+            </div>
+            <Button 
+              onClick={clearForm} 
+              variant="outline" 
+              size="sm"
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Clear Form
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -897,6 +953,9 @@ export default function CaptureRecord() {
                     value={formData.secondName}
                     onChange={(e) => handleInputChange("secondName", e.target.value)}
                     autoComplete="off"
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    spellCheck={false}
                     placeholder="Enter your second name (optional)"
                   />
                 </div>
