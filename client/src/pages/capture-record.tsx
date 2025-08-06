@@ -851,6 +851,9 @@ export default function CaptureRecord() {
     };
 
     console.log("Form data before submission:", formData);
+    console.log("First names array:", [formData.firstName, formData.secondName, formData.thirdName]);
+    console.log("firstNames concatenated:", firstNames);
+    console.log("Surname:", formData.surname);
     console.log("Role title value:", formData.roleTitle);
     console.log("SAP K-level value:", formData.sapKLevel);
     console.log("Final CV data being submitted:", cvData);
@@ -882,6 +885,8 @@ export default function CaptureRecord() {
                     value={formData.firstName}
                     onChange={(e) => handleInputChange("firstName", e.target.value)}
                     className={errors.firstName ? "border-red-500" : ""}
+                    autoComplete="off"
+                    placeholder="Enter your first name"
                   />
                   {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
                 </div>
@@ -891,6 +896,8 @@ export default function CaptureRecord() {
                     id="secondName"
                     value={formData.secondName}
                     onChange={(e) => handleInputChange("secondName", e.target.value)}
+                    autoComplete="off"
+                    placeholder="Enter your second name (optional)"
                   />
                 </div>
               </div>
@@ -902,6 +909,8 @@ export default function CaptureRecord() {
                     id="thirdName"
                     value={formData.thirdName}
                     onChange={(e) => handleInputChange("thirdName", e.target.value)}
+                    autoComplete="off"
+                    placeholder="Enter your third name (optional)"
                   />
                 </div>
                 <div>
@@ -911,6 +920,8 @@ export default function CaptureRecord() {
                     value={formData.surname}
                     onChange={(e) => handleInputChange("surname", e.target.value)}
                     className={errors.surname ? "border-red-500" : ""}
+                    autoComplete="off"
+                    placeholder="Enter your surname"
                   />
                   {errors.surname && <p className="text-red-500 text-sm mt-1">{errors.surname}</p>}
                 </div>
