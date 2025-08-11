@@ -176,17 +176,17 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       const opt = {
         margin: [0.4, 0.4, 0.4, 0.4], // top, left, bottom, right margins in inches
         filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-        image: { type: 'jpeg', quality: 1.0 }, // Maximum image quality
+        image: { type: 'jpeg', quality: 0.98 }, // High quality but not maximum to avoid size issues
         html2canvas: { 
-          scale: 3, // Higher scale for sharper text and images
+          scale: 2, // Balanced scale for sharp text without cutting
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 794 * 2, // Double the width for higher resolution
-          height: 1123 * 2, // Double the height for higher resolution
+          width: 794, // A4 width in pixels at 96 DPI
+          height: 1123, // A4 height in pixels at 96 DPI
           scrollX: 0,
           scrollY: 0,
-          dpi: 300, // High DPI for crisp text
+          dpi: 192, // Higher than default but not excessive
           letterRendering: true, // Better text rendering
           logging: false, // Reduce console noise
           removeContainer: true,
@@ -198,7 +198,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           format: 'a4', 
           orientation: 'portrait',
           putOnlyUsedFonts: true,
-          compress: false // Disable compression for better quality
+          compress: true // Re-enable compression for reasonable file size
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
