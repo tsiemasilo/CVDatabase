@@ -59,6 +59,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     qualifications: "",
     experience: "",
     sapKLevel: "",
+    skills: "",
     status: "active" as const
   });
   const queryClient = useQueryClient();
@@ -296,6 +297,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
       qualifications: record.qualifications || "",
       experience: record.experience?.toString() || "",
       sapKLevel: record.sapKLevel || "",
+      skills: record.skills || "",
       status: record.status
     });
   };
@@ -665,6 +667,18 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 placeholder="Enter qualifications"
                 rows={3}
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Professional Skills</label>
+              <Textarea
+                value={editFormData.skills || ''}
+                onChange={(e) => setEditFormData({...editFormData, skills: e.target.value})}
+                placeholder="Enter skills separated by commas or on new lines. Example: JavaScript, React, Node.js, Database Management, Project Planning"
+                rows={4}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Skills will be automatically categorized and displayed in bullet points on the CV template
+              </p>
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setEditingRecord(null)}>
