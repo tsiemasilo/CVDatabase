@@ -178,14 +178,17 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         filename: `CV_${record.name}_${record.surname || ''}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 1.5, // Reduced scale for better fit
+          scale: 1.2, // Adjusted scale for multi-page content
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
           width: 794, // A4 width in pixels at 96 DPI
-          height: 1123, // A4 height in pixels at 96 DPI
+          height: 2246, // Height for 2 pages (1123 * 2)
           scrollX: 0,
-          scrollY: 0
+          scrollY: 0,
+          onrendered: function (canvas: any) {
+            console.log('Canvas rendered with dimensions:', canvas.width, 'x', canvas.height);
+          }
         },
         jsPDF: { 
           unit: 'mm', 
@@ -194,7 +197,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           putOnlyUsedFonts: true,
           compress: true
         },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { 
+          mode: ['css', 'legacy'], 
+          before: '.page-break-before', 
+          after: '.page-break-after', 
+          avoid: '.no-page-break'
+        },
+        enableLinks: false
       };
       
       await (window as any).html2pdf().set(opt).from(element).save();

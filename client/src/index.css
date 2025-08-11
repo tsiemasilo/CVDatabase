@@ -137,10 +137,17 @@
   /* Page break styles for PDF generation */
   .page-break-before {
     page-break-before: always !important;
+    break-before: page !important;
   }
   
   .page-break-after {
     page-break-after: always !important;
+    break-after: page !important;
+  }
+  
+  .no-page-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
 
