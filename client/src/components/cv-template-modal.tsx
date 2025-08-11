@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -102,15 +103,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
   })();
   
-  const otherQualifications = (() => {
-    if (!record.otherQualifications) return [];
-    try {
-      return JSON.parse(record.otherQualifications);
-    } catch (error) {
-      console.error("Error parsing other qualifications:", error);
-      return [];
-    }
-  })();
+  // Note: Using empty array since otherQualifications field doesn't exist in schema
+  // Only using the main qualifications field from the schema
+  const otherQualifications: any[] = [];
   
   const languages = record.languages ? record.languages.split(', ') : [];
 
@@ -124,32 +119,79 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     return total;
   }, 0);
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     const element = document.getElementById('cv-content');
-    if (element) {
+    if (!element) {
+      console.error('CV content element not found');
+      return;
+    }
+
+    try {
       // Load html2pdf script if not already loaded
       if (!(window as any).html2pdf) {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = () => {
-          generatePDF(element);
-        };
-        document.head.appendChild(script);
-      } else {
-        generatePDF(element);
+        await loadHtml2PdfScript();
       }
+      
+      if ((window as any).html2pdf) {
+        await generatePDF(element);
+      } else {
+        console.error('Failed to load html2pdf library');
+        // Fallback to browser print dialog
+        handlePrint();
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // Fallback to browser print dialog
+      handlePrint();
     }
   };
 
-  const generatePDF = (element: HTMLElement) => {
-    const opt = {
-      margin: 0.5,
-      filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    (window as any).html2pdf().set(opt).from(element).save();
+  const loadHtml2PdfScript = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      // Check if script is already loading
+      const existingScript = document.querySelector('script[src*="html2pdf"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve());
+        existingScript.addEventListener('error', () => reject(new Error('Failed to load html2pdf')));
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      script.crossOrigin = 'anonymous';
+      script.onload = () => {
+        console.log('html2pdf library loaded successfully');
+        resolve();
+      };
+      script.onerror = () => {
+        console.error('Failed to load html2pdf library');
+        reject(new Error('Failed to load html2pdf'));
+      };
+      document.head.appendChild(script);
+    });
+  };
+
+  const generatePDF = async (element: HTMLElement): Promise<void> => {
+    try {
+      const opt = {
+        margin: 0.5,
+        filename: `CV_${record.name}_${record.surname || ''}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff'
+        },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      
+      await (window as any).html2pdf().set(opt).from(element).save();
+      console.log('PDF generated successfully');
+    } catch (error) {
+      console.error('Error in generatePDF:', error);
+      throw error;
+    }
   };
 
   const handlePrint = () => {
@@ -184,7 +226,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" aria-describedby="cv-template-description">
+        <VisuallyHidden>
+          <DialogHeader>
+            <DialogTitle>CV Template for {record.name} {record.surname || ''}</DialogTitle>
+          </DialogHeader>
+        </VisuallyHidden>
+        
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
@@ -204,6 +252,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             <Printer className="w-4 h-4 mr-1" />
             Print
           </Button>
+        </div>
+        
+        <div id="cv-template-description" className="sr-only">
+          CV template displaying professional information for {record.name} {record.surname || ''}
         </div>
         
         <div id="cv-content" className="bg-white">
