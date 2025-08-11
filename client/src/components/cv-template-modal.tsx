@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -103,22 +103,12 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   })();
   
   const otherQualifications = (() => {
-    if (!record.qualifications || record.qualifications === '{}' || record.qualifications === '') return [];
-    
-    // Check if it's a plain text string (not JSON)
-    if (typeof record.qualifications === 'string' && !record.qualifications.startsWith('[') && !record.qualifications.startsWith('{')) {
-      // Split by comma and clean up
-      return record.qualifications.split(',').map(q => q.trim()).filter(q => q.length > 0);
-    }
-    
+    if (!record.otherQualifications) return [];
     try {
-      const parsed = JSON.parse(record.qualifications);
-      // Handle empty object or null
-      if (!parsed || Object.keys(parsed).length === 0) return [];
-      return Array.isArray(parsed) ? parsed : [parsed];
+      return JSON.parse(record.otherQualifications);
     } catch (error) {
-      // If JSON parsing fails, treat as plain text
-      return record.qualifications.split(',').map(q => q.trim()).filter(q => q.length > 0);
+      console.error("Error parsing other qualifications:", error);
+      return [];
     }
   })();
   
@@ -152,98 +142,14 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generatePDF = (element: HTMLElement) => {
-    // Ensure element is positioned at top before capturing
-    element.scrollTop = 0;
-    
-    // Add temporary PDF optimization styles to the original element
-    const tempStyle = document.createElement('style');
-    tempStyle.id = 'pdf-temp-styles';
-    tempStyle.textContent = `
-      #cv-content {
-        font-size: 11px !important;
-        line-height: 1.3 !important;
-        position: relative !important;
-        top: 0 !important;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-      }
-      #cv-content .space-y-4 > * + * {
-        margin-top: 0.75rem !important;
-      }
-      #cv-content .space-y-2 > * + * {
-        margin-top: 0.5rem !important;
-      }
-      #cv-content .mb-6 {
-        margin-bottom: 1rem !important;
-      }
-      #cv-content .mb-4 {
-        margin-bottom: 0.75rem !important;
-      }
-      #cv-content .mb-3 {
-        margin-bottom: 0.5rem !important;
-      }
-      #cv-content .py-4 {
-        padding-top: 0.75rem !important;
-        padding-bottom: 0.75rem !important;
-      }
-      #cv-content .p-8 {
-        padding: 1.25rem !important;
-      }
-      #cv-content .text-lg {
-        font-size: 12px !important;
-      }
-      #cv-content .text-xl {
-        font-size: 14px !important;
-      }
-      #cv-content .h-16 {
-        height: 2.5rem !important;
-      }
-      #cv-content .h-8 {
-        height: 1.5rem !important;
-      }
-    `;
-    document.head.appendChild(tempStyle);
-    
     const opt = {
-      margin: [0.1, 0.1, 0.1, 0.1],
+      margin: 0.5,
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-      image: { type: 'jpeg', quality: 0.9 },
-      html2canvas: { 
-        scale: 1.2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        x: 0,
-        y: 0
-      },
-      jsPDF: { 
-        unit: 'in', 
-        format: 'a4', 
-        orientation: 'portrait',
-        putOnlyUsedFonts: true,
-        floatPrecision: 16
-      }
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    
-    (window as any).html2pdf().set(opt).from(element).save().then(() => {
-      // Clean up temporary styles
-      const tempStyleElement = document.getElementById('pdf-temp-styles');
-      if (tempStyleElement) {
-        tempStyleElement.remove();
-      }
-    }).catch((error: any) => {
-      console.error('PDF generation failed:', error);
-      // Clean up temporary styles on error too
-      const tempStyleElement = document.getElementById('pdf-temp-styles');
-      if (tempStyleElement) {
-        tempStyleElement.remove();
-      }
-    });
+    (window as any).html2pdf().set(opt).from(element).save();
   };
 
   const handlePrint = () => {
@@ -278,16 +184,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
-      <DialogContent 
-        className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" 
-        onOpenAutoFocus={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <DialogHeader className="sr-only">
-          <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
-          <DialogDescription>Professional CV template displaying candidate information</DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
@@ -309,7 +206,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           </Button>
         </div>
         
-        <div id="cv-content" className="bg-white" style={{ pageBreakAfter: 'avoid' }}>
+        <div id="cv-content" className="bg-white">
           {/* Header with Alteram Logo and Branding */}
           <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
             <div className="flex items-center justify-between">
@@ -338,7 +235,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-4 font-sans relative">
+          <div className="p-8 space-y-6 font-sans relative">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -554,15 +451,21 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     </tr>
                   </thead>
                   <tbody>
-                    {otherQualifications.length > 0 ? (
-                      otherQualifications.map((qual: string, index: number) => (
-                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                          <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual}</td>
-                          <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
-                          <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
-                        </tr>
-                      ))
-                    ) : (
+                    {record.qualifications ? (
+                      <tr className="hover:bg-gray-50 transition-colors">
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
+                      </tr>
+                    ) : null}
+                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
+                      </tr>
+                    ))}
+                    {!record.qualifications && otherQualifications.length === 0 && (
                       <tr>
                         <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
                       </tr>
@@ -575,10 +478,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-bold mb-3 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
-                <div key={index} className="mb-4">
+                <div key={index} className="mb-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">
                     {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
                     {(exp.roleTitle || exp.title) && (
