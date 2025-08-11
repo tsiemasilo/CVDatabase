@@ -1017,7 +1017,6 @@ export default function CaptureRecord() {
                     pattern="[0-9]{13}"
                     inputMode="numeric"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Must be exactly 13 digits</p>
                   {errors.idPassportNumber && <p className="text-red-500 text-sm mt-1">{errors.idPassportNumber}</p>}
                 </div>
                 <div>
