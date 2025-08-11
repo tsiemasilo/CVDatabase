@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Plus, Edit, Trash2, Users, Shield, UserCheck, Search, Eye, Settings, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -264,6 +264,9 @@ export default function AccessUserProfiles() {
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>Add New User Profile</DialogTitle>
+                <DialogDescription>
+                  Create a new user account by filling out the required information below.
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">

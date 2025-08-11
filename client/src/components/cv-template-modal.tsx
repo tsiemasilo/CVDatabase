@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
@@ -241,6 +241,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         <VisuallyHidden>
           <DialogHeader>
             <DialogTitle>CV Template for {record.name} {record.surname || ''}</DialogTitle>
+            <DialogDescription>
+              Professional CV template displaying candidate information including work experience, qualifications, and contact details for {record.name} {record.surname || ''}
+            </DialogDescription>
           </DialogHeader>
         </VisuallyHidden>
         

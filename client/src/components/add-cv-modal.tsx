@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertCVRecordSchema, InsertCVRecord } from "@shared/schema";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -128,7 +128,12 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pb-4 border-b border-gray-200">
-          <DialogTitle className="text-lg font-semibold text-gray-900">Add New CV</DialogTitle>
+          <div>
+            <DialogTitle className="text-lg font-semibold text-gray-900">Add New CV</DialogTitle>
+            <DialogDescription className="text-sm text-gray-600 mt-1">
+              Fill out the form below to add a new CV record to the system.
+            </DialogDescription>
+          </div>
           <Button
             variant="ghost"
             size="sm"
