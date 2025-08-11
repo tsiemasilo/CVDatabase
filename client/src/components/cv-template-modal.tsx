@@ -223,7 +223,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generateProgrammaticPDF = () => {
-    const { jsPDF } = (window as any).jsPDF;
+    const jsPDF = (window as any).jsPDF;
     const doc = new jsPDF('p', 'mm', 'a4');
     
     // A4 dimensions: 210mm x 297mm
