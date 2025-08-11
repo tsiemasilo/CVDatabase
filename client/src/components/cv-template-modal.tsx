@@ -132,11 +132,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
         script.onload = () => {
-          openInNewTabAndDownload(element);
+          generatePDF(element);
         };
         document.head.appendChild(script);
       } else {
-        openInNewTabAndDownload(element);
+        generatePDF(element);
       }
     }
   };
@@ -221,65 +221,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         tempStyleElement.remove();
       }
     });
-  };
-
-  const openInNewTabAndDownload = (element: HTMLElement) => {
-    // Open CV in a new tab first
-    const newWindow = window.open('', '_blank');
-    if (newWindow) {
-      newWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>CV - ${record.name} ${record.surname || ''}</title>
-          <script src="https://cdn.tailwindcss.com"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-          <style>
-            body { margin: 0; font-family: sans-serif; }
-            .cv-content { max-width: 8.5in; margin: 0 auto; background: white; }
-            @media print {
-              body { margin: 0; }
-              .no-print { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="p-4">
-            <button id="download-btn" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded mb-4 no-print">
-              Download PDF
-            </button>
-            <div class="cv-content">
-              ${element.innerHTML}
-            </div>
-          </div>
-          <script>
-            document.getElementById('download-btn').addEventListener('click', function() {
-              const cvElement = document.querySelector('.cv-content');
-              const opt = {
-                margin: [0.2, 0.2, 0.2, 0.2],
-                filename: 'CV_${record.name}_${record.surname || ''}.pdf',
-                image: { type: 'jpeg', quality: 0.9 },
-                html2canvas: { 
-                  scale: 1.2,
-                  useCORS: true,
-                  allowTaint: true,
-                  backgroundColor: '#ffffff',
-                  logging: false
-                },
-                jsPDF: { 
-                  unit: 'in', 
-                  format: 'a4', 
-                  orientation: 'portrait'
-                }
-              };
-              html2pdf().set(opt).from(cvElement).save();
-            });
-          </script>
-        </body>
-        </html>
-      `);
-      newWindow.document.close();
-    }
   };
 
   const handlePrint = () => {
@@ -406,16 +347,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
                   <span className="font-bold" style={{ color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
                 </p>
-                {record.experienceInSimilarRole && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Experience in Similar Role:</span> {record.experienceInSimilarRole} years
-                  </p>
-                )}
-                {record.experienceWithITSMTools && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Experience with ITSM Tools:</span> {record.experienceWithITSMTools} years
-                  </p>
-                )}
                 
                 {record.certificateTypes && (
                   <div className="mt-4">
@@ -512,31 +443,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   </div>
                 )}
               </div>
-
-              {/* Contact Information */}
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold mb-3 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Contact Information</h2>
-                {record.email && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Email:</span> {record.email}
-                  </p>
-                )}
-                {record.phone && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Phone:</span> {record.phone}
-                  </p>
-                )}
-              </div>
-
-              {/* Languages */}
-              {languages.length > 0 && (
-                <div className="space-y-2">
-                  <h2 className="text-xl font-bold mb-3 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Languages</h2>
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    {languages.join(', ')}
-                  </p>
-                </div>
-              )}
 
               {/* Experience Table */}
               <div className="mt-8 mb-8">
