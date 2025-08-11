@@ -678,17 +678,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               <div className="relative z-10 space-y-6 flex-grow">
-                {/* Page 2 Header */}
-                <div className="text-center border-b-2 border-orange-400 pb-4">
-                  <h1 className="text-2xl font-bold" style={{ color: '#000053' }}>
-                    {record.name} {record.surname || ''} - Skills & Competencies
-                  </h1>
-                  <p className="text-lg text-gray-600 mt-2">Page 2 of 2</p>
-                </div>
-
                 {/* Skills Section */}
                 {record.skills && (
-                  <div className="mt-8">
+                  <div>
                     <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
                       Professional Skills
                     </h2>
