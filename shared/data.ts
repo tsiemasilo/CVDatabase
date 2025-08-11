@@ -15,11 +15,11 @@ export interface Role {
 
 export const DEPARTMENTS: Department[] = [
   { id: 1, name: "SAP", description: "SAP systems implementation, support, and management" },
-  { id: 2, name: "Information and Communications Technology", description: "Information and Communications Technology services" },
+  { id: 2, name: "ICT", description: "Information and Communications Technology services" },
   { id: 3, name: "Human Resources", description: "Human Resources and people management" },
-  { id: 4, name: "Project Management", description: "Project planning, execution, and delivery" },
+  { id: 4, name: "PROJECT MANAGEMENT", description: "Project planning, execution, and delivery" },
   { id: 5, name: "Service Desk", description: "IT support and helpdesk services" },
-  { id: 6, name: "Development", description: "Software development and programming services" }
+  { id: 6, name: "DEVELOPMENT", description: "Software development and programming services" }
 ];
 
 // Export interfaces for use in other files
@@ -77,7 +77,10 @@ export const DISCIPLINES: Discipline[] = [
   { id: 13, departmentId: 4, name: "Portfolio Management", description: "Multi-project oversight and governance" },
   { id: 14, departmentId: 5, name: "Level 1 Support", description: "First-line technical support and troubleshooting" },
   { id: 15, departmentId: 5, name: "Level 2 Support", description: "Advanced technical support and escalation" },
-  { id: 16, departmentId: 5, name: "Service Management", description: "ITIL service management and processes" }
+  { id: 16, departmentId: 5, name: "Service Management", description: "ITIL service management and processes" },
+  { id: 17, departmentId: 6, name: "Web Development", description: "Frontend and backend web applications" },
+  { id: 18, departmentId: 6, name: "Mobile Development", description: "iOS and Android applications" },
+  { id: 19, departmentId: 6, name: "Software Engineering", description: "Enterprise software development and architecture" }
 ];
 
 export const DOMAINS: Domain[] = [
@@ -96,6 +99,10 @@ export const DOMAINS: Domain[] = [
   { id: 13, disciplineId: 5, name: "Web Development", description: "Frontend and backend web applications" },
   { id: 14, disciplineId: 5, name: "Mobile Development", description: "iOS and Android applications" },
   { id: 15, disciplineId: 5, name: "Enterprise Applications", description: "Large-scale business applications" },
+  { id: 33, disciplineId: 17, name: "Frontend Development", description: "User interface and experience development" },
+  { id: 34, disciplineId: 17, name: "Backend Development", description: "Server-side application development" },
+  { id: 35, disciplineId: 18, name: "Mobile App Development", description: "iOS and Android application development" },
+  { id: 36, disciplineId: 19, name: "System Architecture", description: "Enterprise software architecture and design" },
   { id: 16, disciplineId: 6, name: "Information Security", description: "Data protection and security policies" },
   { id: 17, disciplineId: 6, name: "Network Security", description: "Network protection and firewalls" },
   { id: 18, disciplineId: 6, name: "Identity Management", description: "Access control and authentication" },
