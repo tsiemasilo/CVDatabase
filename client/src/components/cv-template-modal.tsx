@@ -761,7 +761,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                           {uncategorizedSkills.length > 0 && (
                             <div className="border-l-4 border-orange-400 pl-6">
                               <h3 className="text-lg font-semibold mb-3" style={{ color: '#000053' }}>
-                                Additional Skills
+                                Other Skills
                               </h3>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 {uncategorizedSkills.map((skill, index) => (
@@ -773,18 +773,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                               </div>
                             </div>
                           )}
-
-                          {/* Skills Summary */}
-                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                            <h3 className="text-lg font-semibold mb-2" style={{ color: '#000053' }}>
-                              Skills Summary
-                            </h3>
-                            <p className="text-gray-700">
-                              <span className="font-medium">{skillsList.length}</span> total skills across{' '}
-                              <span className="font-medium">{Object.keys(categorizedSkills).length + (uncategorizedSkills.length > 0 ? 1 : 0)}</span> categories,
-                              demonstrating a well-rounded professional skill set.
-                            </p>
-                          </div>
                         </div>
                       );
                     })()}
