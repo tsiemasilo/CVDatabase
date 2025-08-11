@@ -793,12 +793,12 @@ export default function CaptureRecord() {
     if (!formData.gender) newErrors.gender = "Gender is required";
     if (!formData.yearsOfExperience.trim()) newErrors.yearsOfExperience = "Years of experience is required";
     if (!formData.contactNumber.trim()) newErrors.contactNumber = "Contact number is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
+    // Email is now optional - only validate format if provided
     if (!formData.position.trim()) newErrors.position = "Position/Role is required";
     if (!formData.roleTitle.trim()) newErrors.roleTitle = "Role title is required";
     if (!formData.department) newErrors.department = "Department is required";
     if (!formData.experienceInSimilarRole.trim()) newErrors.experienceInSimilarRole = "Experience in similar role is required";
-    if (!formData.experienceWithITSMTools.trim()) newErrors.experienceWithITSMTools = "Experience with ITSM tools is required";
+    // Experience with ITSM tools is now optional
     
     // Validate work experiences
     (formData.workExperiences || []).forEach((exp, index) => {
@@ -831,8 +831,8 @@ export default function CaptureRecord() {
       newErrors.experienceInSimilarRole = "Please enter a valid number";
     }
     
-    // Validate experience with ITSM tools is a number
-    if (formData.experienceWithITSMTools && isNaN(Number(formData.experienceWithITSMTools))) {
+    // Validate experience with ITSM tools is a number (only if provided)
+    if (formData.experienceWithITSMTools && formData.experienceWithITSMTools.trim() && isNaN(Number(formData.experienceWithITSMTools))) {
       newErrors.experienceWithITSMTools = "Please enter a valid number";
     }
 
@@ -1178,7 +1178,7 @@ export default function CaptureRecord() {
                   {errors.experienceInSimilarRole && <p className="text-red-500 text-sm mt-1">{errors.experienceInSimilarRole}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="experienceWithITSMTools">Years with ITSM Tools *</Label>
+                  <Label htmlFor="experienceWithITSMTools">Years with ITSM Tools</Label>
                   <Input
                     id="experienceWithITSMTools"
                     type="number"
@@ -1378,7 +1378,7 @@ export default function CaptureRecord() {
                   {errors.contactNumber && <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
