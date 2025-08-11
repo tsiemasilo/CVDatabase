@@ -785,7 +785,11 @@ export default function CaptureRecord() {
 
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
     if (!formData.surname.trim()) newErrors.surname = "Surname is required";
-    if (!formData.idPassportNumber.trim()) newErrors.idPassportNumber = "ID/Passport number is required";
+    if (!formData.idPassportNumber.trim()) {
+      newErrors.idPassportNumber = "ID/Passport number is required";
+    } else if (!/^\d{13}$/.test(formData.idPassportNumber)) {
+      newErrors.idPassportNumber = "ID/Passport number must be exactly 13 digits";
+    }
     if (!formData.gender) newErrors.gender = "Gender is required";
     if (!formData.yearsOfExperience.trim()) newErrors.yearsOfExperience = "Years of experience is required";
     if (!formData.contactNumber.trim()) newErrors.contactNumber = "Contact number is required";
@@ -1002,9 +1006,18 @@ export default function CaptureRecord() {
                   <Input
                     id="idPassportNumber"
                     value={formData.idPassportNumber}
-                    onChange={(e) => handleInputChange("idPassportNumber", e.target.value)}
+                    onChange={(e) => {
+                      // Only allow digits and limit to 13 characters
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 13);
+                      handleInputChange("idPassportNumber", value);
+                    }}
                     className={errors.idPassportNumber ? "border-red-500" : ""}
+                    placeholder="Enter 13-digit ID number"
+                    maxLength={13}
+                    pattern="[0-9]{13}"
+                    inputMode="numeric"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Must be exactly 13 digits</p>
                   {errors.idPassportNumber && <p className="text-red-500 text-sm mt-1">{errors.idPassportNumber}</p>}
                 </div>
                 <div>
