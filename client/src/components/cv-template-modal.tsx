@@ -746,7 +746,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                               <h3 className="text-lg font-semibold mb-3" style={{ color: '#000053' }}>
                                 {category}
                               </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div className="space-y-2">
                                 {skills.map((skill, index) => (
                                   <div key={index} className="flex items-center space-x-2">
                                     <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
@@ -757,13 +757,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                             </div>
                           ))}
 
-                          {/* Uncategorized Skills */}
+                          {/* Uncategorized Skills - without heading */}
                           {uncategorizedSkills.length > 0 && (
                             <div className="border-l-4 border-orange-400 pl-6">
-                              <h3 className="text-lg font-semibold mb-3" style={{ color: '#000053' }}>
-                                Other Skills
-                              </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div className="space-y-2">
                                 {uncategorizedSkills.map((skill, index) => (
                                   <div key={index} className="flex items-center space-x-2">
                                     <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
