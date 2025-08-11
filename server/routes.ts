@@ -206,8 +206,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(records);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch CV records" });
+    } catch (error: any) {
+      console.error("Error fetching CV records:", error);
+      res.status(500).json({ message: "Failed to fetch CV records", error: error.message });
     }
   });
 

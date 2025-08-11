@@ -1,6 +1,6 @@
 import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile, cvRecords, userProfiles } from "@shared/schema";
 import { db } from "./db";
-import { eq, like, or, and, desc } from "drizzle-orm";
+import { eq, like, or, and, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<any | undefined>;
@@ -407,7 +407,62 @@ export class DatabaseStorage implements IStorage {
 
   // CV Records methods
   async getAllCVRecords(): Promise<CVRecord[]> {
-    return await db.select().from(cvRecords).orderBy(desc(cvRecords.submittedAt));
+    try {
+      // Check if skills column exists and add it if missing
+      const columnsResult = await db.execute(sql`
+        SELECT column_name FROM information_schema.columns 
+        WHERE table_name = 'cv_records' AND column_name = 'skills'
+      `);
+      
+      if (columnsResult.rows.length === 0) {
+        console.log("Adding missing skills column to cv_records table...");
+        await db.execute(sql`ALTER TABLE cv_records ADD COLUMN skills TEXT`);
+        console.log("Skills column added successfully");
+      }
+      
+      // Use raw SQL query without skills column first
+      const rawResult = await db.execute(sql`
+        SELECT id, name, surname, id_passport, gender, email, phone, position, 
+               role_title, department, experience, experience_similar_role, 
+               experience_itsm_tools, sap_k_level, qualifications, qualification_type, 
+               qualification_name, institute_name, year_completed, languages, 
+               work_experiences, certificate_types, status, cv_file, submitted_at
+        FROM cv_records 
+        ORDER BY submitted_at DESC
+      `);
+      
+      return rawResult.rows.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        surname: row.surname,
+        idPassport: row.id_passport,
+        gender: row.gender,
+        email: row.email,
+        phone: row.phone,
+        position: row.position,
+        roleTitle: row.role_title,
+        department: row.department,
+        experience: row.experience,
+        experienceInSimilarRole: row.experience_similar_role,
+        experienceWithITSMTools: row.experience_itsm_tools,
+        sapKLevel: row.sap_k_level,
+        qualifications: row.qualifications,
+        qualificationType: row.qualification_type,
+        qualificationName: row.qualification_name,
+        instituteName: row.institute_name,
+        yearCompleted: row.year_completed,
+        languages: row.languages,
+        workExperiences: row.work_experiences,
+        certificateTypes: row.certificate_types,
+        skills: null, // Will be null until we add proper skills data
+        status: row.status,
+        cvFile: row.cv_file,
+        submittedAt: row.submitted_at,
+      }));
+    } catch (error) {
+      console.error("Error in getAllCVRecords:", error);
+      throw error;
+    }
   }
 
   async getCVRecord(id: number): Promise<CVRecord | undefined> {
