@@ -269,7 +269,27 @@ export const ROLES: Role[] = [
   { id: 84, categoryId: 22, name: "Desktop Support Technician", description: "End-user hardware and software support", certificate: "Desktop Support Certification" },
   { id: 85, categoryId: 23, name: "IT Service Manager", description: "ITIL service management and continuous improvement", certificate: "ITIL Expert" },
   { id: 86, categoryId: 23, name: "SLA Management Coordinator", description: "Service level agreement monitoring and reporting", certificate: "SLA Management Certification" },
-  { id: 87, categoryId: 23, name: "IT Service Delivery Manager", description: "Service delivery oversight and vendor management", certificate: "Service Delivery Management Certification" }
+  { id: 87, categoryId: 23, name: "IT Service Delivery Manager", description: "Service delivery oversight and vendor management", certificate: "Service Delivery Management Certification" },
+  
+  // Additional ICT Roles to match CV record data
+  { id: 88, categoryId: 10, name: "Network Administrator", description: "Enterprise network management and administration", certificate: "CCNA Certification" },
+  { id: 89, categoryId: 10, name: "Senior Network Admin", description: "Senior-level network infrastructure management", certificate: "CCNP Certification" },
+  { id: 90, categoryId: 10, name: "IT Infrastructure Manager", description: "IT infrastructure planning and management", certificate: "IT Infrastructure Management Certification" },
+  { id: 91, categoryId: 10, name: "ICT Operations Manager", description: "ICT operations oversight and strategic planning", certificate: "IT Operations Management Certification" },
+  
+  // Additional Development Roles to match CV record data
+  { id: 92, categoryId: 11, name: "Junior Developer", description: "Entry-level software development position", certificate: "Programming Fundamentals Certification" },
+  { id: 93, categoryId: 11, name: "Junior Database Developer", description: "Entry-level database development and administration", certificate: "Database Development Certification" },
+  { id: 94, categoryId: 11, name: "Junior Web Developer", description: "Entry-level web application development", certificate: "Web Development Certification" },
+  { id: 95, categoryId: 11, name: "Software Developer", description: "Software application development and programming", certificate: "Software Development Professional Certification" },
+  { id: 96, categoryId: 11, name: "Full Stack Developer", description: "Full-stack web application development", certificate: "Full Stack Development Certification" },
+  
+  // Additional Project Management Roles to match CV record data
+  { id: 97, categoryId: 18, name: "Senior Project Manager", description: "Senior-level project management and leadership", certificate: "Advanced PMP Certification" },
+  
+  // Additional SAP Roles to match CV record data
+  { id: 98, categoryId: 5, name: "SAP ABAP Developer", description: "SAP ABAP programming and development", certificate: "SAP ABAP Developer Certification" },
+  { id: 99, categoryId: 5, name: "SAP Technical Consultant", description: "SAP technical consulting and implementation", certificate: "SAP Technical Consultant Certification" }
 ];
 
 export const LANGUAGES = [
