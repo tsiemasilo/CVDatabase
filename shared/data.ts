@@ -162,7 +162,13 @@ export const CATEGORIES: Category[] = [
   // Service Desk Categories (domains 34-38)
   { id: 21, domainId: 34, name: "Service Desk Operations and Support", description: "First-line support and incident management" },
   { id: 22, domainId: 36, name: "Technical Support and Troubleshooting", description: "Advanced troubleshooting and application support" },
-  { id: 23, domainId: 38, name: "IT Service Management and SLA", description: "ITIL service management and SLA monitoring" }
+  { id: 23, domainId: 38, name: "IT Service Management and SLA", description: "ITIL service management and SLA monitoring" },
+  
+  // DEVELOPMENT Department Categories (domains 33-36 from DEVELOPMENT disciplines)
+  { id: 24, domainId: 33, name: "Frontend Development", description: "User interface and experience development" },
+  { id: 25, domainId: 34, name: "Backend Development", description: "Server-side application development" },
+  { id: 26, domainId: 35, name: "Mobile Development", description: "Mobile application development" },
+  { id: 27, domainId: 36, name: "Software Engineering", description: "Enterprise software architecture and engineering" }
 ];
 
 export const ROLES: Role[] = [
@@ -278,11 +284,11 @@ export const ROLES: Role[] = [
   { id: 91, categoryId: 10, name: "ICT Operations Manager", description: "ICT operations oversight and strategic planning", certificate: "IT Operations Management Certification" },
   
   // Additional Development Roles to match CV record data
-  { id: 92, categoryId: 11, name: "Junior Developer", description: "Entry-level software development position", certificate: "Programming Fundamentals Certification" },
-  { id: 93, categoryId: 11, name: "Junior Database Developer", description: "Entry-level database development and administration", certificate: "Database Development Certification" },
-  { id: 94, categoryId: 11, name: "Junior Web Developer", description: "Entry-level web application development", certificate: "Web Development Certification" },
-  { id: 95, categoryId: 11, name: "Software Developer", description: "Software application development and programming", certificate: "Software Development Professional Certification" },
-  { id: 96, categoryId: 11, name: "Full Stack Developer", description: "Full-stack web application development", certificate: "Full Stack Development Certification" },
+  { id: 92, categoryId: 24, name: "Junior Developer", description: "Entry-level software development position", certificate: "Programming Fundamentals Certification" },
+  { id: 93, categoryId: 25, name: "Junior Database Developer", description: "Entry-level database development and administration", certificate: "Database Development Certification" },
+  { id: 94, categoryId: 24, name: "Junior Web Developer", description: "Entry-level web application development", certificate: "Web Development Certification" },
+  { id: 95, categoryId: 27, name: "Software Developer", description: "Software application development and programming", certificate: "Software Development Professional Certification" },
+  { id: 96, categoryId: 24, name: "Full Stack Developer", description: "Full-stack web application development", certificate: "Full Stack Development Certification" },
   
   // Additional Project Management Roles to match CV record data
   { id: 97, categoryId: 18, name: "Senior Project Manager", description: "Senior-level project management and leadership", certificate: "Advanced PMP Certification" },
