@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,18 @@ interface CVTemplateModalProps {
 
 export default function CVTemplateModal({ record, onClose }: CVTemplateModalProps) {
   if (!record) return null;
+
+  // Scroll to top when modal opens
+  useEffect(() => {
+    if (record) {
+      setTimeout(() => {
+        const dialogContent = document.querySelector('[role="dialog"]');
+        if (dialogContent) {
+          dialogContent.scrollTop = 0;
+        }
+      }, 100);
+    }
+  }, [record]);
 
   // Parse work experiences from the record with error handling
   const workExperiences = (() => {
@@ -103,12 +116,22 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   })();
   
   const otherQualifications = (() => {
-    if (!record.qualifications) return [];
+    if (!record.qualifications || record.qualifications === '{}' || record.qualifications === '') return [];
+    
+    // Check if it's a plain text string (not JSON)
+    if (typeof record.qualifications === 'string' && !record.qualifications.startsWith('[') && !record.qualifications.startsWith('{')) {
+      // Split by comma and clean up
+      return record.qualifications.split(',').map(q => q.trim()).filter(q => q.length > 0);
+    }
+    
     try {
-      return JSON.parse(record.qualifications);
+      const parsed = JSON.parse(record.qualifications);
+      // Handle empty object or null
+      if (!parsed || Object.keys(parsed).length === 0) return [];
+      return Array.isArray(parsed) ? parsed : [parsed];
     } catch (error) {
-      console.error("Error parsing qualifications:", error);
-      return [];
+      // If JSON parsing fails, treat as plain text
+      return record.qualifications.split(',').map(q => q.trim()).filter(q => q.length > 0);
     }
   })();
   
@@ -255,7 +278,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader className="sr-only">
           <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
           <DialogDescription>Professional CV template displaying candidate information</DialogDescription>
