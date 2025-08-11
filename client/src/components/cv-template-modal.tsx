@@ -226,14 +226,47 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generatePDF = (element: HTMLElement) => {
+    // Store current scroll positions
+    const dialogContent = document.querySelector('[role="dialog"] .max-w-4xl');
+    const originalScrollTop = dialogContent ? dialogContent.scrollTop : 0;
+    const originalWindowScrollY = window.scrollY;
+    
+    // Reset scroll positions before generating PDF
+    if (dialogContent) {
+      dialogContent.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
+    
+    // Force a layout recalculation
+    element.style.transform = 'translateZ(0)';
+    element.offsetHeight; // Trigger reflow
+    
     const opt = {
       margin: 0.5,
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { 
+        scale: 2,
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
+        useCORS: true,
+        allowTaint: false,
+        height: element.scrollHeight,
+        windowWidth: element.scrollWidth
+      },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    (window as any).html2pdf().set(opt).from(element).save();
+    
+    (window as any).html2pdf().set(opt).from(element).save().then(() => {
+      // Restore original scroll positions
+      if (dialogContent) {
+        dialogContent.scrollTop = originalScrollTop;
+      }
+      window.scrollTo(0, originalWindowScrollY);
+      element.style.transform = '';
+    });
   };
 
   const handlePrint = () => {
