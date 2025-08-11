@@ -27,14 +27,16 @@ git remote add origin https://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@github.co
 ### Step 4: Commit and Push
 ```bash
 git add .
-git commit -m "Complete CV Database application with PostgreSQL integration
+git commit -m "Fixed Dialog accessibility warnings for screen reader support
 
-✅ Role-based user experience optimization
-✅ Database integration with Neon PostgreSQL
-✅ Comprehensive CV management system  
-✅ Authentication and session management
-✅ Alteram Solutions branding
-✅ Ready for production deployment"
+✅ Added DialogDescription to CV Template Modal
+✅ Added DialogDescription to Add CV Modal
+✅ Added DialogDescription to Edit CV Record Modal  
+✅ Added DialogDescription to Add User Profile Modal
+✅ Improved screen reader accessibility compliance
+✅ Resolved Radix UI accessibility console warnings
+
+All dialog components now meet accessibility standards for screen reader users."
 
 git push -u origin main
 ```

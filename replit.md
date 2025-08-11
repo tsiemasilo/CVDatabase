@@ -59,6 +59,7 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 11, 2025: Fixed accessibility warnings for Dialog components - added missing DialogDescription elements to all modals (CV Template Modal, Add CV Modal, Edit CV Record Modal, Add User Profile Modal) to ensure proper screen reader support
 - August 6, 2025: Fixed duplicate surname issue in CV template - separated first names from surname in form submission to prevent surname appearing twice in CV display
 - August 6, 2025: Fixed success page loading indefinitely due to authentication issues - added proper error handling and fallback content display
 - August 6, 2025: Removed welcome toast notification from login process per user preference
