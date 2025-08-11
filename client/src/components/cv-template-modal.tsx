@@ -209,85 +209,253 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   }, 0);
 
   const handleDownloadPDF = () => {
-    const element = document.getElementById('cv-content');
-    if (element) {
-      // Load html2pdf script if not already loaded
-      if (!(window as any).html2pdf) {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = () => {
-          generatePDF(element);
-        };
-        document.head.appendChild(script);
-      } else {
-        generatePDF(element);
-      }
+    // Load jsPDF script if not already loaded
+    if (!(window as any).jsPDF) {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = () => {
+        generateProgrammaticPDF();
+      };
+      document.head.appendChild(script);
+    } else {
+      generateProgrammaticPDF();
     }
   };
 
-  const generatePDF = (element: HTMLElement) => {
-    // Store current scroll positions
-    const dialogContent = document.querySelector('[role="dialog"] .max-w-4xl');
-    const originalScrollTop = dialogContent ? dialogContent.scrollTop : 0;
-    const originalWindowScrollY = window.scrollY;
+  const generateProgrammaticPDF = () => {
+    const { jsPDF } = (window as any).jsPDF;
+    const doc = new jsPDF('p', 'mm', 'a4');
     
-    // Reset scroll positions before generating PDF
-    if (dialogContent) {
-      dialogContent.scrollTop = 0;
+    // A4 dimensions: 210mm x 297mm
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 15;
+    const contentWidth = pageWidth - (margin * 2);
+    
+    let currentY = margin;
+    
+    // Add Alteram branding header
+    doc.setFillColor(255, 165, 0); // Orange color
+    doc.rect(0, 0, pageWidth, 35, 'F');
+    
+    // Company info (white text on orange background)
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Alteram Solutions", margin, 15);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text("1144, 16th Road Randjespark Midrand", margin, 22);
+    doc.text("Postnet Suite 551, Private Bag X1, Melrose Arch, 2076", margin, 26);
+    doc.text("T: 010 900 4075 | F: 086 665 2021 | info@alteram.co.za | www.alteram.co.za", margin, 30);
+    
+    currentY = 45;
+    
+    // Reset text color to black for content
+    doc.setTextColor(0, 0, 0);
+    
+    // Personal Information
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("CURRICULUM VITAE", margin, currentY);
+    currentY += 10;
+    
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 83); // Dark blue color
+    doc.text("Name and Surname: ", margin, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${record.name} ${record.surname || ''}`, margin + 45, currentY);
+    currentY += 7;
+    
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 83);
+    doc.text("ID/Passport: ", margin, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text(record.idPassport || '', margin + 30, currentY);
+    currentY += 7;
+    
+    if (record.department) {
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(0, 0, 83);
+      doc.text("Department: ", margin, currentY);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(0, 0, 0);
+      doc.text(record.department, margin + 30, currentY);
+      currentY += 7;
     }
-    window.scrollTo(0, 0);
     
-    // Remove watermark temporarily for PDF generation to avoid rendering issues
-    const watermark = element.querySelector('.absolute.inset-0');
-    const originalDisplay = watermark ? (watermark as HTMLElement).style.display : '';
-    if (watermark) {
-      (watermark as HTMLElement).style.display = 'none';
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 83);
+    doc.text("Role: ", margin, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text(record.position || record.roleTitle || '', margin + 20, currentY);
+    currentY += 7;
+    
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 83);
+    doc.text("Years of Experience: ", margin, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${record.experience || 0} years`, margin + 45, currentY);
+    currentY += 12;
+    
+    // Experience Summary Table
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 83);
+    doc.text("Experience Summary", margin, currentY);
+    currentY += 8;
+    
+    // Table headers
+    const tableStartY = currentY;
+    const colWidths = [60, 60, 50]; // Position, Company, Duration
+    const rowHeight = 8;
+    
+    // Header background
+    doc.setFillColor(0, 0, 83);
+    doc.rect(margin, currentY, contentWidth, rowHeight, 'F');
+    
+    // Header text
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("Position", margin + 2, currentY + 5);
+    doc.text("Company", margin + colWidths[0] + 2, currentY + 5);
+    doc.text("Duration", margin + colWidths[0] + colWidths[1] + 2, currentY + 5);
+    currentY += rowHeight;
+    
+    // Table rows
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "normal");
+    
+    if (workExperiences.length > 0) {
+      workExperiences.forEach((exp: any, index: number) => {
+        // Alternate row background
+        if (index % 2 === 1) {
+          doc.setFillColor(245, 245, 245);
+          doc.rect(margin, currentY, contentWidth, rowHeight, 'F');
+        }
+        
+        // Row content
+        doc.text(exp.position || exp.role || '', margin + 2, currentY + 5);
+        doc.text(exp.companyName || exp.company || '', margin + colWidths[0] + 2, currentY + 5);
+        
+        // Format duration
+        let duration = '';
+        try {
+          if (exp.startDate) {
+            let startDate;
+            if (exp.startDate.includes('/')) {
+              const [month, year] = exp.startDate.split('/');
+              startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+            } else {
+              startDate = new Date(exp.startDate);
+            }
+            
+            if (!isNaN(startDate.getTime())) {
+              const startFormatted = startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+              
+              if (exp.isCurrentRole || !exp.endDate) {
+                duration = `${startFormatted} - Present`;
+              } else {
+                let endDate;
+                if (exp.endDate.includes('/')) {
+                  const [month, year] = exp.endDate.split('/');
+                  endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                } else {
+                  endDate = new Date(exp.endDate);
+                }
+                
+                if (!isNaN(endDate.getTime())) {
+                  const endFormatted = endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                  duration = `${startFormatted} - ${endFormatted}`;
+                }
+              }
+            }
+          }
+        } catch (error) {
+          // If parsing fails, leave duration empty
+        }
+        
+        doc.text(duration, margin + colWidths[0] + colWidths[1] + 2, currentY + 5);
+        currentY += rowHeight;
+      });
+    } else {
+      doc.setTextColor(128, 128, 128);
+      doc.text("No work experience recorded", margin + 2, currentY + 5);
+      currentY += rowHeight;
     }
     
-    // Force a layout recalculation
-    element.style.transform = 'translateZ(0)';
-    element.offsetHeight; // Trigger reflow
+    currentY += 8;
     
-    const opt = {
-      margin: [0.3, 0.2, 0.3, 0.4], // top, right, bottom, left - move content left and reduce margins
-      filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-      image: { type: 'jpeg', quality: 0.85 },
-      html2canvas: { 
-        scale: 1.2, // Further reduce scale for better content capture
-        scrollX: 0,
-        scrollY: 0,
-        x: 0,
-        y: 0,
-        useCORS: true,
-        allowTaint: false,
-        height: element.scrollHeight,
-        windowWidth: element.scrollWidth,
-        letterRendering: true,
-        logging: true,
-        backgroundColor: '#ffffff'
-      },
-      jsPDF: { 
-        unit: 'in', 
-        format: 'a4', 
-        orientation: 'portrait',
-        compress: true
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
+    // Qualifications Table
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 83);
+    doc.text("Qualifications", margin, currentY);
+    currentY += 8;
     
-    (window as any).html2pdf().set(opt).from(element).save().then(() => {
-      // Restore watermark
-      if (watermark) {
-        (watermark as HTMLElement).style.display = originalDisplay;
+    // Qualifications table headers
+    doc.setFillColor(0, 0, 83);
+    doc.rect(margin, currentY, contentWidth, rowHeight, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("Qualifications", margin + 2, currentY + 5);
+    doc.text("Institution", margin + 80, currentY + 5);
+    doc.text("Year Completed", margin + 130, currentY + 5);
+    currentY += rowHeight;
+    
+    // Qualifications rows
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "normal");
+    
+    let qualRowIndex = 0;
+    
+    // Main qualification
+    if (record.qualifications) {
+      if (qualRowIndex % 2 === 1) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(margin, currentY, contentWidth, rowHeight, 'F');
       }
       
-      // Restore original scroll positions
-      if (dialogContent) {
-        dialogContent.scrollTop = originalScrollTop;
-      }
-      window.scrollTo(0, originalWindowScrollY);
-      element.style.transform = '';
-    });
+      doc.text(record.qualifications.substring(0, 35), margin + 2, currentY + 5);
+      doc.text(record.instituteName || '-', margin + 80, currentY + 5);
+      doc.text(record.yearCompleted || '-', margin + 130, currentY + 5);
+      currentY += rowHeight;
+      qualRowIndex++;
+    }
+    
+    // Additional qualifications from JSON
+    if (qualifications.length > 0) {
+      qualifications.forEach((qual: any) => {
+        if (qualRowIndex % 2 === 1) {
+          doc.setFillColor(245, 245, 245);
+          doc.rect(margin, currentY, contentWidth, rowHeight, 'F');
+        }
+        
+        doc.text(qual.name || qual.type || '', margin + 2, currentY + 5);
+        doc.text('-', margin + 80, currentY + 5);
+        doc.text('-', margin + 130, currentY + 5);
+        currentY += rowHeight;
+        qualRowIndex++;
+      });
+    }
+    
+    if (!record.qualifications && qualifications.length === 0) {
+      doc.setTextColor(128, 128, 128);
+      doc.text("No qualifications recorded", margin + 2, currentY + 5);
+      currentY += rowHeight;
+    }
+    
+    // Save the PDF
+    doc.save(`CV_${record.name}_${record.surname || ''}.pdf`);
   };
 
   const handlePrint = () => {
