@@ -182,11 +182,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 794, // A4 width in pixels at 96 DPI
-          height: 1123, // A4 height in pixels at 96 DPI
           scrollX: 0,
           scrollY: 0,
-          dpi: 192, // Higher than default but not excessive
           letterRendering: true, // Better text rendering
           logging: false, // Reduce console noise
           removeContainer: true,
@@ -204,7 +201,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       };
       
       await (window as any).html2pdf().set(opt).from(element).save();
-      console.log('PDF generated successfully with high quality settings');
+      console.log('PDF generated successfully with optimized quality and proper sizing');
     } catch (error) {
       console.error('Error in generatePDF:', error);
       throw error;
