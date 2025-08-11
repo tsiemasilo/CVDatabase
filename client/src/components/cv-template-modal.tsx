@@ -142,87 +142,84 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generatePDF = (element: HTMLElement) => {
-    // Create a clone of the element with optimized styling for PDF
-    const clonedElement = element.cloneNode(true) as HTMLElement;
-    
-    // Add PDF-specific styling
-    const style = document.createElement('style');
-    style.textContent = `
-      .pdf-optimize {
+    // Add temporary PDF optimization styles to the original element
+    const tempStyle = document.createElement('style');
+    tempStyle.id = 'pdf-temp-styles';
+    tempStyle.textContent = `
+      #cv-content {
         font-size: 11px !important;
         line-height: 1.3 !important;
       }
-      .pdf-optimize .space-y-6 > * + * {
-        margin-top: 1rem !important;
-      }
-      .pdf-optimize .space-y-4 > * + * {
+      #cv-content .space-y-4 > * + * {
         margin-top: 0.75rem !important;
       }
-      .pdf-optimize .space-y-2 > * + * {
+      #cv-content .space-y-2 > * + * {
         margin-top: 0.5rem !important;
       }
-      .pdf-optimize .mb-8 {
-        margin-bottom: 1.5rem !important;
-      }
-      .pdf-optimize .mb-6 {
+      #cv-content .mb-6 {
         margin-bottom: 1rem !important;
       }
-      .pdf-optimize .mb-4 {
+      #cv-content .mb-4 {
         margin-bottom: 0.75rem !important;
       }
-      .pdf-optimize .py-4 {
+      #cv-content .mb-3 {
+        margin-bottom: 0.5rem !important;
+      }
+      #cv-content .py-4 {
         padding-top: 0.75rem !important;
         padding-bottom: 0.75rem !important;
       }
-      .pdf-optimize .p-8 {
-        padding: 1.5rem !important;
+      #cv-content .p-8 {
+        padding: 1.25rem !important;
       }
-      .pdf-optimize .pt-6 {
-        padding-top: 1rem !important;
-      }
-      .pdf-optimize .text-lg {
+      #cv-content .text-lg {
         font-size: 12px !important;
       }
-      .pdf-optimize .text-xl {
+      #cv-content .text-xl {
         font-size: 14px !important;
       }
-      .pdf-optimize .h-16 {
-        height: 3rem !important;
+      #cv-content .h-16 {
+        height: 2.5rem !important;
       }
-      .pdf-optimize .h-8 {
-        height: 2rem !important;
+      #cv-content .h-8 {
+        height: 1.5rem !important;
       }
     `;
-    clonedElement.appendChild(style);
-    clonedElement.classList.add('pdf-optimize');
-    
-    // Temporarily add to document
-    clonedElement.style.position = 'absolute';
-    clonedElement.style.left = '-9999px';
-    document.body.appendChild(clonedElement);
+    document.head.appendChild(tempStyle);
     
     const opt = {
-      margin: [0.3, 0.3, 0.3, 0.3],
+      margin: [0.2, 0.2, 0.2, 0.2],
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
+      image: { type: 'jpeg', quality: 0.9 },
       html2canvas: { 
-        scale: 1.5,
+        scale: 1.2,
         useCORS: true,
         allowTaint: true,
-        height: clonedElement.scrollHeight,
-        width: clonedElement.scrollWidth
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: element.scrollWidth,
+        height: element.scrollHeight
       },
       jsPDF: { 
         unit: 'in', 
         format: 'a4', 
-        orientation: 'portrait',
-        compress: true
+        orientation: 'portrait'
       }
     };
     
-    (window as any).html2pdf().set(opt).from(clonedElement).save().then(() => {
-      // Clean up
-      document.body.removeChild(clonedElement);
+    (window as any).html2pdf().set(opt).from(element).save().then(() => {
+      // Clean up temporary styles
+      const tempStyleElement = document.getElementById('pdf-temp-styles');
+      if (tempStyleElement) {
+        tempStyleElement.remove();
+      }
+    }).catch((error: any) => {
+      console.error('PDF generation failed:', error);
+      // Clean up temporary styles on error too
+      const tempStyleElement = document.getElementById('pdf-temp-styles');
+      if (tempStyleElement) {
+        tempStyleElement.remove();
+      }
     });
   };
 
