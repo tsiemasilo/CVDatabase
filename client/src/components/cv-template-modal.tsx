@@ -113,6 +113,12 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           return [];
         }
         
+        // If it's just a plain text qualification (not JSON), return empty array
+        // since the main qualification will be displayed separately
+        if (!trimmed.startsWith('[') && !trimmed.startsWith('{')) {
+          return [];
+        }
+        
         // Handle PostgreSQL array format like work experiences
         if (trimmed.startsWith('{') && trimmed.endsWith('}') && !trimmed.startsWith('{[')) {
           const arrayContent = trimmed.slice(1, -1);
@@ -210,7 +216,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   const handleDownloadPDF = () => {
     // Load jsPDF script if not already loaded
-    if (!(window as any).jsPDF) {
+    if (!(window as any).jspdf) {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
       script.onload = () => {
@@ -223,7 +229,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generateProgrammaticPDF = () => {
-    const jsPDF = (window as any).jsPDF;
+    const { jsPDF } = (window as any).jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     
     // A4 dimensions: 210mm x 297mm
