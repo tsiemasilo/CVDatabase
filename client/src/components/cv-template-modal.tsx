@@ -679,15 +679,21 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               <div className="relative z-10 space-y-6 flex-grow">
                 {/* Skills Section */}
-                {record.skills && (
-                  <div>
-                    <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
-                      Professional Skills
-                    </h2>
-                    {(() => {
-                      // Parse and organize skills
-                      const skillsText = record.skills.trim();
-                      if (!skillsText) return <p className="text-gray-500 italic">No skills recorded</p>;
+                <div>
+                  <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
+                    Professional Skills
+                  </h2>
+                  {(() => {
+                    // Parse and organize skills
+                    const skillsText = record.skills ? record.skills.trim() : '';
+                    if (!skillsText) return (
+                      <div className="text-center py-12">
+                        <p className="text-gray-500 italic text-lg mb-4">No skills have been added to this CV yet</p>
+                        <p className="text-gray-400 text-sm">
+                          Skills can be added when editing the CV record to showcase professional competencies and expertise
+                        </p>
+                      </div>
+                    );
 
                       // Split skills by common separators and clean them up
                       const skillsList = skillsText
@@ -782,10 +788,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                         </div>
                       );
                     })()}
-                  </div>
-                )}
-
-
+                </div>
 
               </div>
 
