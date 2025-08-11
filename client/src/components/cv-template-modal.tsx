@@ -237,6 +237,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
     window.scrollTo(0, 0);
     
+    // Remove watermark temporarily for PDF generation to avoid rendering issues
+    const watermark = element.querySelector('.absolute.inset-0');
+    const originalDisplay = watermark ? (watermark as HTMLElement).style.display : '';
+    if (watermark) {
+      (watermark as HTMLElement).style.display = 'none';
+    }
+    
     // Force a layout recalculation
     element.style.transform = 'translateZ(0)';
     element.offsetHeight; // Trigger reflow
@@ -246,7 +253,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
       image: { type: 'jpeg', quality: 0.85 },
       html2canvas: { 
-        scale: 1.5, // Reduce scale to fit better on page
+        scale: 1.2, // Further reduce scale for better content capture
         scrollX: 0,
         scrollY: 0,
         x: 0,
@@ -255,7 +262,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         allowTaint: false,
         height: element.scrollHeight,
         windowWidth: element.scrollWidth,
-        letterRendering: true
+        letterRendering: true,
+        logging: true,
+        backgroundColor: '#ffffff'
       },
       jsPDF: { 
         unit: 'in', 
@@ -267,6 +276,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     };
     
     (window as any).html2pdf().set(opt).from(element).save().then(() => {
+      // Restore watermark
+      if (watermark) {
+        (watermark as HTMLElement).style.display = originalDisplay;
+      }
+      
       // Restore original scroll positions
       if (dialogContent) {
         dialogContent.scrollTop = originalScrollTop;
@@ -362,17 +376,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-6 space-y-4 font-sans relative">
+          <div className="p-6 space-y-4 font-sans relative" style={{ position: 'relative', zIndex: 1 }}>
             {/* Background watermark */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none" style={{ position: 'absolute', zIndex: 0 }}>
               <img 
                 src={alteramLogoPath} 
                 alt="Alteram Solutions Watermark" 
                 className="w-96 h-auto"
+                style={{ maxWidth: '384px', height: 'auto' }}
               />
             </div>
             
-            <div className="relative z-10 space-y-4">
+            <div className="relative space-y-4" style={{ position: 'relative', zIndex: 10 }}>
               {/* Name and ID Section */}
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
