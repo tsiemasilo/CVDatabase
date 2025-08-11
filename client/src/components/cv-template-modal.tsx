@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -493,6 +493,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         <DialogHeader className="sr-only">
           <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
+          <DialogDescription>
+            Professional CV template displaying candidate information, experience, and qualifications in a formatted layout.
+          </DialogDescription>
         </DialogHeader>
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
