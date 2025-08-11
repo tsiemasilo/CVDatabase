@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -103,11 +103,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   })();
   
   const otherQualifications = (() => {
-    if (!record.otherQualifications) return [];
+    if (!record.qualifications) return [];
     try {
-      return JSON.parse(record.otherQualifications);
+      return JSON.parse(record.qualifications);
     } catch (error) {
-      console.error("Error parsing other qualifications:", error);
+      console.error("Error parsing qualifications:", error);
       return [];
     }
   })();
@@ -256,6 +256,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
+          <DialogDescription>Professional CV template displaying candidate information</DialogDescription>
+        </DialogHeader>
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
