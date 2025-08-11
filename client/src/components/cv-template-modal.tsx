@@ -102,12 +102,12 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
   })();
   
-  const otherQualifications = (() => {
-    if (!record.otherQualifications) return [];
+  const qualifications = (() => {
+    if (!record.qualifications) return [];
     try {
-      return JSON.parse(record.otherQualifications);
+      return JSON.parse(record.qualifications);
     } catch (error) {
-      console.error("Error parsing other qualifications:", error);
+      console.error("Error parsing qualifications:", error);
       return [];
     }
   })();
@@ -458,14 +458,14 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                         <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
-                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                    {qualifications.length > 0 && qualifications.map((qual: any, index: number) => (
                       <tr key={index} className="hover:bg-gray-50 transition-colors">
                         <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
                         <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
                         <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
                       </tr>
                     ))}
-                    {!record.qualifications && otherQualifications.length === 0 && (
+                    {!record.qualifications && qualifications.length === 0 && (
                       <tr>
                         <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
                       </tr>
