@@ -146,6 +146,128 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
   };
 
+  const handleDownloadWord = () => {
+    try {
+      // Create Word document content
+      const wordContent = generateWordContent();
+      
+      // Create and download the Word file
+      const blob = new Blob([wordContent], { 
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `CV_${record.name}_${record.surname || ''}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log('Word document generated successfully');
+    } catch (error) {
+      console.error('Error generating Word document:', error);
+    }
+  };
+
+  const generateWordContent = (): string => {
+    // Parse skills for Word document
+    const skillsText = record.skills ? record.skills.trim() : '';
+    const skillsList = skillsText
+      .split(/[,\n\r•\-\*]+/)
+      .map(skill => skill.trim())
+      .filter(skill => skill.length > 0)
+      .filter(skill => !skill.match(/^[•\-\*\s]+$/));
+
+    // Parse work experiences
+    const workExps = record.workExperience ? JSON.parse(record.workExperience) : [];
+    const certifications = record.certificateTypes ? JSON.parse(record.certificateTypes) : [];
+
+    // Create HTML content for Word document
+    return `
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head>
+  <meta charset="utf-8">
+  <title>CV - ${record.name} ${record.surname || ''}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.4; }
+    .header { background-color: #f97316; color: white; padding: 20px; margin: -40px -40px 20px -40px; }
+    .name { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+    .contact { font-size: 14px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 16px; font-weight: bold; color: #000053; border-bottom: 2px solid #f97316; padding-bottom: 5px; margin-bottom: 10px; }
+    .job-title { font-weight: bold; margin-bottom: 3px; }
+    .company { font-style: italic; margin-bottom: 5px; }
+    .date { color: #666; font-size: 12px; margin-bottom: 8px; }
+    .skill-item { margin-bottom: 3px; }
+    .skill-bullet { color: #f97316; margin-right: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+    td { padding: 8px; border: 1px solid #ddd; vertical-align: top; }
+    .label { font-weight: bold; background-color: #f5f5f5; width: 120px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${record.name} ${record.surname || ''}</div>
+    <div class="contact">
+      Email: ${record.email || ''} | Phone: ${record.phoneNumber || ''} | Position: ${record.position || ''}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Personal Information</div>
+    <table>
+      <tr><td class="label">ID Number:</td><td>${record.idNumber || 'Not specified'}</td></tr>
+      <tr><td class="label">Gender:</td><td>${record.gender || 'Not specified'}</td></tr>
+      <tr><td class="label">Race:</td><td>${record.race || 'Not specified'}</td></tr>
+      <tr><td class="label">Date of Birth:</td><td>${record.dateOfBirth ? new Date(record.dateOfBirth).toLocaleDateString() : 'Not specified'}</td></tr>
+      <tr><td class="label">Address:</td><td>${record.address || 'Not specified'}</td></tr>
+      <tr><td class="label">Languages:</td><td>${record.languages || 'Not specified'}</td></tr>
+    </table>
+  </div>
+
+  ${workExps.length > 0 ? `
+  <div class="section">
+    <div class="section-title">Work Experience</div>
+    ${workExps.map((exp: any) => `
+      <div style="margin-bottom: 15px;">
+        <div class="job-title">${exp.position || ''} ${exp.roleTitle ? `- ${exp.roleTitle}` : ''}</div>
+        <div class="company">${exp.companyName || ''}</div>
+        <div class="date">${exp.startDate || ''} - ${exp.isCurrentRole ? 'Present' : (exp.endDate || 'Present')}</div>
+        ${exp.description ? `<div>${exp.description}</div>` : ''}
+      </div>
+    `).join('')}
+  </div>
+  ` : ''}
+
+  ${certifications.length > 0 ? `
+  <div class="section">
+    <div class="section-title">Qualifications & Certifications</div>
+    ${certifications.map((cert: any) => `
+      <div style="margin-bottom: 10px;">
+        <div class="job-title">${cert.certificateName || ''}</div>
+        <div class="company">Department: ${cert.department || ''} | Role: ${cert.role || ''}</div>
+      </div>
+    `).join('')}
+  </div>
+  ` : ''}
+
+  ${skillsList.length > 0 ? `
+  <div class="section">
+    <div class="section-title">Professional Skills</div>
+    ${skillsList.map(skill => `<div class="skill-item"><span class="skill-bullet">•</span>${skill}</div>`).join('')}
+  </div>
+  ` : ''}
+
+  <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 2px solid #f97316; padding-top: 10px;">
+    CV Generated by Alteram Solutions<br>
+    Philip Henry Arnold | Garth Solomon Madella
+  </div>
+</body>
+</html>`;
+  };
+
   const loadHtml2PdfScript = (): Promise<void> => {
     return new Promise((resolve, reject) => {
       // Check if script is already loading
@@ -265,6 +387,14 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           >
             <Download className="w-4 h-4 mr-1" />
             Download PDF
+          </Button>
+          <Button
+            onClick={handleDownloadWord}
+            size="sm"
+            className="bg-blue-500 hover:bg-blue-600 text-white border-0 shadow-lg"
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Download Word
           </Button>
           <Button
             onClick={handlePrint}
