@@ -393,22 +393,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/cv-records/export/csv", async (req, res) => {
     try {
       const storage = await getStorage();
-      const { search, status } = req.query;
+      const {
+        searchTerm, status, department, name, surname, idPassport,
+        language, role, roleTitle, sapLevel, qualificationType1,
+        qualificationType2, qualification1, qualification2, experience
+      } = req.query;
       
-      let records;
-      if (search || status) {
-        records = await storage.searchCVRecords(
-          search as string || "", 
-          status as string
-        );
-      } else {
-        records = await storage.getAllCVRecords();
-      }
+      // Get all records first
+      let records = await storage.getAllCVRecords();
+      
+      // Apply client-side filtering to match frontend behavior
+      records = records.filter(record => {
+        // Search term filter
+        if (searchTerm) {
+          const searchLower = (searchTerm as string).toLowerCase();
+          const matchesSearch = 
+            record.name.toLowerCase().includes(searchLower) ||
+            (record.surname && record.surname.toLowerCase().includes(searchLower)) ||
+            record.email.toLowerCase().includes(searchLower) ||
+            (record.phone && record.phone.toLowerCase().includes(searchLower)) ||
+            (record.position && record.position.toLowerCase().includes(searchLower)) ||
+            (record.department && record.department.toLowerCase().includes(searchLower)) ||
+            (record.qualifications && record.qualifications.toLowerCase().includes(searchLower));
+          if (!matchesSearch) return false;
+        }
+
+        // All other filters
+        if (status && record.status !== status) return false;
+        if (department && record.department !== department) return false;
+        if (name && !record.name.toLowerCase().includes((name as string).toLowerCase())) return false;
+        if (surname && (!record.surname || !record.surname.toLowerCase().includes((surname as string).toLowerCase()))) return false;
+        if (idPassport && (!record.idPassport || !record.idPassport.toLowerCase().includes((idPassport as string).toLowerCase()))) return false;
+        if (language && (!record.languages || !record.languages.toLowerCase().includes((language as string).toLowerCase()))) return false;
+        if (role && record.position !== role) return false;
+        if (roleTitle && record.roleTitle !== roleTitle) return false;
+        if (sapLevel && record.sapKLevel !== sapLevel) return false;
+        if (qualificationType1 && (!record.qualifications || !record.qualifications.toLowerCase().includes((qualificationType1 as string).toLowerCase()))) return false;
+        if (qualificationType2 && (!record.qualifications || !record.qualifications.toLowerCase().includes((qualificationType2 as string).toLowerCase()))) return false;
+        if (qualification1 && (!record.qualifications || !record.qualifications.toLowerCase().includes((qualification1 as string).toLowerCase()))) return false;
+        if (qualification2 && (!record.qualifications || !record.qualifications.toLowerCase().includes((qualification2 as string).toLowerCase()))) return false;
+        if (experience && record.experience !== parseInt(experience as string)) return false;
+
+        return true;
+      });
 
       // Create CSV headers
       const headers = [
         "ID", "Name", "Surname", "Email", "Phone", "Position", 
-        "Department", "Experience", "Status", "Submitted At"
+        "Department", "Experience", "SAP K-Level", "Status", "Submitted At"
       ];
 
       // Convert records to CSV rows
@@ -423,6 +455,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           `"${record.position}"`,
           `"${record.department || ''}"`,
           record.experience || 0,
+          `"${record.sapKLevel || ''}"`,
           `"${record.status}"`,
           `"${record.submittedAt}"`
         ].join(","))

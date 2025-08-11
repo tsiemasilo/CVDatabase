@@ -33,6 +33,7 @@ export default function CVDatabase() {
   const [qualificationType2Filter, setQualificationType2Filter] = useState("");
   const [qualification1Filter, setQualification1Filter] = useState("");
   const [qualification2Filter, setQualification2Filter] = useState("");
+  const [experienceFilter, setExperienceFilter] = useState("");
 
   // Get roles filtered by department
   const getFilteredRoles = () => {
@@ -97,7 +98,8 @@ export default function CVDatabase() {
     // Show all records when only "All Status" is selected or no filters applied
     const hasSpecificFilters = searchTerm || departmentFilter || nameFilter || surnameFilter || 
                       idPassportFilter || languageFilter || roleFilter || roleTitleFilter || sapLevelFilter ||
-                      qualificationType1Filter || qualificationType2Filter || qualification1Filter || qualification2Filter;
+                      qualificationType1Filter || qualificationType2Filter || qualification1Filter || qualification2Filter ||
+                      experienceFilter;
     
     // If no specific filters are applied (including when "All Status" is selected), show all records
     if (!hasSpecificFilters && !statusFilter) {
@@ -157,6 +159,9 @@ export default function CVDatabase() {
     // Qualification 2 filter
     if (qualification2Filter && (!record.qualifications || !record.qualifications.toLowerCase().includes(qualification2Filter.toLowerCase()))) return false;
 
+    // Experience filter
+    if (experienceFilter && record.experience !== parseInt(experienceFilter)) return false;
+
     return true;
   });
 
@@ -176,7 +181,8 @@ export default function CVDatabase() {
         qualificationType1: qualificationType1Filter || "",
         qualificationType2: qualificationType2Filter || "",
         qualification1: qualification1Filter || "",
-        qualification2: qualification2Filter || ""
+        qualification2: qualification2Filter || "",
+        experience: experienceFilter || ""
       });
 
       const response = await fetch(`/api/cv-records/export/csv?${params}`);
@@ -211,6 +217,7 @@ export default function CVDatabase() {
     setQualificationType2Filter("");
     setQualification1Filter("");
     setQualification2Filter("");
+    setExperienceFilter("");
   };
 
   // Handle department change - reset role and K-level filters
@@ -338,6 +345,29 @@ export default function CVDatabase() {
                     </Select>
                   </div>
                 )}
+
+                {/* Experience Years Filter */}
+                <div className="w-48">
+                  <Select value={experienceFilter || "all"} onValueChange={(value) => setExperienceFilter(value === "all" ? "" : value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Experience" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Experience</SelectItem>
+                      <SelectItem value="0">0 years</SelectItem>
+                      <SelectItem value="1">1 year</SelectItem>
+                      <SelectItem value="2">2 years</SelectItem>
+                      <SelectItem value="3">3 years</SelectItem>
+                      <SelectItem value="4">4 years</SelectItem>
+                      <SelectItem value="5">5 years</SelectItem>
+                      <SelectItem value="6">6 years</SelectItem>
+                      <SelectItem value="7">7 years</SelectItem>
+                      <SelectItem value="8">8 years</SelectItem>
+                      <SelectItem value="9">9 years</SelectItem>
+                      <SelectItem value="10">10+ years</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
