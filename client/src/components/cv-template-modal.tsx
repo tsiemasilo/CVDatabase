@@ -174,20 +174,31 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   const generatePDF = async (element: HTMLElement): Promise<void> => {
     try {
       const opt = {
-        margin: 0.5,
+        margin: [0.4, 0.4, 0.4, 0.4], // top, left, bottom, right margins in inches
         filename: `CV_${record.name}_${record.surname || ''}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 2,
+          scale: 1.5, // Reduced scale for better fit
           useCORS: true,
           allowTaint: true,
-          backgroundColor: '#ffffff'
+          backgroundColor: '#ffffff',
+          width: 794, // A4 width in pixels at 96 DPI
+          height: 1123, // A4 height in pixels at 96 DPI
+          scrollX: 0,
+          scrollY: 0
         },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait',
+          putOnlyUsedFonts: true,
+          compress: true
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
       
       await (window as any).html2pdf().set(opt).from(element).save();
-      console.log('PDF generated successfully');
+      console.log('PDF generated successfully with A4 sizing');
     } catch (error) {
       console.error('Error in generatePDF:', error);
       throw error;
@@ -234,7 +245,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         </VisuallyHidden>
         
         {/* Action Buttons */}
-        <div className="absolute top-4 right-16 z-50 flex gap-2">
+        <div className="absolute top-4 right-16 z-50 flex gap-2 no-print">
           <Button
             onClick={handleDownloadPDF}
             size="sm"
@@ -255,10 +266,16 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         </div>
         
         <div id="cv-template-description" className="sr-only">
-          CV template displaying professional information for {record.name} {record.surname || ''}
+          Professional CV template displaying candidate information including work experience, qualifications, and contact details for {record.name} {record.surname || ''}
         </div>
         
-        <div id="cv-content" className="bg-white">
+        <div id="cv-content" className="bg-white print:max-w-none print:shadow-none a4-optimized" style={{ 
+          maxWidth: '210mm', // A4 width
+          minHeight: '297mm', // A4 height
+          margin: '0 auto',
+          fontSize: '13px',
+          lineHeight: '1.3'
+        }}>
           {/* Header with Alteram Logo and Branding */}
           <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
             <div className="flex items-center justify-between">
@@ -426,7 +443,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Experience Table */}
-              <div className="mt-8 mb-8">
+              <div className="mt-8 mb-8 print-avoid-break">
                 <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience Summary
 </h2>
                 <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
@@ -492,7 +509,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Qualification Table */}
-              <div className="mt-8 mb-8">
+              <div className="mt-8 mb-8 print-avoid-break">
                 <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Qualification</h2>
                 <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
                   <thead>

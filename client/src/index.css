@@ -97,3 +97,64 @@
     @apply inline-block w-4 h-4 ml-2 border-2 border-white border-t-transparent rounded-full animate-spin;
   }
 }
+
+/* Print and PDF specific styles for A4 optimization */
+@media print {
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 12pt !important;
+    line-height: 1.3 !important;
+  }
+  
+  #cv-content {
+    max-width: none !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    box-shadow: none !important;
+    background: white !important;
+    page-break-inside: avoid;
+  }
+  
+  .print-break-before {
+    page-break-before: always;
+  }
+  
+  .print-break-after {
+    page-break-after: always;
+  }
+  
+  .print-avoid-break {
+    page-break-inside: avoid;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* A4 PDF optimization classes */
+.a4-optimized {
+  font-size: 13px !important;
+  line-height: 1.3 !important;
+}
+
+.a4-optimized h1 {
+  font-size: 18px !important;
+  margin-bottom: 8px !important;
+}
+
+.a4-optimized h2 {
+  font-size: 16px !important;
+  margin-bottom: 6px !important;
+}
+
+.a4-optimized table {
+  font-size: 12px !important;
+}
+
+.a4-optimized .compact-spacing {
+  margin-bottom: 4px !important;
+}
