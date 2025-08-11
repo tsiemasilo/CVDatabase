@@ -74,6 +74,7 @@ export class MemStorage implements IStorage {
           { companyName: "InnovateTech", position: "Software Developer", startDate: "01/2023", endDate: "", isCurrentRole: true }
         ]),
         certificateTypes: JSON.stringify({}),
+        skills: "JavaScript, React, Node.js, TypeScript, HTML, CSS, SQL, Git, Problem Solving, Team Collaboration",
         status: "active",
         cvFile: "john_doe_cv.pdf",
         submittedAt: new Date("2024-01-15"),
@@ -103,6 +104,7 @@ export class MemStorage implements IStorage {
           { companyName: "MegaProjects", position: "Senior Project Manager", startDate: "07/2021", endDate: "", isCurrentRole: true }
         ]),
         certificateTypes: JSON.stringify({}),
+        skills: "Project Management, PMP, Agile Methodology, Scrum, Risk Management, Budget Planning, Team Leadership, Communication, Microsoft Project, Stakeholder Management",
         status: "pending",
         cvFile: "sarah_johnson_cv.pdf",
         submittedAt: new Date("2024-01-20"),
@@ -132,6 +134,7 @@ export class MemStorage implements IStorage {
           { companyName: "Enterprise SAP", position: "SAP ABAP Developer", startDate: "06/2022", endDate: "", isCurrentRole: true }
         ]),
         certificateTypes: JSON.stringify({}),
+        skills: "SAP ABAP, SAP Fiori, SAP HANA, SQL, JavaScript, OData, REST APIs, ABAP Objects, SAP Gateway, Integration Technologies, Problem Solving, Technical Documentation",
         status: "active",
         cvFile: "michael_chen_cv.pdf",
         submittedAt: new Date("2024-01-25"),
@@ -263,6 +266,7 @@ export class MemStorage implements IStorage {
       languages: insertCVRecord.languages || null,
       workExperiences: insertCVRecord.workExperiences || null,
       certificateTypes: insertCVRecord.certificateTypes || null,
+      skills: insertCVRecord.skills || null,
       cvFile: insertCVRecord.cvFile || null,
       submittedAt: new Date(),
     };
