@@ -142,14 +142,88 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generatePDF = (element: HTMLElement) => {
+    // Create a clone of the element with optimized styling for PDF
+    const clonedElement = element.cloneNode(true) as HTMLElement;
+    
+    // Add PDF-specific styling
+    const style = document.createElement('style');
+    style.textContent = `
+      .pdf-optimize {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+      }
+      .pdf-optimize .space-y-6 > * + * {
+        margin-top: 1rem !important;
+      }
+      .pdf-optimize .space-y-4 > * + * {
+        margin-top: 0.75rem !important;
+      }
+      .pdf-optimize .space-y-2 > * + * {
+        margin-top: 0.5rem !important;
+      }
+      .pdf-optimize .mb-8 {
+        margin-bottom: 1.5rem !important;
+      }
+      .pdf-optimize .mb-6 {
+        margin-bottom: 1rem !important;
+      }
+      .pdf-optimize .mb-4 {
+        margin-bottom: 0.75rem !important;
+      }
+      .pdf-optimize .py-4 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+      }
+      .pdf-optimize .p-8 {
+        padding: 1.5rem !important;
+      }
+      .pdf-optimize .pt-6 {
+        padding-top: 1rem !important;
+      }
+      .pdf-optimize .text-lg {
+        font-size: 12px !important;
+      }
+      .pdf-optimize .text-xl {
+        font-size: 14px !important;
+      }
+      .pdf-optimize .h-16 {
+        height: 3rem !important;
+      }
+      .pdf-optimize .h-8 {
+        height: 2rem !important;
+      }
+    `;
+    clonedElement.appendChild(style);
+    clonedElement.classList.add('pdf-optimize');
+    
+    // Temporarily add to document
+    clonedElement.style.position = 'absolute';
+    clonedElement.style.left = '-9999px';
+    document.body.appendChild(clonedElement);
+    
     const opt = {
-      margin: 0.5,
+      margin: [0.3, 0.3, 0.3, 0.3],
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { 
+        scale: 1.5,
+        useCORS: true,
+        allowTaint: true,
+        height: clonedElement.scrollHeight,
+        width: clonedElement.scrollWidth
+      },
+      jsPDF: { 
+        unit: 'in', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      }
     };
-    (window as any).html2pdf().set(opt).from(element).save();
+    
+    (window as any).html2pdf().set(opt).from(clonedElement).save().then(() => {
+      // Clean up
+      document.body.removeChild(clonedElement);
+    });
   };
 
   const handlePrint = () => {
@@ -206,7 +280,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           </Button>
         </div>
         
-        <div id="cv-content" className="bg-white">
+        <div id="cv-content" className="bg-white" style={{ pageBreakAfter: 'avoid' }}>
           {/* Header with Alteram Logo and Branding */}
           <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
             <div className="flex items-center justify-between">
@@ -235,7 +309,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative">
+          <div className="p-8 space-y-4 font-sans relative">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -478,10 +552,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold mb-3 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
-                <div key={index} className="mb-6">
+                <div key={index} className="mb-4">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">
                     {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
                     {(exp.roleTitle || exp.title) && (
