@@ -793,32 +793,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   </div>
                 )}
 
-                {/* Contact Information Section on Page 2 */}
-                <div className="mt-12 border-t-2 border-gray-200 pt-6">
-                  <h2 className="text-xl font-bold mb-4" style={{ color: '#000053' }}>Contact Information</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                        <span className="font-bold" style={{ color: '#000053' }}>Email:</span> {record.email}
-                      </p>
-                      {record.phone && (
-                        <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                          <span className="font-bold" style={{ color: '#000053' }}>Phone:</span> {record.phone}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                        <span className="font-bold" style={{ color: '#000053' }}>Position:</span> {record.position}
-                      </p>
-                      {record.department && (
-                        <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                          <span className="font-bold" style={{ color: '#000053' }}>Department:</span> {record.department}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+
 
                 {/* Footer for Page 2 */}
                 <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-12">
