@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -14,18 +13,6 @@ interface CVTemplateModalProps {
 
 export default function CVTemplateModal({ record, onClose }: CVTemplateModalProps) {
   if (!record) return null;
-
-  // Scroll to top when modal opens
-  useEffect(() => {
-    if (record) {
-      setTimeout(() => {
-        const dialogContent = document.querySelector('[role="dialog"]');
-        if (dialogContent) {
-          dialogContent.scrollTop = 0;
-        }
-      }, 100);
-    }
-  }, [record]);
 
   // Parse work experiences from the record with error handling
   const workExperiences = (() => {
@@ -278,7 +265,17 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DialogContent 
+        className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" 
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          // Ensure we start at the top
+          const target = e.currentTarget;
+          if (target) {
+            target.scrollTop = 0;
+          }
+        }}
+      >
         <DialogHeader className="sr-only">
           <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
           <DialogDescription>Professional CV template displaying candidate information</DialogDescription>
