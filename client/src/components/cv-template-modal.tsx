@@ -176,29 +176,35 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       const opt = {
         margin: [0.4, 0.4, 0.4, 0.4], // top, left, bottom, right margins in inches
         filename: `CV_${record.name}_${record.surname || ''}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 1.0 }, // Maximum image quality
         html2canvas: { 
-          scale: 1.5, // Reduced scale for better fit
+          scale: 3, // Higher scale for sharper text and images
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 794, // A4 width in pixels at 96 DPI
-          height: 1123, // A4 height in pixels at 96 DPI
+          width: 794 * 2, // Double the width for higher resolution
+          height: 1123 * 2, // Double the height for higher resolution
           scrollX: 0,
-          scrollY: 0
+          scrollY: 0,
+          dpi: 300, // High DPI for crisp text
+          letterRendering: true, // Better text rendering
+          logging: false, // Reduce console noise
+          removeContainer: true,
+          async: true,
+          foreignObjectRendering: true // Better rendering of complex elements
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
           putOnlyUsedFonts: true,
-          compress: true
+          compress: false // Disable compression for better quality
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
       
       await (window as any).html2pdf().set(opt).from(element).save();
-      console.log('PDF generated successfully with A4 sizing');
+      console.log('PDF generated successfully with high quality settings');
     } catch (error) {
       console.error('Error in generatePDF:', error);
       throw error;
