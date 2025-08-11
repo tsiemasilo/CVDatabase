@@ -1,6 +1,6 @@
 import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile, cvRecords, userProfiles } from "@shared/schema";
 import { db } from "./db";
-import { eq, like, or, and } from "drizzle-orm";
+import { eq, like, or, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<any | undefined>;
@@ -407,7 +407,7 @@ export class DatabaseStorage implements IStorage {
 
   // CV Records methods
   async getAllCVRecords(): Promise<CVRecord[]> {
-    return await db.select().from(cvRecords).orderBy(cvRecords.submittedAt);
+    return await db.select().from(cvRecords).orderBy(desc(cvRecords.submittedAt));
   }
 
   async getCVRecord(id: number): Promise<CVRecord | undefined> {
@@ -459,12 +459,12 @@ export class DatabaseStorage implements IStorage {
       query = query.where(and(...conditions)) as any;
     }
     
-    return await query.orderBy(cvRecords.submittedAt);
+    return await query.orderBy(desc(cvRecords.submittedAt));
   }
 
   // User Profile methods
   async getAllUserProfiles(): Promise<UserProfile[]> {
-    return await db.select().from(userProfiles).orderBy(userProfiles.createdAt);
+    return await db.select().from(userProfiles).orderBy(desc(userProfiles.createdAt));
   }
 
   async getUserProfile(id: number): Promise<UserProfile | undefined> {
@@ -516,7 +516,7 @@ export class DatabaseStorage implements IStorage {
       query = query.where(and(...conditions)) as any;
     }
     
-    return await query.orderBy(userProfiles.createdAt);
+    return await query.orderBy(desc(userProfiles.createdAt));
   }
 
   // Authentication methods

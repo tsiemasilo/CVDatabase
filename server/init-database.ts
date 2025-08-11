@@ -106,6 +106,7 @@ export async function initializeDatabase() {
         certificateTypes: JSON.stringify([
           { department: "SAP", role: "ABAP Developer", certificate: "SAP Certified Development Associate" }
         ]),
+        skills: "SAP ABAP, SAP Fiori, SAP HANA, SQL, JavaScript, OData, REST APIs, ABAP Objects, SAP Gateway, Integration Technologies, Problem Solving, Technical Documentation, Code Review, System Analysis",
         status: "active" as const,
         cvFile: "michael_chen_cv.pdf",
         submittedAt: new Date("2024-12-15T10:30:00.000Z")
@@ -141,6 +142,7 @@ export async function initializeDatabase() {
         certificateTypes: JSON.stringify([
           { department: "PROJECT MANAGEMENT", role: "Project Manager", certificate: "PMP Certification" }
         ]),
+        skills: "Project Management, PMP, Agile Methodology, Scrum, Risk Management, Budget Planning, Team Leadership, Communication, Microsoft Project, Stakeholder Management, Resource Planning, Quality Assurance",
         status: "pending" as const,
         cvFile: "sarah_williams_cv.pdf",
         submittedAt: new Date("2025-01-10T14:20:00.000Z")
@@ -176,6 +178,7 @@ export async function initializeDatabase() {
         certificateTypes: JSON.stringify([
           { department: "ICT", role: "Network Administrator", certificate: "CCNA Certification" }
         ]),
+        skills: "Network Administration, CCNA, MCSE, Windows Server, Linux, Cisco Routers, Network Security, Firewall Management, TCP/IP, DNS, DHCP, Active Directory, Troubleshooting, System Monitoring",
         status: "archived" as const,
         cvFile: "david_brown_cv.pdf",
         submittedAt: new Date("2024-11-22T09:15:00.000Z")
