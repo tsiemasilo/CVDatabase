@@ -152,6 +152,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   };
 
   const generatePDF = (element: HTMLElement) => {
+    // Ensure element is positioned at top before capturing
+    element.scrollTop = 0;
+    
     // Add temporary PDF optimization styles to the original element
     const tempStyle = document.createElement('style');
     tempStyle.id = 'pdf-temp-styles';
@@ -159,6 +162,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       #cv-content {
         font-size: 11px !important;
         line-height: 1.3 !important;
+        position: relative !important;
+        top: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
       }
       #cv-content .space-y-4 > * + * {
         margin-top: 0.75rem !important;
@@ -198,7 +205,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     document.head.appendChild(tempStyle);
     
     const opt = {
-      margin: [0.2, 0.2, 0.2, 0.2],
+      margin: [0.1, 0.1, 0.1, 0.1],
       filename: `CV_${record.name}_${record.surname || ''}.pdf`,
       image: { type: 'jpeg', quality: 0.9 },
       html2canvas: { 
@@ -208,12 +215,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         backgroundColor: '#ffffff',
         logging: false,
         width: element.scrollWidth,
-        height: element.scrollHeight
+        height: element.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0
       },
       jsPDF: { 
         unit: 'in', 
         format: 'a4', 
-        orientation: 'portrait'
+        orientation: 'portrait',
+        putOnlyUsedFonts: true,
+        floatPrecision: 16
       }
     };
     
@@ -269,11 +282,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" 
         onOpenAutoFocus={(e) => {
           e.preventDefault();
-          // Ensure we start at the top
-          const target = e.currentTarget;
-          if (target) {
-            target.scrollTop = 0;
-          }
         }}
       >
         <DialogHeader className="sr-only">
