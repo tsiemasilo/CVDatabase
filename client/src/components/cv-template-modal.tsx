@@ -105,9 +105,93 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   const qualifications = (() => {
     if (!record.qualifications) return [];
     try {
-      return JSON.parse(record.qualifications);
+      // Handle different data types
+      if (typeof record.qualifications === 'string') {
+        // Skip empty strings, whitespace, or empty objects
+        const trimmed = record.qualifications.trim();
+        if (!trimmed || trimmed === '{}' || trimmed === '[]') {
+          return [];
+        }
+        
+        // Handle PostgreSQL array format like work experiences
+        if (trimmed.startsWith('{') && trimmed.endsWith('}') && !trimmed.startsWith('{[')) {
+          const arrayContent = trimmed.slice(1, -1);
+          if (!arrayContent.trim()) return [];
+          
+          const items = [];
+          let current = '';
+          let inQuotes = false;
+          let escapeNext = false;
+          
+          for (let i = 0; i < arrayContent.length; i++) {
+            const char = arrayContent[i];
+            
+            if (escapeNext) {
+              current += char;
+              escapeNext = false;
+              continue;
+            }
+            
+            if (char === '\\') {
+              current += char;
+              escapeNext = true;
+              continue;
+            }
+            
+            if (char === '"') {
+              inQuotes = !inQuotes;
+              current += char;
+              continue;
+            }
+            
+            if (char === ',' && !inQuotes) {
+              if (current.trim()) {
+                try {
+                  let cleanItem = current.trim();
+                  if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                    cleanItem = cleanItem.slice(1, -1);
+                  }
+                  cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                  const parsed = JSON.parse(cleanItem);
+                  items.push(parsed);
+                } catch (e) {
+                  console.warn("Failed to parse qualification item:", current);
+                }
+              }
+              current = '';
+              continue;
+            }
+            
+            current += char;
+          }
+          
+          // Handle the last item
+          if (current.trim()) {
+            try {
+              let cleanItem = current.trim();
+              if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                cleanItem = cleanItem.slice(1, -1);
+              }
+              cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+              const parsed = JSON.parse(cleanItem);
+              items.push(parsed);
+            } catch (e) {
+              console.warn("Failed to parse final qualification item:", current);
+            }
+          }
+          
+          return items;
+        }
+        
+        // Regular JSON parse
+        return JSON.parse(record.qualifications);
+      } else if (Array.isArray(record.qualifications)) {
+        return record.qualifications;
+      } else {
+        return [];
+      }
     } catch (error) {
-      console.error("Error parsing qualifications:", error);
+      console.error("Error parsing qualifications:", error, record.qualifications);
       return [];
     }
   })();
@@ -185,6 +269,9 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   return (
     <Dialog open={!!record} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>CV Template - {record.name} {record.surname || ''}</DialogTitle>
+        </DialogHeader>
         {/* Action Buttons */}
         <div className="absolute top-4 right-16 z-50 flex gap-2">
           <Button
