@@ -686,7 +686,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   {(() => {
                     // Parse and organize skills
                     const skillsText = record.skills ? record.skills.trim() : '';
-                    console.log("Skills text:", skillsText, "Length:", skillsText.length);
                     if (!skillsText) return (
                       <div className="text-center py-12">
                         <p className="text-gray-500 italic text-lg mb-4">No skills have been added to this CV yet</p>

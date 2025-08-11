@@ -420,13 +420,13 @@ export class DatabaseStorage implements IStorage {
         console.log("Skills column added successfully");
       }
       
-      // Use raw SQL query without skills column first
+      // Use raw SQL query including skills column
       const rawResult = await db.execute(sql`
         SELECT id, name, surname, id_passport, gender, email, phone, position, 
                role_title, department, experience, experience_similar_role, 
                experience_itsm_tools, sap_k_level, qualifications, qualification_type, 
                qualification_name, institute_name, year_completed, languages, 
-               work_experiences, certificate_types, status, cv_file, submitted_at
+               work_experiences, certificate_types, skills, status, cv_file, submitted_at
         FROM cv_records 
         ORDER BY submitted_at DESC
       `);
@@ -454,7 +454,7 @@ export class DatabaseStorage implements IStorage {
         languages: row.languages,
         workExperiences: row.work_experiences,
         certificateTypes: row.certificate_types,
-        skills: null, // Will be null until we add proper skills data
+        skills: row.skills,
         status: row.status,
         cvFile: row.cv_file,
         submittedAt: row.submitted_at,
