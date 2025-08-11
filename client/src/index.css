@@ -133,6 +133,15 @@
   .no-print {
     display: none !important;
   }
+  
+  /* Page break styles for PDF generation */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+  
+  .page-break-after {
+    page-break-after: always !important;
+  }
 }
 
 /* A4 PDF optimization classes */

@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -259,6 +260,27 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
                     <Input {...field} className="w-full" placeholder="e.g. Bachelor's degree, Advanced Diploma..." />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="skills"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="block text-sm font-medium text-gray-700">Skills</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      {...field} 
+                      className="w-full min-h-[120px]" 
+                      placeholder="Copy and paste your skills here. You can paste them as a list, separated by commas, or on new lines. For example:&#10;&#10;JavaScript, React, Node.js, Python&#10;Database Management&#10;Project Management&#10;Communication Skills"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Tip: Copy and paste skills from your resume or any format - they will be organized nicely on the CV
+                  </p>
                 </FormItem>
               )}
             />
