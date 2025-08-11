@@ -3,7 +3,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { CVRecord } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, MapPin, Phone, Mail, User, Award, Briefcase, GraduationCap, Globe, Download, Printer } from "lucide-react";
+import { CalendarDays, MapPin, Phone, Mail, User, Award, Briefcase, GraduationCap, Globe, Download, Printer, Building, Calendar } from "lucide-react";
 import alteramLogoPath from "@assets/alteram1_1_600x197_1750838676214.png";
 import footerImagePath from "@assets/image_1751895895280.png";
 
@@ -276,339 +276,436 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           maxWidth: '210mm', // A4 width
           minHeight: '297mm', // A4 height
           margin: '0 auto',
-          fontSize: '13px',
-          lineHeight: '1.3'
+          fontSize: '12px',
+          lineHeight: '1.4',
+          fontFamily: '"Inter", "Segoe UI", system-ui, sans-serif'
         }}>
           {/* Header with Alteram Logo and Branding */}
-          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+          <div className="bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 px-8 py-6 relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-full translate-y-12 -translate-x-12"></div>
+            </div>
+            
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="flex items-center space-x-6">
                 <img 
                   src={alteramLogoPath} 
                   alt="Alteram Solutions" 
-                  className="h-16 w-auto"
+                  className="h-18 w-auto drop-shadow-lg"
                 />
+                <div className="border-l border-orange-200 pl-6">
+                  <h1 className="text-2xl font-bold text-white tracking-tight">Professional CV</h1>
+                  <p className="text-orange-100 font-medium">Talent Solutions & Consulting</p>
+                </div>
               </div>
+              
               <div className="text-right text-white">
-                <div className="text-sm font-medium">
-                  <p>1144, 16th Road Randjespark Midrand</p>
-                  <p>Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>
+                <div className="text-sm font-medium space-y-1">
+                  <p className="flex items-center justify-end space-x-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>1144, 16th Road Randjespark Midrand</span>
+                  </p>
+                  <p className="text-orange-100">Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>
                 </div>
-                <div className="text-sm mt-1">
-                  <span className="font-semibold">T</span> 010 900 4075 | <span className="font-semibold">F</span> 086 665 2021 | info@alteram.co.za
+                <div className="text-sm mt-3 space-y-1">
+                  <p className="flex items-center justify-end space-x-2">
+                    <Phone className="w-4 h-4" />
+                    <span><span className="font-semibold">T</span> 010 900 4075 | <span className="font-semibold">F</span> 086 665 2021</span>
+                  </p>
+                  <p className="flex items-center justify-end space-x-2">
+                    <Mail className="w-4 h-4" />
+                    <span>info@alteram.co.za</span>
+                  </p>
+                  <p className="flex items-center justify-end space-x-2">
+                    <Globe className="w-4 h-4" />
+                    <span className="font-medium">www.alteram.co.za</span>
+                  </p>
                 </div>
-                <p className="text-sm font-medium mt-1">www.alteram.co.za</p>
               </div>
             </div>
-            <div className="mt-2 border-t border-orange-200 pt-2">
-              <p className="text-sm text-white font-medium">
-                Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07
+            
+            <div className="relative z-10 mt-4 pt-4 border-t border-orange-300">
+              <p className="text-sm text-orange-100 font-medium text-center">
+                Alteram Solutions (Pty) Ltd | Registration Number: 2013/171329/07
               </p>
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative">
-            {/* Background watermark */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          {/* Main Content Area */}
+          <div className="p-8 space-y-8 relative">
+            {/* Subtle Background watermark */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-3 pointer-events-none">
               <img 
                 src={alteramLogoPath} 
                 alt="Alteram Solutions Watermark" 
-                className="w-96 h-auto"
+                className="w-80 h-auto"
               />
             </div>
             
-            <div className="relative z-10 space-y-4">
-              {/* Name and ID Section */}
-              <div className="space-y-2">
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Name and Surname:</span> {record.name} {record.surname || ''}
-                </p>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Id/Passport:</span> {record.idPassport || ''}
-                </p>
+            <div className="relative z-10">
+              {/* Candidate Profile Section */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 mb-8 border-l-4 border-orange-500">
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Left Column - Personal Info */}
+                  <div className="space-y-4">
+                    <div className="border-b border-gray-200 pb-3">
+                      <h2 className="text-xl font-bold mb-4 flex items-center" style={{ color: '#000053' }}>
+                        <User className="w-5 h-5 mr-2" />
+                        Candidate Profile
+                      </h2>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-24 font-semibold text-gray-700 text-sm">Name:</div>
+                        <div className="font-bold text-lg" style={{ color: '#000053' }}>
+                          {record.name} {record.surname || ''}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="w-24 font-semibold text-gray-700 text-sm">ID/Passport:</div>
+                        <div className="text-gray-800 font-medium">{record.idPassport || 'Not provided'}</div>
+                      </div>
+                      
+                      {record.email && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-24 font-semibold text-gray-700 text-sm">Email:</div>
+                          <div className="text-gray-800 font-medium">{record.email}</div>
+                        </div>
+                      )}
+                      
+                      {record.phone && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-24 font-semibold text-gray-700 text-sm">Phone:</div>
+                          <div className="text-gray-800 font-medium">{record.phone}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Right Column - Professional Info */}
+                  <div className="space-y-4">
+                    <div className="border-b border-gray-200 pb-3">
+                      <h3 className="text-lg font-bold flex items-center" style={{ color: '#000053' }}>
+                        <Briefcase className="w-4 h-4 mr-2" />
+                        Professional Details
+                      </h3>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {record.department && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-24 font-semibold text-gray-700 text-sm">Department:</div>
+                          <div className="text-gray-800 font-medium">{record.department}</div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="w-24 font-semibold text-gray-700 text-sm">Position:</div>
+                        <div className="font-semibold" style={{ color: '#000053' }}>
+                          {record.position || record.roleTitle || 'Not specified'}
+                        </div>
+                      </div>
+                      
+                      {record.roleTitle && record.position !== record.roleTitle && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-24 font-semibold text-gray-700 text-sm">Role Title:</div>
+                          <div className="text-gray-800 font-medium">{record.roleTitle}</div>
+                        </div>
+                      )}
+                      
+                      {record.sapKLevel && record.sapKLevel.trim() !== '' && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-24 font-semibold text-gray-700 text-sm">SAP Level:</div>
+                          <div className="text-gray-800 font-medium bg-orange-100 px-2 py-1 rounded text-sm">
+                            {record.sapKLevel}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="w-24 font-semibold text-gray-700 text-sm">Experience:</div>
+                        <div className="text-gray-800 font-medium">
+                          <span className="bg-blue-100 px-3 py-1 rounded-full text-sm font-semibold">
+                            {record.experience || 0} years
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              {/* Role Information */}
-              <div className="space-y-2">
-                {record.department && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Department:</span> {record.department}
-                  </p>
-                )}
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Role:</span> {record.position || record.roleTitle || ''}
-                  {record.roleTitle && (
-                    <span> | <span className="font-bold" style={{ color: '#000053' }}>Role Title:</span> {record.roleTitle}</span>
-                  )}
-                  {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold" style={{ color: '#000053' }}>K-Level:</span> {record.sapKLevel}</span>
-                  )}
-                </p>
                 
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
-                </p>
-                
-                {record.certificateTypes && (
-                  <div className="mt-4">
-                    <p className="text-lg font-medium text-gray-800 leading-relaxed mb-2">
-                      <span className="font-bold" style={{ color: '#000053' }}>Certificates:</span>
-                    </p>
-                    <div className="pl-4 space-y-1">
-                      {(() => {
-                        try {
-                          console.log("Raw certificateTypes data:", record.certificateTypes);
+              {/* Certificates Section */}
+              {record.certificateTypes && (
+                <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                  <h3 className="text-lg font-bold mb-4 flex items-center" style={{ color: '#000053' }}>
+                    <Award className="w-5 h-5 mr-2" />
+                    Professional Certifications
+                  </h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    {(() => {
+                      try {
+                        console.log("Raw certificateTypes data:", record.certificateTypes);
+                        
+                        let certificates;
+                        // Handle PostgreSQL array format
+                        if (typeof record.certificateTypes === 'string' && record.certificateTypes.startsWith('{') && record.certificateTypes.endsWith('}')) {
+                          const arrayContent = record.certificateTypes.slice(1, -1);
+                          const items = [];
+                          let current = '';
+                          let inQuotes = false;
+                          let escapeNext = false;
                           
-                          let certificates;
-                          // Handle PostgreSQL array format
-                          if (typeof record.certificateTypes === 'string' && record.certificateTypes.startsWith('{') && record.certificateTypes.endsWith('}')) {
-                            const arrayContent = record.certificateTypes.slice(1, -1);
-                            const items = [];
-                            let current = '';
-                            let inQuotes = false;
-                            let escapeNext = false;
+                          for (let i = 0; i < arrayContent.length; i++) {
+                            const char = arrayContent[i];
                             
-                            for (let i = 0; i < arrayContent.length; i++) {
-                              const char = arrayContent[i];
-                              
-                              if (escapeNext) {
-                                current += char;
-                                escapeNext = false;
-                                continue;
-                              }
-                              
-                              if (char === '\\') {
-                                current += char;
-                                escapeNext = true;
-                                continue;
-                              }
-                              
-                              if (char === '"') {
-                                inQuotes = !inQuotes;
-                                current += char;
-                                continue;
-                              }
-                              
-                              if (char === ',' && !inQuotes) {
-                                if (current.trim()) {
-                                  try {
-                                    let cleanItem = current.trim();
-                                    if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
-                                      cleanItem = cleanItem.slice(1, -1);
-                                    }
-                                    cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                                    const parsed = JSON.parse(cleanItem);
-                                    items.push(parsed);
-                                  } catch (e) {
-                                    console.warn("Failed to parse certificate item:", current);
-                                  }
-                                }
-                                current = '';
-                                continue;
-                              }
-                              
+                            if (escapeNext) {
                               current += char;
+                              escapeNext = false;
+                              continue;
                             }
                             
-                            // Handle the last item
-                            if (current.trim()) {
-                              try {
-                                let cleanItem = current.trim();
-                                if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
-                                  cleanItem = cleanItem.slice(1, -1);
+                            if (char === '\\') {
+                              current += char;
+                              escapeNext = true;
+                              continue;
+                            }
+                            
+                            if (char === '"') {
+                              inQuotes = !inQuotes;
+                              current += char;
+                              continue;
+                            }
+                            
+                            if (char === ',' && !inQuotes) {
+                              if (current.trim()) {
+                                try {
+                                  let cleanItem = current.trim();
+                                  if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                                    cleanItem = cleanItem.slice(1, -1);
+                                  }
+                                  cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                                  const parsed = JSON.parse(cleanItem);
+                                  items.push(parsed);
+                                } catch (e) {
+                                  console.warn("Failed to parse certificate item:", current);
                                 }
-                                cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                                const parsed = JSON.parse(cleanItem);
-                                items.push(parsed);
-                              } catch (e) {
-                                console.warn("Failed to parse final certificate item:", current);
                               }
+                              current = '';
+                              continue;
                             }
                             
-                            certificates = items;
-                          } else {
-                            certificates = JSON.parse(record.certificateTypes);
+                            current += char;
                           }
                           
-                          return certificates.map((cert: any, index: number) => (
-                            <p key={index} className="text-lg font-medium text-gray-800 leading-relaxed">
-                              • {cert.certificateName || cert.certificate}
-                            </p>
-                          ));
-                        } catch (error) {
-                          console.error("Error parsing certificates:", error);
-                          return <p className="text-lg font-medium text-gray-800 leading-relaxed">• {record.certificateTypes}</p>;
+                          // Handle the last item
+                          if (current.trim()) {
+                            try {
+                              let cleanItem = current.trim();
+                              if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                                cleanItem = cleanItem.slice(1, -1);
+                              }
+                              cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                              const parsed = JSON.parse(cleanItem);
+                              items.push(parsed);
+                            } catch (e) {
+                              console.warn("Failed to parse final certificate item:", current);
+                            }
+                          }
+                          
+                          certificates = items;
+                        } else {
+                          certificates = JSON.parse(record.certificateTypes);
                         }
-                      })()}
-                    </div>
+                        
+                        return certificates.map((cert: any, index: number) => (
+                          <div key={index} className="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg border-l-4 border-orange-400">
+                            <Award className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <div className="font-semibold text-gray-800">
+                                {cert.certificateName || cert.certificate}
+                              </div>
+                              {cert.department && cert.role && (
+                                <div className="text-sm text-gray-600 mt-1">
+                                  {cert.department} - {cert.role}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ));
+                      } catch (error) {
+                        console.error("Error parsing certificates:", error);
+                        return (
+                          <div className="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg border-l-4 border-orange-400">
+                            <Award className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                            <div className="font-semibold text-gray-800">{record.certificateTypes}</div>
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* Professional Experience Section */}
+              <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-6 flex items-center" style={{ color: '#000053' }}>
+                  <Briefcase className="w-6 h-6 mr-2" />
+                  Professional Experience
+                </h2>
+                
+                {workExperiences.length > 0 ? (
+                  <div className="space-y-6">
+                    {workExperiences.map((exp: any, index: number) => (
+                      <div key={index} className="relative border-l-4 border-orange-400 pl-6 pb-6 last:pb-0">
+                        {/* Experience Timeline Dot */}
+                        <div className="absolute -left-2 top-0 w-4 h-4 bg-orange-400 rounded-full border-4 border-white shadow-md"></div>
+                        
+                        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-5 shadow-sm">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="text-lg font-bold" style={{ color: '#000053' }}>
+                                {exp.position || exp.role || 'Position Not Specified'}
+                              </h3>
+                              <p className="text-orange-600 font-semibold">
+                                {exp.companyName || exp.company || exp.employer || exp.organization || 'Company Not Specified'}
+                              </p>
+                            </div>
+                            
+                            <div className="text-right">
+                              <div className="bg-blue-100 px-3 py-1 rounded-full text-sm font-semibold text-blue-800">
+                                {(() => {
+                                  try {
+                                    if (!exp.startDate) return 'Duration Not Specified';
+                                    
+                                    // Handle MM/yyyy format from sample data
+                                    let startDate;
+                                    if (exp.startDate.includes('/')) {
+                                      const [month, year] = exp.startDate.split('/');
+                                      startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                                    } else {
+                                      startDate = new Date(exp.startDate);
+                                    }
+                                    
+                                    if (isNaN(startDate.getTime())) return 'Invalid Date';
+                                    
+                                    const startFormatted = startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                                    
+                                    if (exp.isCurrentRole || !exp.endDate || exp.endDate === '') {
+                                      return `${startFormatted} - Present`;
+                                    }
+                                    
+                                    let endDate;
+                                    if (exp.endDate.includes('/')) {
+                                      const [month, year] = exp.endDate.split('/');
+                                      endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+                                    } else {
+                                      endDate = new Date(exp.endDate);
+                                    }
+                                    
+                                    if (isNaN(endDate.getTime())) return startFormatted;
+                                    
+                                    const endFormatted = endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                                    
+                                    return `${startFormatted} - ${endFormatted}`;
+                                  } catch (error) {
+                                    console.error('Error formatting date:', error);
+                                    return exp.startDate || 'Date Error';
+                                  }
+                                })()}
+                              </div>
+                              
+                              {exp.isCurrentRole && (
+                                <div className="mt-2">
+                                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    Current Role
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Role Details */}
+                          {exp.roleTitle && exp.roleTitle !== exp.position && (
+                            <div className="mb-2">
+                              <span className="text-gray-600 text-sm font-medium">Role Title: </span>
+                              <span className="text-gray-800 font-medium">{exp.roleTitle}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 font-medium">No work experience data available</p>
+                    <p className="text-gray-400 text-sm mt-1">Experience information will be displayed here once added</p>
                   </div>
                 )}
               </div>
 
-              {/* Experience Table */}
-              <div className="mt-8 mb-8 print-avoid-break">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience Summary
-</h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
-                  <thead>
-                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Position</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Company</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Duration</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.position || exp.role || ''}</td>
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>
-                          {(() => {
-                            try {
-                              if (!exp.startDate) return '';
-                              
-                              // Handle MM/yyyy format from sample data
-                              let startDate;
-                              if (exp.startDate.includes('/')) {
-                                const [month, year] = exp.startDate.split('/');
-                                startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-                              } else {
-                                startDate = new Date(exp.startDate);
-                              }
-                              
-                              if (isNaN(startDate.getTime())) return '';
-                              
-                              const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                              
-                              if (exp.isCurrentRole || !exp.endDate || exp.endDate === '') {
-                                return `${startFormatted} - Present`;
-                              }
-                              
-                              // Handle MM/yyyy format for end date
-                              let endDate;
-                              if (exp.endDate.includes('/')) {
-                                const [month, year] = exp.endDate.split('/');
-                                endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-                              } else {
-                                endDate = new Date(exp.endDate);
-                              }
-                              
-                              if (isNaN(endDate.getTime())) return `${startFormatted} - Present`;
-                              const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                              return `${startFormatted} - ${endFormatted}`;
-                            } catch (error) {
-                              return '';
-                            }
-                          })()}
-                        </td>
-                      </tr>
-                    )) : (
-                      <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No work experience recorded</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Qualification Table */}
-              <div className="mt-8 mb-8 print-avoid-break">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Qualification</h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
-                  <thead>
-                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Qualifications</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Institution</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Year Completed</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {record.qualifications ? (
-                      <tr className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
-                      </tr>
-                    ) : null}
-                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                      </tr>
-                    ))}
-                    {!record.qualifications && otherQualifications.length === 0 && (
-                      <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-
-
-              {/* Experience Details Section */}
-              {workExperiences.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
-              {workExperiences.map((exp: any, index: number) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                    {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
-                    {(exp.roleTitle || exp.title) && (
-                      <span className="font-medium ml-2" style={{ color: '#000053' }}>| {exp.roleTitle || exp.title}</span>
-                    )}
-                  </h3>
-                  <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
-                  <p className="text-gray-600 mb-3">
-                    {(() => {
-                      try {
-                        if (!exp.startDate) return '';
-                        
-                        // Handle MM/yyyy format from sample data
-                        let startDate;
-                        if (exp.startDate.includes('/')) {
-                          const [month, year] = exp.startDate.split('/');
-                          startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-                        } else {
-                          startDate = new Date(exp.startDate);
-                        }
-                        
-                        if (isNaN(startDate.getTime())) return '';
-                        
-                        const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                        
-                        if (exp.isCurrentRole || !exp.endDate || exp.endDate === '') {
-                          return `${startFormatted} - Present`;
-                        }
-                        
-                        // Handle MM/yyyy format for end date
-                        let endDate;
-                        if (exp.endDate.includes('/')) {
-                          const [month, year] = exp.endDate.split('/');
-                          endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-                        } else {
-                          endDate = new Date(exp.endDate);
-                        }
-                        
-                        if (isNaN(endDate.getTime())) return `${startFormatted} - Present`;
-                        const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                        return `${startFormatted} - ${endFormatted}`;
-                      } catch (error) {
-                        return '';
-                      }
-                    })()}
-                  </p>
-                  {exp.description && (
-                    <p className="text-gray-700 leading-relaxed text-justify">
-                      {exp.description}
-                    </p>
+              {/* Academic Qualifications Section */}
+              <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-6 flex items-center" style={{ color: '#000053' }}>
+                  <GraduationCap className="w-6 h-6 mr-2" />
+                  Academic Qualifications
+                </h2>
+                
+                <div className="space-y-4">
+                  {record.qualifications && (
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-5 border-l-4 border-blue-500 shadow-sm">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold" style={{ color: '#000053' }}>
+                            {record.qualifications}
+                          </h3>
+                          {record.instituteName && (
+                            <p className="text-blue-600 font-semibold mt-1">
+                              <Building className="w-4 h-4 inline mr-1" />
+                              {record.instituteName}
+                            </p>
+                          )}
+                        </div>
+                        {record.yearCompleted && (
+                          <div className="bg-blue-100 px-3 py-1 rounded-full text-sm font-semibold text-blue-800">
+                            <Calendar className="w-4 h-4 inline mr-1" />
+                            {record.yearCompleted}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
+                    <div key={index} className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-5 border-l-4 border-green-500 shadow-sm">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold" style={{ color: '#000053' }}>
+                            {qual.name || qual.type}
+                          </h3>
+                          <p className="text-green-600 font-semibold mt-1">
+                            <Award className="w-4 h-4 inline mr-1" />
+                            Additional Qualification
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {!record.qualifications && otherQualifications.length === 0 && (
+                    <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <GraduationCap className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500 font-medium">No qualifications data available</p>
+                      <p className="text-gray-400 text-sm mt-1">Educational qualifications will be displayed here once added</p>
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
 
               {/* Footer */}
               <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">
