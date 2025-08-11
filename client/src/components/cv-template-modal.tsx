@@ -554,21 +554,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     </tr>
                   </thead>
                   <tbody>
-                    {record.qualifications ? (
-                      <tr className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
-                      </tr>
-                    ) : null}
-                    {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                      </tr>
-                    ))}
-                    {!record.qualifications && otherQualifications.length === 0 && (
+                    {otherQualifications.length > 0 ? (
+                      otherQualifications.map((qual: string, index: number) => (
+                        <tr key={index} className="hover:bg-gray-50 transition-colors">
+                          <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual}</td>
+                          <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
+                          <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
+                        </tr>
+                      ))
+                    ) : (
                       <tr>
                         <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
                       </tr>
