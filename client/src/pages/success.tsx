@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download, LogOut } from "lucide-react";
+import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download, LogOut, Edit } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -373,18 +373,33 @@ export default function SuccessPage() {
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 mt-8">
           {record && (
-            <Button 
-              variant="default" 
-              onClick={() => {
-                // Download the CV as PDF
-                window.open(`/api/cv-records/${record.id}/download`, '_blank');
-              }}
-              className="flex items-center gap-2"
-              style={{ backgroundColor: 'rgb(0, 0, 83)', borderColor: 'rgb(0, 0, 83)' }}
-            >
-              <Download className="h-4 w-4" />
-              Download Your CV
-            </Button>
+            <>
+              <Button 
+                variant="default" 
+                onClick={() => {
+                  // Download the CV as PDF
+                  window.open(`/api/cv-records/${record.id}/download`, '_blank');
+                }}
+                className="flex items-center gap-2"
+                style={{ backgroundColor: 'rgb(0, 0, 83)', borderColor: 'rgb(0, 0, 83)' }}
+              >
+                <Download className="h-4 w-4" />
+                Download Your CV
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  // Navigate to edit mode with record ID
+                  window.location.href = `/capture?edit=${record.id}`;
+                }}
+                className="flex items-center gap-2"
+                style={{ borderColor: 'rgb(0, 0, 83)', color: 'rgb(0, 0, 83)' }}
+              >
+                <Edit className="h-4 w-4" />
+                Edit Record
+              </Button>
+            </>
           )}
           
           <Button 

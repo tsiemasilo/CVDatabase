@@ -6,10 +6,35 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { InsertCVRecord } from "@shared/schema";
 import { LANGUAGES, GENDERS, SAP_K_LEVELS, QUALIFICATION_TYPES, QUALIFICATION_MAPPINGS, DEPARTMENTS } from "@shared/data";
+
+// Interface for CV record from API
+interface CVRecord {
+  id: number;
+  name: string;
+  surname?: string;
+  idPassport?: string;
+  gender?: string;
+  experience?: number;
+  sapKLevel?: string;
+  phone?: string;
+  email?: string;
+  position?: string;
+  roleTitle?: string;
+  department?: string;
+  languages?: string;
+  qualificationType?: string;
+  qualificationName?: string;
+  instituteName?: string;
+  yearCompleted?: string;
+  experienceInSimilarRole?: number;
+  experienceWithITSMTools?: number;
+  workExperiences?: string;
+  certificateTypes?: string;
+}
 
 // Custom checkbox styles and dropdown z-index fix
 const checkboxStyles = `
@@ -204,8 +229,84 @@ export default function CaptureRecord() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [departmentRoles, setDepartmentRoles] = useState<DepartmentRole[]>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editRecordId, setEditRecordId] = useState<number | null>(null);
 
+  // Detect edit mode from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    if (editId) {
+      setIsEditMode(true);
+      setEditRecordId(parseInt(editId));
+    }
+  }, []);
 
+  // Fetch existing record data when in edit mode
+  const { data: existingRecord, isLoading: isLoadingRecord } = useQuery<CVRecord>({
+    queryKey: [`/api/cv-records/${editRecordId}`],
+    enabled: !!editRecordId && isEditMode,
+    retry: false,
+  });
+
+  // Populate form with existing record data when it's loaded
+  useEffect(() => {
+    if (existingRecord && isEditMode) {
+      console.log('Loading existing record for editing:', existingRecord);
+      
+      // Parse work experiences and certificates from JSON strings
+      let workExperiences = [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }];
+      if (existingRecord.workExperiences) {
+        try {
+          workExperiences = JSON.parse(existingRecord.workExperiences);
+        } catch (e) {
+          console.error('Error parsing work experiences:', e);
+        }
+      }
+
+      let certificates = [{ department: "", role: "", certificateName: "", certificateFile: null }];
+      if (existingRecord.certificateTypes) {
+        try {
+          certificates = JSON.parse(existingRecord.certificateTypes);
+        } catch (e) {
+          console.error('Error parsing certificates:', e);
+        }
+      }
+
+      // Split name back into components
+      const nameParts = existingRecord.name.split(' ');
+      const firstName = nameParts[0] || '';
+      const secondName = nameParts[1] || '';
+      const thirdName = nameParts[2] || '';
+
+      setFormData({
+        firstName,
+        secondName,
+        thirdName,
+        surname: existingRecord.surname || '',
+        idPassportNumber: existingRecord.idPassport || '',
+        gender: existingRecord.gender || '',
+        yearsOfExperience: existingRecord.experience?.toString() || '',
+        sapKLevel: existingRecord.sapKLevel || '',
+        contactNumber: existingRecord.phone || '',
+        email: existingRecord.email || '',
+        position: existingRecord.position || '',
+        roleTitle: existingRecord.roleTitle || '',
+        department: existingRecord.department || '',
+        languages: existingRecord.languages ? existingRecord.languages.split(',').map((l: string) => l.trim()) : [''],
+        qualificationType: existingRecord.qualificationType || '',
+        qualificationName: existingRecord.qualificationName || '',
+        instituteName: existingRecord.instituteName || '',
+        yearCompleted: existingRecord.yearCompleted || '',
+        qualificationCertificate: null,
+        otherQualifications: [],
+        certificates,
+        experienceInSimilarRole: existingRecord.experienceInSimilarRole?.toString() || '',
+        experienceWithITSMTools: existingRecord.experienceWithITSMTools?.toString() || '',
+        workExperiences
+      });
+    }
+  }, [existingRecord, isEditMode]);
 
   // Clear any cached form data and load departments and roles
   useEffect(() => {
@@ -846,29 +947,34 @@ export default function CaptureRecord() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const createCVMutation = useMutation({
+  const saveCVMutation = useMutation({
     mutationFn: async (data: InsertCVRecord) => {
-      const response = await apiRequest("POST", "/api/cv-records", data);
-      return await response.json();
+      if (isEditMode && editRecordId) {
+        const response = await apiRequest("PUT", `/api/cv-records/${editRecordId}`, data);
+        return await response.json();
+      } else {
+        const response = await apiRequest("POST", "/api/cv-records", data);
+        return await response.json();
+      }
     },
-    onSuccess: (newRecord) => {
+    onSuccess: (savedRecord) => {
       toast({
         title: "Success",
-        description: "CV record has been successfully captured.",
+        description: isEditMode ? "CV record has been successfully updated." : "CV record has been successfully captured.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
       
       // Store the record ID for the success page
-      localStorage.setItem('lastSubmittedRecordId', newRecord.id.toString());
+      localStorage.setItem('lastSubmittedRecordId', savedRecord.id.toString());
       
       // Redirect to success page
-      window.location.href = `?success=true&recordId=${newRecord.id}`;
+      window.location.href = `/success?recordId=${savedRecord.id}`;
     },
     onError: (error: any) => {
-      console.error("CV creation error:", error);
+      console.error("CV save error:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to capture CV record. Please check all required fields.",
+        description: error.message || `Failed to ${isEditMode ? 'update' : 'capture'} CV record. Please check all required fields.`,
         variant: "destructive",
       });
     },
@@ -925,16 +1031,36 @@ export default function CaptureRecord() {
     console.log("Role title value:", formData.roleTitle);
     console.log("SAP K-level value:", formData.sapKLevel);
     console.log("Final CV data being submitted:", cvData);
-    createCVMutation.mutate(cvData);
+    saveCVMutation.mutate(cvData);
   };
+
+  // Loading state for edit mode
+  if (isEditMode && isLoadingRecord) {
+    return (
+      <div className="bg-gray-50 font-sans min-h-screen">
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading CV record for editing...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 font-sans min-h-screen">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Capture Record</h1>
-            <p className="text-gray-600 mt-1">Add a new CV record to the database</p>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              {isEditMode ? 'Edit CV Record' : 'Capture Record'}
+            </h1>
+            <p className="text-gray-600 mt-1">
+              {isEditMode ? 'Update the CV record information' : 'Add a new CV record to the database'}
+            </p>
           </div>
         </div>
 
@@ -1836,11 +1962,11 @@ export default function CaptureRecord() {
           <div className="flex justify-end">
             <Button
               onClick={handleSubmit}
-              disabled={createCVMutation.isPending}
+              disabled={saveCVMutation.isPending}
               className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2"
             >
               <Save className="w-4 h-4 mr-2" />
-              {createCVMutation.isPending ? "Saving..." : "Save Record"}
+              {saveCVMutation.isPending ? "Saving..." : (isEditMode ? "Update Record" : "Save Record")}
             </Button>
           </div>
         </div>
