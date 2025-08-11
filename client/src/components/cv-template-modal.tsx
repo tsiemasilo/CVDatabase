@@ -525,75 +525,141 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         </div>
         
         <div id="cv-content" className="bg-white">
+          <style>{`
+            @media print {
+              * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              body { margin: 0 !important; font-family: Arial, sans-serif !important; }
+              .no-print { display: none !important; }
+              table { page-break-inside: avoid; }
+              tr { page-break-inside: avoid; }
+            }
+            @page {
+              size: A4;
+              margin: 15mm;
+            }
+          `}</style>
           {/* Header with Alteram Logo and Branding */}
-          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+          <div 
+            className="px-8 py-4" 
+            style={{ 
+              background: 'linear-gradient(135deg, #fb923c, #f97316)',
+              printColorAdjust: 'exact',
+              WebkitPrintColorAdjust: 'exact'
+            }}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img 
                   src={alteramLogoPath} 
                   alt="Alteram Solutions" 
-                  className="h-16 w-auto"
+                  style={{ height: '64px', width: 'auto' }}
                 />
               </div>
-              <div className="text-right text-white">
-                <div className="text-sm font-medium">
+              <div className="text-right" style={{ color: 'white' }}>
+                <div style={{ fontSize: '14px', fontWeight: '500' }}>
                   <p>1144, 16th Road Randjespark Midrand</p>
                   <p>Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>
                 </div>
-                <div className="text-sm mt-1">
-                  <span className="font-semibold">T</span> 010 900 4075 | <span className="font-semibold">F</span> 086 665 2021 | info@alteram.co.za
+                <div style={{ fontSize: '14px', marginTop: '4px' }}>
+                  <span style={{ fontWeight: '600' }}>T</span> 010 900 4075 | <span style={{ fontWeight: '600' }}>F</span> 086 665 2021 | info@alteram.co.za
                 </div>
-                <p className="text-sm font-medium mt-1">www.alteram.co.za</p>
+                <p style={{ fontSize: '14px', fontWeight: '500', marginTop: '4px' }}>www.alteram.co.za</p>
               </div>
             </div>
-            <div className="mt-2 border-t border-orange-200 pt-2">
-              <p className="text-sm text-white font-medium">
+            <div style={{ marginTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.3)', paddingTop: '8px' }}>
+              <p style={{ fontSize: '14px', color: 'white', fontWeight: '500' }}>
                 Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07
               </p>
             </div>
           </div>
         
-          <div className="p-6 space-y-4 font-sans relative" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ 
+            padding: '24px', 
+            fontFamily: 'Arial, sans-serif', 
+            position: 'relative',
+            zIndex: 1,
+            minHeight: '600px'
+          }}>
             {/* Background watermark */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none" style={{ position: 'absolute', zIndex: 0 }}>
+            <div style={{ 
+              position: 'absolute', 
+              top: '50%', 
+              left: '50%', 
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.05,
+              pointerEvents: 'none',
+              zIndex: 0
+            }}>
               <img 
                 src={alteramLogoPath} 
                 alt="Alteram Solutions Watermark" 
-                className="w-96 h-auto"
-                style={{ maxWidth: '384px', height: 'auto' }}
+                style={{ width: '384px', height: 'auto', maxWidth: '384px' }}
               />
             </div>
             
-            <div className="relative space-y-4" style={{ position: 'relative', zIndex: 10 }}>
+            <div style={{ position: 'relative', zIndex: 10 }}>
               {/* Name and ID Section */}
-              <div className="space-y-2">
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Name and Surname:</span> {record.name} {record.surname || ''}
+              <div style={{ marginBottom: '16px' }}>
+                <p style={{ 
+                  fontSize: '18px', 
+                  fontWeight: '500', 
+                  color: '#374151',
+                  lineHeight: '1.6',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{ fontWeight: 'bold', color: '#000053' }}>Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Id/Passport:</span> {record.idPassport || ''}
+                <p style={{ 
+                  fontSize: '18px', 
+                  fontWeight: '500', 
+                  color: '#374151',
+                  lineHeight: '1.6',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{ fontWeight: 'bold', color: '#000053' }}>Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
 
               {/* Role Information */}
-              <div className="space-y-2">
+              <div style={{ marginBottom: '16px' }}>
                 {record.department && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                    <span className="font-bold" style={{ color: '#000053' }}>Department:</span> {record.department}
+                  <p style={{ 
+                    fontSize: '18px', 
+                    fontWeight: '500', 
+                    color: '#374151',
+                    lineHeight: '1.6',
+                    marginBottom: '8px'
+                  }}>
+                    <span style={{ fontWeight: 'bold', color: '#000053' }}>Department:</span> {record.department}
                   </p>
                 )}
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Role:</span> {record.position || record.roleTitle || ''}
+                <p style={{ 
+                  fontSize: '18px', 
+                  fontWeight: '500', 
+                  color: '#374151',
+                  lineHeight: '1.6',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{ fontWeight: 'bold', color: '#000053' }}>Role:</span> {record.position || record.roleTitle || ''}
                   {record.roleTitle && (
-                    <span> | <span className="font-bold" style={{ color: '#000053' }}>Role Title:</span> {record.roleTitle}</span>
+                    <span> | <span style={{ fontWeight: 'bold', color: '#000053' }}>Role Title:</span> {record.roleTitle}</span>
                   )}
                   {record.sapKLevel && record.sapKLevel.trim() !== '' && (
-                    <span> | <span className="font-bold" style={{ color: '#000053' }}>K-Level:</span> {record.sapKLevel}</span>
+                    <span> | <span style={{ fontWeight: 'bold', color: '#000053' }}>K-Level:</span> {record.sapKLevel}</span>
                   )}
                 </p>
                 
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                  <span className="font-bold" style={{ color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
+                <p style={{ 
+                  fontSize: '18px', 
+                  fontWeight: '500', 
+                  color: '#374151',
+                  lineHeight: '1.6',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{ fontWeight: 'bold', color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
                 </p>
                 
                 {record.certificateTypes && (
@@ -693,23 +759,70 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Experience Table */}
-              <div className="mt-4 mb-4">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience Summary
-</h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
+              <div style={{ margin: '32px 0' }}>
+                <h2 style={{ 
+                  fontSize: '20px', 
+                  fontWeight: 'bold', 
+                  marginBottom: '16px', 
+                  paddingBottom: '8px',
+                  borderBottom: '2px solid #fb923c',
+                  color: '#000053'
+                }}>Experience Summary</h2>
+                <table style={{ 
+                  width: '100%', 
+                  borderCollapse: 'collapse',
+                  border: '1px solid #000053',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
                   <thead>
-                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Position</th>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Company</th>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Duration</th>
+                    <tr style={{ 
+                      background: 'linear-gradient(to right, #000053, #000066)',
+                      printColorAdjust: 'exact',
+                      WebkitPrintColorAdjust: 'exact'
+                    }}>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Position</th>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Company</th>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Duration</th>
                     </tr>
                   </thead>
                   <tbody>
                     {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-4 py-2 align-top" style={{ borderColor: '#000053' }}>{exp.position || exp.role || ''}</td>
-                        <td className="border px-4 py-2 align-top" style={{ borderColor: '#000053' }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
-                        <td className="border px-4 py-2 align-top" style={{ borderColor: '#000053' }}>
+                      <tr key={index} style={{ 
+                        backgroundColor: index % 2 === 0 ? 'transparent' : '#f9fafb'
+                      }}>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top'
+                        }}>{exp.position || exp.role || ''}</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top'
+                        }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top'
+                        }}>
                           {(() => {
                             try {
                               if (!exp.startDate) return '';
@@ -751,7 +864,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                       </tr>
                     )) : (
                       <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No work experience recorded</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '16px 24px',
+                          textAlign: 'center',
+                          color: '#6b7280',
+                          fontStyle: 'italic'
+                        }} colSpan={3}>No work experience recorded</td>
                       </tr>
                     )}
                   </tbody>
@@ -759,34 +878,104 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Qualification Table */}
-              <div className="mt-4 mb-4">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Qualification</h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
+              <div style={{ margin: '32px 0' }}>
+                <h2 style={{ 
+                  fontSize: '20px', 
+                  fontWeight: 'bold', 
+                  marginBottom: '16px', 
+                  paddingBottom: '8px',
+                  borderBottom: '2px solid #fb923c',
+                  color: '#000053'
+                }}>Qualification</h2>
+                <table style={{ 
+                  width: '100%', 
+                  borderCollapse: 'collapse',
+                  border: '1px solid #000053',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
                   <thead>
-                    <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Qualifications</th>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Institution</th>
-                      <th className="border px-4 py-2 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Year Completed</th>
+                    <tr style={{ 
+                      background: 'linear-gradient(to right, #000053, #000066)',
+                      printColorAdjust: 'exact',
+                      WebkitPrintColorAdjust: 'exact'
+                    }}>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Qualifications</th>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Institution</th>
+                      <th style={{ 
+                        border: '1px solid #000053',
+                        padding: '8px 16px',
+                        textAlign: 'left',
+                        fontWeight: 'bold',
+                        color: 'white'
+                      }}>Year Completed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {record.qualifications ? (
-                      <tr className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-4 py-2 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
-                        <td className="border px-4 py-2 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
-                        <td className="border px-4 py-2 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
+                      <tr style={{ backgroundColor: '#f9fafb' }}>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top'
+                        }}>{record.qualifications}</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top',
+                          textAlign: 'center'
+                        }}>{record.instituteName || '-'}</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top',
+                          textAlign: 'center'
+                        }}>{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
                     {qualifications.length > 0 && qualifications.map((qual: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-4 py-2 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
-                        <td className="border px-4 py-2 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                        <td className="border px-4 py-2 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
+                      <tr key={index} style={{ 
+                        backgroundColor: (index + (record.qualifications ? 1 : 0)) % 2 === 0 ? 'transparent' : '#f9fafb'
+                      }}>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top'
+                        }}>{qual.name || qual.type}</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top',
+                          textAlign: 'center'
+                        }}>-</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '8px 16px',
+                          verticalAlign: 'top',
+                          textAlign: 'center'
+                        }}>-</td>
                       </tr>
                     ))}
                     {!record.qualifications && qualifications.length === 0 && (
                       <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
+                        <td style={{ 
+                          border: '1px solid #000053',
+                          padding: '16px 24px',
+                          textAlign: 'center',
+                          color: '#6b7280',
+                          fontStyle: 'italic'
+                        }} colSpan={3}>No qualifications recorded</td>
                       </tr>
                     )}
                   </tbody>
