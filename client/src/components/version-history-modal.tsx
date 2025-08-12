@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Badge } from "./ui/badge";
@@ -6,7 +6,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { formatDistanceToNow } from "date-fns";
-import { Clock, User, Eye, Plus, Edit, Trash2, FileText, History } from "lucide-react";
+import { Clock, User, Eye, Plus, Edit, Trash2, FileText, History, ArrowRight, Zap } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
@@ -128,6 +128,8 @@ export function VersionHistoryModal({
 
   const VersionHistoryList = ({ records }: { records: VersionHistoryRecord[] }) => {
     const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
+    const [highlightedChanges, setHighlightedChanges] = useState<Set<string>>(new Set());
+    const [animatingFields, setAnimatingFields] = useState<Set<string>>(new Set());
 
     const toggleExpanded = (id: number) => {
       const newExpanded = new Set(expandedItems);
@@ -137,6 +139,28 @@ export function VersionHistoryModal({
         newExpanded.add(id);
       }
       setExpandedItems(newExpanded);
+    };
+
+    const highlightChange = (recordId: number, field: string) => {
+      const key = `${recordId}-${field}`;
+      setHighlightedChanges(prev => new Set([...prev, key]));
+      setAnimatingFields(prev => new Set([...prev, key]));
+      
+      setTimeout(() => {
+        setAnimatingFields(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(key);
+          return newSet;
+        });
+      }, 600);
+
+      setTimeout(() => {
+        setHighlightedChanges(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(key);
+          return newSet;
+        });
+      }, 2000);
     };
 
     if (records.length === 0) {
@@ -151,17 +175,21 @@ export function VersionHistoryModal({
     return (
       <ScrollArea className="h-[400px] pr-4">
         <div className="space-y-4">
-          {records.map((record) => {
+          {records.map((record, recordIndex) => {
             const isExpanded = expandedItems.has(record.id);
             const changedFields = record.changed_fields ? JSON.parse(record.changed_fields) : [];
             const oldValues = record.old_values ? JSON.parse(record.old_values) : null;
             const newValues = record.new_values ? JSON.parse(record.new_values) : null;
 
             return (
-              <div key={record.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              <div 
+                key={record.id} 
+                className="border rounded-lg p-4 hover:bg-muted/50 transition-all duration-300 hover:shadow-md hover:border-primary/20 animate-in fade-in-50 slide-in-from-left-5"
+                style={{ animationDelay: `${recordIndex * 150}ms` }}
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-full text-white ${getActionColor(record.action)}`}>
+                    <div className={`p-2 rounded-full text-white ${getActionColor(record.action)} transition-all duration-300 hover:scale-110 hover:shadow-lg`}>
                       {getActionIcon(record.action)}
                     </div>
                     <div>
@@ -190,59 +218,132 @@ export function VersionHistoryModal({
                 {(changedFields.length > 0 || record.action === 'CREATE' || record.action === 'DELETE') && (
                   <Collapsible open={isExpanded} onOpenChange={() => toggleExpanded(record.id)}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-6 p-0 font-normal">
-                        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                        <span className="ml-1">
-                          {record.action === 'CREATE' && 'View created data'}
-                          {record.action === 'UPDATE' && `View ${changedFields.length} changed field${changedFields.length !== 1 ? 's' : ''}`}
-                          {record.action === 'DELETE' && 'View deleted data'}
-                        </span>
+                      <Button variant="ghost" size="sm" className="h-6 p-0 font-normal group hover:bg-primary/10 transition-all duration-200">
+                        <div className="flex items-center">
+                          {isExpanded ? 
+                            <ChevronDown className="h-4 w-4 transition-transform duration-200" /> : 
+                            <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                          }
+                          <span className="ml-1 group-hover:text-primary transition-colors duration-200">
+                            {record.action === 'CREATE' && (
+                              <span className="flex items-center gap-1">
+                                <Zap className="h-3 w-3" />
+                                View created data
+                              </span>
+                            )}
+                            {record.action === 'UPDATE' && (
+                              <span className="flex items-center gap-1">
+                                <ArrowRight className="h-3 w-3" />
+                                View {changedFields.length} changed field{changedFields.length !== 1 ? 's' : ''}
+                              </span>
+                            )}
+                            {record.action === 'DELETE' && 'View deleted data'}
+                          </span>
+                        </div>
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3">
-                      <div className="bg-muted/50 rounded-md p-3 space-y-2">
+                    <CollapsibleContent className="mt-3 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-up-2 data-[state=open]:slide-down-2">
+                      <div className="bg-muted/50 rounded-md p-3 space-y-2 animate-in slide-in-from-top-2 duration-300">
                         {record.action === 'CREATE' && newValues && (
-                          <div>
-                            <h5 className="text-sm font-semibold text-green-700 mb-2">Created Data:</h5>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {Object.entries(newValues).map(([key, value]) => (
-                                <div key={key} className="text-xs">
-                                  <span className="font-medium">{formatFieldName(key)}:</span>{' '}
-                                  <span className="text-muted-foreground">
+                          <div className="animate-in fade-in-50 slide-in-from-top-2 duration-500">
+                            <h5 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
+                              <Zap className="h-4 w-4 animate-pulse" />
+                              Created Data:
+                            </h5>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {Object.entries(newValues).map(([key, value], index) => (
+                                <div 
+                                  key={key} 
+                                  className="text-xs p-2 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800 hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                                  style={{ animationDelay: `${index * 50}ms` }}
+                                >
+                                  <div className="font-medium text-green-700 dark:text-green-400 mb-1">
+                                    {formatFieldName(key)}:
+                                  </div>
+                                  <div className="text-muted-foreground font-mono text-xs bg-white dark:bg-gray-800 p-1 rounded border">
                                     {formatValue(value)}
-                                  </span>
+                                  </div>
                                 </div>
                               ))}
                             </div>
                           </div>
                         )}
 
-                        {record.action === 'UPDATE' && changedFields.map((field: string) => (
-                          <div key={field} className="border-l-2 border-blue-500 pl-3">
-                            <div className="text-sm font-medium">{formatFieldName(field)}</div>
-                            <div className="text-xs space-y-1">
-                              <div className="text-red-600">
-                                <span className="font-medium">From:</span>{' '}
-                                {formatValue(oldValues?.[field])}
+                        {record.action === 'UPDATE' && changedFields.map((field: string, index: number) => {
+                          const key = `${record.id}-${field}`;
+                          const isHighlighted = highlightedChanges.has(key);
+                          const isAnimating = animatingFields.has(key);
+                          
+                          return (
+                            <div 
+                              key={field} 
+                              className={`border-l-2 border-blue-500 pl-3 transition-all duration-500 hover:border-primary hover:bg-primary/5 rounded-r-md cursor-pointer group ${
+                                isHighlighted ? 'bg-primary/10 border-primary shadow-md' : ''
+                              }`}
+                              style={{ animationDelay: `${index * 100}ms` }}
+                              onClick={() => highlightChange(record.id, field)}
+                            >
+                              <div className="text-sm font-medium flex items-center gap-2 group-hover:text-primary transition-colors">
+                                {formatFieldName(field)}
+                                <ArrowRight className={`h-3 w-3 opacity-0 group-hover:opacity-100 transition-all duration-300 ${
+                                  isAnimating ? 'animate-pulse scale-110' : ''
+                                }`} />
                               </div>
-                              <div className="text-green-600">
-                                <span className="font-medium">To:</span>{' '}
-                                {formatValue(newValues?.[field])}
+                              <div className="text-xs space-y-2 mt-2">
+                                <div className={`text-red-600 p-2 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 transition-all duration-300 hover:scale-[1.02] ${
+                                  isAnimating ? 'animate-in slide-in-from-left-2' : ''
+                                }`}>
+                                  <span className="font-medium flex items-center gap-1">
+                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                    From:
+                                  </span>
+                                  <div className="ml-3 font-mono text-xs bg-white dark:bg-gray-800 p-1 rounded border mt-1">
+                                    {formatValue(oldValues?.[field])}
+                                  </div>
+                                </div>
+                                <div className={`text-green-600 p-2 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 transition-all duration-300 hover:scale-[1.02] ${
+                                  isAnimating ? 'animate-in slide-in-from-right-2' : ''
+                                }`}>
+                                  <span className="font-medium flex items-center gap-1">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                    To:
+                                  </span>
+                                  <div className="ml-3 font-mono text-xs bg-white dark:bg-gray-800 p-1 rounded border mt-1">
+                                    {formatValue(newValues?.[field])}
+                                  </div>
+                                </div>
                               </div>
+                              {isHighlighted && (
+                                <div className="mt-2 text-xs text-muted-foreground animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
+                                  <div className="flex items-center gap-1">
+                                    <Zap className="h-3 w-3 text-yellow-500" />
+                                    Change highlighted
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
 
                         {record.action === 'DELETE' && oldValues && (
-                          <div>
-                            <h5 className="text-sm font-semibold text-red-700 mb-2">Deleted Data:</h5>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {Object.entries(oldValues).map(([key, value]) => (
-                                <div key={key} className="text-xs">
-                                  <span className="font-medium">{formatFieldName(key)}:</span>{' '}
-                                  <span className="text-muted-foreground">
+                          <div className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+                            <h5 className="text-sm font-semibold text-red-700 mb-3 flex items-center gap-2">
+                              <Trash2 className="h-4 w-4 animate-pulse" />
+                              Deleted Data:
+                            </h5>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {Object.entries(oldValues).map(([key, value], index) => (
+                                <div 
+                                  key={key} 
+                                  className="text-xs p-2 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800 hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer opacity-75 hover:opacity-100"
+                                  style={{ animationDelay: `${index * 50}ms` }}
+                                >
+                                  <div className="font-medium text-red-700 dark:text-red-400 mb-1 line-through">
+                                    {formatFieldName(key)}:
+                                  </div>
+                                  <div className="text-muted-foreground font-mono text-xs bg-white dark:bg-gray-800 p-1 rounded border line-through">
                                     {formatValue(value)}
-                                  </span>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -262,7 +363,7 @@ export function VersionHistoryModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh]">
+      <DialogContent className="max-w-4xl max-h-[80vh] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-8 duration-300">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="h-5 w-5" />
@@ -273,18 +374,34 @@ export function VersionHistoryModal({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="record" disabled={!tableName || !recordId}>
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full animate-in fade-in-50 slide-in-from-top-2 duration-500">
+          <TabsList className="grid w-full grid-cols-2 animate-in slide-in-from-top-3 duration-400">
+            <TabsTrigger 
+              value="record" 
+              disabled={!tableName || !recordId}
+              className="transition-all duration-300 hover:bg-primary/10 data-[state=active]:shadow-md"
+            >
               This Record {tableName && recordId && `(${getTableDisplayName(tableName)} #${recordId})`}
             </TabsTrigger>
-            <TabsTrigger value="all">All Recent Changes</TabsTrigger>
+            <TabsTrigger 
+              value="all"
+              className="transition-all duration-300 hover:bg-primary/10 data-[state=active]:shadow-md"
+            >
+              All Recent Changes
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="record" className="mt-4">
             {recordHistoryQuery.isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="relative">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <div className="animate-ping absolute inset-0 rounded-full h-12 w-12 border-2 border-primary opacity-20"></div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-medium animate-pulse">Loading version history...</p>
+                  <p className="text-xs text-muted-foreground mt-1">Fetching changes for this record</p>
+                </div>
               </div>
             ) : recordHistoryQuery.error ? (
               <div className="text-center py-8 text-red-600">
@@ -297,8 +414,15 @@ export function VersionHistoryModal({
 
           <TabsContent value="all" className="mt-4">
             {allHistoryQuery.isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="relative">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <div className="animate-ping absolute inset-0 rounded-full h-12 w-12 border-2 border-primary opacity-20"></div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-medium animate-pulse">Loading all recent changes...</p>
+                  <p className="text-xs text-muted-foreground mt-1">Fetching system-wide version history</p>
+                </div>
               </div>
             ) : allHistoryQuery.error ? (
               <div className="text-center py-8 text-red-600">
