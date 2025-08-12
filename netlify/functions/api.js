@@ -323,6 +323,279 @@ const initializeApp = async () => {
         }
       });
 
+      // Version History routes
+      app.get("/api/version-history/:tableName/:recordId", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const { tableName, recordId } = req.params;
+          const recordIdNum = parseInt(recordId);
+          
+          if (isNaN(recordIdNum)) {
+            return res.status(400).json({ message: "Invalid record ID" });
+          }
+          
+          const history = await storage.getRecordVersionHistory(tableName, recordIdNum);
+          res.json(history);
+        } catch (error) {
+          console.error("Version history API error:", error);
+          res.status(500).json({ message: "Failed to get version history", error: error?.message || "Unknown error" });
+        }
+      });
+
+      app.get("/api/version-history", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const { tableName, recordId, limit } = req.query;
+          
+          const recordIdNum = recordId ? parseInt(recordId) : undefined;
+          const limitNum = limit ? parseInt(limit) : 50;
+          
+          const history = await storage.getVersionHistory(
+            tableName || undefined,
+            recordIdNum,
+            limitNum
+          );
+          res.json(history);
+        } catch (error) {
+          console.error("Version history API error:", error);
+          res.status(500).json({ message: "Failed to get version history", error: error?.message || "Unknown error" });
+        }
+      });
+
+      // Qualifications routes
+      app.get("/api/qualifications", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const qualifications = await storage.getAllQualifications();
+          res.json(qualifications);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch qualifications" });
+        }
+      });
+
+      app.get("/api/qualifications/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid qualification ID" });
+          }
+
+          const qualification = await storage.getQualification(id);
+          if (!qualification) {
+            return res.status(404).json({ message: "Qualification not found" });
+          }
+
+          res.json(qualification);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch qualification" });
+        }
+      });
+
+      app.post("/api/qualifications", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const newQualification = await storage.createQualification(req.body);
+          res.status(201).json(newQualification);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to create qualification" });
+        }
+      });
+
+      app.put("/api/qualifications/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid qualification ID" });
+          }
+
+          const updatedQualification = await storage.updateQualification(id, req.body);
+          if (!updatedQualification) {
+            return res.status(404).json({ message: "Qualification not found" });
+          }
+
+          res.json(updatedQualification);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to update qualification" });
+        }
+      });
+
+      app.delete("/api/qualifications/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid qualification ID" });
+          }
+
+          const deleted = await storage.deleteQualification(id);
+          if (!deleted) {
+            return res.status(404).json({ message: "Qualification not found" });
+          }
+
+          res.json({ message: "Qualification deleted successfully" });
+        } catch (error) {
+          res.status(500).json({ message: "Failed to delete qualification" });
+        }
+      });
+
+      // Positions/Roles routes
+      app.get("/api/positions-roles", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const positionsRoles = await storage.getAllPositionsRoles();
+          res.json(positionsRoles);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch positions/roles" });
+        }
+      });
+
+      app.get("/api/positions-roles/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid position/role ID" });
+          }
+
+          const positionRole = await storage.getPositionRole(id);
+          if (!positionRole) {
+            return res.status(404).json({ message: "Position/role not found" });
+          }
+
+          res.json(positionRole);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch position/role" });
+        }
+      });
+
+      app.post("/api/positions-roles", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const newPositionRole = await storage.createPositionRole(req.body);
+          res.status(201).json(newPositionRole);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to create position/role" });
+        }
+      });
+
+      app.put("/api/positions-roles/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid position/role ID" });
+          }
+
+          const updatedPositionRole = await storage.updatePositionRole(id, req.body);
+          if (!updatedPositionRole) {
+            return res.status(404).json({ message: "Position/role not found" });
+          }
+
+          res.json(updatedPositionRole);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to update position/role" });
+        }
+      });
+
+      app.delete("/api/positions-roles/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid position/role ID" });
+          }
+
+          const deleted = await storage.deletePositionRole(id);
+          if (!deleted) {
+            return res.status(404).json({ message: "Position/role not found" });
+          }
+
+          res.json({ message: "Position/role deleted successfully" });
+        } catch (error) {
+          res.status(500).json({ message: "Failed to delete position/role" });
+        }
+      });
+
+      // Tenders routes
+      app.get("/api/tenders", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const tenders = await storage.getAllTenders();
+          res.json(tenders);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch tenders" });
+        }
+      });
+
+      app.get("/api/tenders/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid tender ID" });
+          }
+
+          const tender = await storage.getTender(id);
+          if (!tender) {
+            return res.status(404).json({ message: "Tender not found" });
+          }
+
+          res.json(tender);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch tender" });
+        }
+      });
+
+      app.post("/api/tenders", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const newTender = await storage.createTender(req.body);
+          res.status(201).json(newTender);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to create tender" });
+        }
+      });
+
+      app.put("/api/tenders/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid tender ID" });
+          }
+
+          const updatedTender = await storage.updateTender(id, req.body);
+          if (!updatedTender) {
+            return res.status(404).json({ message: "Tender not found" });
+          }
+
+          res.json(updatedTender);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to update tender" });
+        }
+      });
+
+      app.delete("/api/tenders/:id", async (req, res) => {
+        try {
+          const storage = await getStorage();
+          const id = parseInt(req.params.id);
+          if (isNaN(id)) {
+            return res.status(400).json({ message: "Invalid tender ID" });
+          }
+
+          const deleted = await storage.deleteTender(id);
+          if (!deleted) {
+            return res.status(404).json({ message: "Tender not found" });
+          }
+
+          res.json({ message: "Tender deleted successfully" });
+        } catch (error) {
+          res.status(500).json({ message: "Failed to delete tender" });
+        }
+      });
+
       routesInitialized = true;
       console.log('Netlify function routes initialized successfully');
     } catch (error) {
