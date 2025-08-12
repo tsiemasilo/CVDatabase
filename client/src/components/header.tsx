@@ -78,6 +78,10 @@ export default function Header() {
     if (user?.role === 'user' && tab === "Capture record") {
       return false;
     }
+    // For super users, hide "Access User Profiles" tab
+    if (user?.role === 'super_user' && tab === "Access User Profiles") {
+      return false;
+    }
     return canAccessTab(tab);
   });
 
@@ -130,8 +134,8 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-3">
-            {/* Hide profile button for users and managers */}
-            {(user?.role === 'admin' || user?.role === 'super_user') && (
+            {/* Hide profile button for users, managers, and super users */}
+            {user?.role === 'admin' && (
               <Button 
                 variant="outline" 
                 size="sm" 

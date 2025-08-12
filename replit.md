@@ -59,6 +59,7 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 12, 2025: Hidden Access User Profiles tab for Super Users - they cannot access user management functionality while maintaining other admin-like permissions
 - August 12, 2025: Hidden delete action buttons for Super Users in Qualifications and Positions/Roles tabs - maintains edit access while preventing deletion of system configuration data
 - August 12, 2025: Created new "Super User" role with admin-like permissions but no delete capabilities - can manage users, CVs, tenders, and system features but cannot delete any records for security purposes (credentials: super/super1)
 - August 12, 2025: Enhanced role-based access control system to support four user roles: Admin (full access), Super User (edit-only access), Manager (view-only Landing/Tenders), User (capture records only)
