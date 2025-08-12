@@ -78,6 +78,7 @@ export const userProfiles = pgTable("user_profiles", {
   phoneNumber: varchar("phone_number", { length: 20 }),
   isActive: boolean("is_active").default(true),
   lastLogin: timestamp("last_login"),
+  modifiedBy: varchar("modified_by", { length: 100 }), // Username of who made the last change
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
