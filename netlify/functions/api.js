@@ -40,6 +40,8 @@ const initializeApp = async () => {
       const { z } = await import('zod');
       const path = await import('path');
       
+      console.log('Netlify function imports successful - version history routes included');
+      
       // Authentication routes
       app.post("/api/auth/login", async (req, res) => {
         try {
