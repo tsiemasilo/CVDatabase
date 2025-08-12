@@ -12,13 +12,13 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface VersionHistoryRecord {
   id: number;
-  tableName: string;
-  recordId: number;
+  table_name: string;
+  record_id: number;
   action: 'CREATE' | 'UPDATE' | 'DELETE';
-  oldValues: string | null;
-  newValues: string | null;
-  changedFields: string | null;
-  userId: number;
+  old_values: string | null;
+  new_values: string | null;
+  changed_fields: string | null;
+  user_id: number;
   username: string;
   timestamp: string;
   description: string | null;
@@ -127,9 +127,9 @@ export function VersionHistoryModal({
         <div className="space-y-4">
           {records.map((record) => {
             const isExpanded = expandedItems.has(record.id);
-            const changedFields = record.changedFields ? JSON.parse(record.changedFields) : [];
-            const oldValues = record.oldValues ? JSON.parse(record.oldValues) : null;
-            const newValues = record.newValues ? JSON.parse(record.newValues) : null;
+            const changedFields = record.changed_fields ? JSON.parse(record.changed_fields) : [];
+            const oldValues = record.old_values ? JSON.parse(record.old_values) : null;
+            const newValues = record.new_values ? JSON.parse(record.new_values) : null;
 
             return (
               <div key={record.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
@@ -141,11 +141,11 @@ export function VersionHistoryModal({
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Badge variant="secondary">{record.action}</Badge>
-                        <span className="text-sm font-medium">{getTableDisplayName(record.tableName)}</span>
-                        <span className="text-sm text-muted-foreground">#{record.recordId}</span>
+                        <span className="text-sm font-medium">{getTableDisplayName(record.table_name)}</span>
+                        <span className="text-sm text-muted-foreground">#{record.record_id}</span>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {record.description || `${record.action.toLowerCase()} operation on ${record.tableName}`}
+                        {record.description || `${record.action.toLowerCase()} operation on ${record.table_name}`}
                       </p>
                     </div>
                   </div>
