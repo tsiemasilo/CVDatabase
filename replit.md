@@ -59,6 +59,9 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 12, 2025: Successfully implemented comprehensive audit tracking system for CV records, qualifications, positions/roles, and tenders showing who made changes and when, with proper database schema updates and MemStorage fallback support
+- August 12, 2025: Added Super User account with credentials "supu/supu1" per user request, with full super_user role permissions but no delete capabilities for security
+- August 12, 2025: Enhanced CV table with "Last Modified" column displaying date, time, and username of person who made changes to track data modifications
 - August 12, 2025: Fixed delete button permissions for Qualifications and Positions/Roles tabs - admins now have delete buttons while super users are restricted from deletion capabilities
 - August 12, 2025: Hidden Access User Profiles tab for Super Users - they cannot access user management functionality while maintaining other admin-like permissions
 - August 12, 2025: Hidden delete action buttons for Super Users in Qualifications and Positions/Roles tabs - maintains edit access while preventing deletion of system configuration data

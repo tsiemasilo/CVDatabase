@@ -187,6 +187,22 @@ export class MemStorage implements IStorage {
         updatedAt: new Date("2024-12-01T00:00:00")
       },
       {
+        username: "supu",
+        email: "supu@alteram.co.za",
+        password: "supu1",
+        role: "super_user",
+        firstName: "Supu",
+        lastName: "User",
+        department: "ICT",
+        position: "Super Administrator",
+        phoneNumber: "011 234 5676",
+        isActive: true,
+        lastLogin: new Date("2025-08-12T08:00:00"),
+        modifiedBy: "admin",
+        createdAt: new Date("2024-12-01T00:00:00"),
+        updatedAt: new Date("2024-12-01T00:00:00")
+      },
+      {
         username: "mng",
         email: "manager@alteram.co.za",
         password: "mng1",
@@ -274,6 +290,8 @@ export class MemStorage implements IStorage {
     const cvRecord: CVRecord = {
       ...insertCVRecord,
       id,
+      modifiedBy: null,
+      updatedAt: new Date(),
       surname: insertCVRecord.surname || null,
       idPassport: insertCVRecord.idPassport || null,
       gender: insertCVRecord.gender || null,
@@ -355,6 +373,7 @@ export class MemStorage implements IStorage {
       phoneNumber: insertUserProfile.phoneNumber || null,
       isActive: insertUserProfile.isActive ?? true,
       lastLogin: insertUserProfile.lastLogin || null,
+      modifiedBy: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -446,13 +465,14 @@ export class DatabaseStorage implements IStorage {
         console.log("Skills column added successfully");
       }
       
-      // Use raw SQL query including skills column
+      // Use raw SQL query including skills and audit columns
       const rawResult = await db.execute(sql`
         SELECT id, name, surname, id_passport, gender, email, phone, position, 
                role_title, department, experience, experience_similar_role, 
                experience_itsm_tools, sap_k_level, qualifications, qualification_type, 
                qualification_name, institute_name, year_completed, languages, 
-               work_experiences, certificate_types, skills, status, cv_file, submitted_at
+               work_experiences, certificate_types, skills, status, cv_file, submitted_at,
+               modified_by, updated_at
         FROM cv_records 
         ORDER BY submitted_at DESC
       `);
@@ -483,7 +503,9 @@ export class DatabaseStorage implements IStorage {
         skills: row.skills,
         status: row.status,
         cvFile: row.cv_file,
+        modifiedBy: row.modified_by,
         submittedAt: row.submitted_at,
+        updatedAt: row.updated_at,
       }));
     } catch (error) {
       console.error("Error in getAllCVRecords:", error);
