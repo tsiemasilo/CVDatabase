@@ -28,16 +28,12 @@ export const cvRecords = pgTable("cv_records", {
   skills: text("skills"), // JSON string for skills data
   status: text("status").notNull().default("pending"),
   cvFile: text("cv_file"),
-  modifiedBy: text("modified_by"), // Username of who made the last change
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertCVRecordSchema = createInsertSchema(cvRecords).omit({
   id: true,
   submittedAt: true,
-  updatedAt: true,
-  modifiedBy: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
   surname: z.string().optional(),
@@ -82,7 +78,6 @@ export const userProfiles = pgTable("user_profiles", {
   phoneNumber: varchar("phone_number", { length: 20 }),
   isActive: boolean("is_active").default(true),
   lastLogin: timestamp("last_login"),
-  modifiedBy: varchar("modified_by", { length: 100 }), // Username of who made the last change
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -95,70 +90,3 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({
 
 export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
 export type UserProfile = typeof userProfiles.$inferSelect;
-
-// Qualifications table for system configuration
-export const qualifications = pgTable("qualifications", {
-  id: serial("id").primaryKey(),
-  type: text("type").notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  modifiedBy: text("modified_by"), // Username of who made the last change
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const insertQualificationSchema = createInsertSchema(qualifications).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  modifiedBy: true,
-});
-
-export type InsertQualification = z.infer<typeof insertQualificationSchema>;
-export type Qualification = typeof qualifications.$inferSelect;
-
-// Positions and Roles table for system configuration
-export const positionsRoles = pgTable("positions_roles", {
-  id: serial("id").primaryKey(),
-  department: text("department").notNull(),
-  role: text("role").notNull(),
-  roleTitle: text("role_title").notNull(),
-  description: text("description"),
-  kLevel: text("k_level"),
-  modifiedBy: text("modified_by"), // Username of who made the last change
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const insertPositionRoleSchema = createInsertSchema(positionsRoles).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  modifiedBy: true,
-});
-
-export type InsertPositionRole = z.infer<typeof insertPositionRoleSchema>;
-export type PositionRole = typeof positionsRoles.$inferSelect;
-
-// Tenders table for system configuration
-export const tenders = pgTable("tenders", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description"),
-  requirements: text("requirements"), // JSON string
-  status: text("status").notNull().default("active"),
-  deadline: timestamp("deadline"),
-  modifiedBy: text("modified_by"), // Username of who made the last change
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const insertTenderSchema = createInsertSchema(tenders).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  modifiedBy: true,
-});
-
-export type InsertTender = z.infer<typeof insertTenderSchema>;
-export type Tender = typeof tenders.$inferSelect;

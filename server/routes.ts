@@ -309,13 +309,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const validatedData = insertCVRecordSchema.partial().parse(formData);
-      // Add audit tracking
-      const updateData = {
-        ...validatedData,
-        modifiedBy: req.session?.user?.username || 'system',
-        updatedAt: new Date()
-      };
-      const updatedRecord = await storage.updateCVRecord(id, updateData);
+      const updatedRecord = await storage.updateCVRecord(id, validatedData);
 
       res.json(updatedRecord);
     } catch (error) {

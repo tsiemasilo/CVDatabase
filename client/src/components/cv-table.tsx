@@ -405,12 +405,6 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
               <TableHead className="text-white font-medium py-4 px-6">
                 Languages
               </TableHead>
-              <TableHead 
-                className="cursor-pointer text-white font-medium py-4 px-6"
-                onClick={() => handleSort('updatedAt')}
-              >
-                Last Modified
-              </TableHead>
               <TableHead className="text-white font-medium py-4 px-6 text-center">
                 Actions
               </TableHead>
@@ -479,21 +473,6 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                 <TableCell className="py-4 px-6 max-w-xs">
                   <div className="text-sm text-gray-900 truncate" title={record.languages || 'No languages listed'}>
                     {record.languages || 'No languages listed'}
-                  </div>
-                </TableCell>
-                <TableCell className="py-4 px-6">
-                  <div className="text-xs text-gray-600">
-                    {record.updatedAt ? (
-                      <div>
-                        <div>{new Date(record.updatedAt).toLocaleDateString()}</div>
-                        <div className="text-gray-500">{new Date(record.updatedAt).toLocaleTimeString()}</div>
-                        {record.modifiedBy && (
-                          <div className="text-gray-500 mt-1">by {record.modifiedBy}</div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-gray-400">No changes</div>
-                    )}
                   </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">

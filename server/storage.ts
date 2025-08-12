@@ -48,7 +48,6 @@ export class MemStorage implements IStorage {
   }
 
   private initializeSampleData() {
-    // Your Original 11 CV Records Restored
     const sampleCVs: Omit<CVRecord, 'id'>[] = [
       {
         name: "John",
@@ -78,9 +77,7 @@ export class MemStorage implements IStorage {
         skills: "JavaScript, React, Node.js, TypeScript, HTML, CSS, SQL, Git, Problem Solving, Team Collaboration",
         status: "active",
         cvFile: "john_doe_cv.pdf",
-        modifiedBy: "admin",
         submittedAt: new Date("2024-01-15"),
-        updatedAt: new Date("2024-01-15"),
       },
       {
         name: "Sarah",
@@ -110,9 +107,7 @@ export class MemStorage implements IStorage {
         skills: "Project Management, PMP, Agile Methodology, Scrum, Risk Management, Budget Planning, Team Leadership, Communication, Microsoft Project, Stakeholder Management",
         status: "pending",
         cvFile: "sarah_johnson_cv.pdf",
-        modifiedBy: "user",
         submittedAt: new Date("2024-01-20"),
-        updatedAt: new Date("2024-01-20"),
       },
       {
         name: "Michael",
@@ -142,9 +137,7 @@ export class MemStorage implements IStorage {
         skills: "SAP ABAP, SAP Fiori, SAP HANA, SQL, JavaScript, OData, REST APIs, ABAP Objects, SAP Gateway, Integration Technologies, Problem Solving, Technical Documentation",
         status: "active",
         cvFile: "michael_chen_cv.pdf",
-        modifiedBy: "super",
         submittedAt: new Date("2024-01-25"),
-        updatedAt: new Date("2024-01-25"),
       },
     ];
 
@@ -167,39 +160,6 @@ export class MemStorage implements IStorage {
         phoneNumber: "011 234 5678",
         isActive: true,
         lastLogin: new Date("2025-01-09T08:30:00"),
-        modifiedBy: "system",
-        createdAt: new Date("2024-12-01T00:00:00"),
-        updatedAt: new Date("2024-12-01T00:00:00")
-      },
-      {
-        username: "super",
-        email: "super@alteram.co.za",
-        password: "super1",
-        role: "super_user",
-        firstName: "Super",
-        lastName: "User",
-        department: "ICT",
-        position: "Super Administrator",
-        phoneNumber: "011 234 5677",
-        isActive: true,
-        lastLogin: new Date("2025-08-12T08:00:00"),
-        modifiedBy: "admin",
-        createdAt: new Date("2024-12-01T00:00:00"),
-        updatedAt: new Date("2024-12-01T00:00:00")
-      },
-      {
-        username: "supu",
-        email: "supu@alteram.co.za",
-        password: "supu1",
-        role: "super_user",
-        firstName: "Supu",
-        lastName: "User",
-        department: "ICT",
-        position: "Super Administrator",
-        phoneNumber: "011 234 5676",
-        isActive: true,
-        lastLogin: new Date("2025-08-12T08:00:00"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-01T00:00:00"),
         updatedAt: new Date("2024-12-01T00:00:00")
       },
@@ -215,7 +175,6 @@ export class MemStorage implements IStorage {
         phoneNumber: "011 234 5679",
         isActive: true,
         lastLogin: new Date("2025-01-09T09:15:00"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-05T00:00:00"),
         updatedAt: new Date("2024-12-05T00:00:00")
       },
@@ -231,7 +190,6 @@ export class MemStorage implements IStorage {
         phoneNumber: "083 123 4567",
         isActive: true,
         lastLogin: new Date("2025-01-09T10:00:00"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-10T00:00:00"),
         updatedAt: new Date("2024-12-10T00:00:00")
       },
@@ -247,7 +205,6 @@ export class MemStorage implements IStorage {
         phoneNumber: "082 806 9568",
         isActive: true,
         lastLogin: new Date("2025-01-09T10:30:00"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-15T00:00:00"),
         updatedAt: new Date("2024-12-15T00:00:00")
       }
@@ -291,8 +248,6 @@ export class MemStorage implements IStorage {
     const cvRecord: CVRecord = {
       ...insertCVRecord,
       id,
-      modifiedBy: null,
-      updatedAt: new Date(),
       surname: insertCVRecord.surname || null,
       idPassport: insertCVRecord.idPassport || null,
       gender: insertCVRecord.gender || null,
@@ -374,7 +329,6 @@ export class MemStorage implements IStorage {
       phoneNumber: insertUserProfile.phoneNumber || null,
       isActive: insertUserProfile.isActive ?? true,
       lastLogin: insertUserProfile.lastLogin || null,
-      modifiedBy: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -466,14 +420,13 @@ export class DatabaseStorage implements IStorage {
         console.log("Skills column added successfully");
       }
       
-      // Use raw SQL query including skills and audit tracking columns
+      // Use raw SQL query including skills column
       const rawResult = await db.execute(sql`
         SELECT id, name, surname, id_passport, gender, email, phone, position, 
                role_title, department, experience, experience_similar_role, 
                experience_itsm_tools, sap_k_level, qualifications, qualification_type, 
                qualification_name, institute_name, year_completed, languages, 
-               work_experiences, certificate_types, skills, status, cv_file, submitted_at,
-               modified_by, updated_at
+               work_experiences, certificate_types, skills, status, cv_file, submitted_at
         FROM cv_records 
         ORDER BY submitted_at DESC
       `);
@@ -501,12 +454,10 @@ export class DatabaseStorage implements IStorage {
         languages: row.languages,
         workExperiences: row.work_experiences,
         certificateTypes: row.certificate_types,
-        skills: row.skills || "",
+        skills: row.skills,
         status: row.status,
         cvFile: row.cv_file,
-        modifiedBy: row.modified_by || null,
         submittedAt: row.submitted_at,
-        updatedAt: row.updated_at,
       }));
     } catch (error) {
       console.error("Error in getAllCVRecords:", error);
@@ -626,43 +577,16 @@ export class DatabaseStorage implements IStorage {
   // Authentication methods
   async authenticateUser(username: string, password: string): Promise<UserProfile | null> {
     try {
-      // Use raw SQL to avoid schema issues
-      const userResult = await db.execute(sql`
-        SELECT id, username, email, password, role, first_name, last_name, 
-               department, position, phone_number, is_active, last_login, 
-               created_at, updated_at, modified_by
-        FROM user_profiles 
-        WHERE username = ${username}
-      `);
+      const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
       
-      if (userResult.rows.length > 0) {
-        const row = userResult.rows[0] as any;
-        if (row.password === password) {
-          // Update last login with raw SQL
-          await db.execute(sql`
-            UPDATE user_profiles 
-            SET last_login = NOW() 
-            WHERE id = ${row.id}
-          `);
-          
-          return {
-            id: row.id,
-            username: row.username,
-            email: row.email,
-            password: row.password,
-            role: row.role,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            department: row.department,
-            position: row.position,
-            phoneNumber: row.phone_number,
-            isActive: row.is_active,
-            lastLogin: row.last_login,
-            modifiedBy: row.modified_by,
-            createdAt: row.created_at,
-            updatedAt: row.updated_at
-          };
-        }
+      if (user && user.password === password) {
+        // Update last login
+        await db
+          .update(userProfiles)
+          .set({ lastLogin: new Date() })
+          .where(eq(userProfiles.id, user.id));
+        
+        return user;
       }
       
       return null;
@@ -679,9 +603,16 @@ class StorageFactory {
   
   static async getStorage(): Promise<IStorage> {
     if (!this.instance) {
-      // Temporarily force MemStorage until database schema issues are resolved
-      console.log("🔄 Using MemStorage with restored CV records");
-      this.instance = new MemStorage();
+      try {
+        // Test database connection first by running a simple query
+        const testDb = new DatabaseStorage();
+        await testDb.getAllUserProfiles();
+        console.log("✅ Database connection successful, using DatabaseStorage");
+        this.instance = testDb;
+      } catch (error) {
+        console.log("❌ Database connection failed, using MemStorage fallback", error);
+        this.instance = new MemStorage();
+      }
     }
     return this.instance;
   }

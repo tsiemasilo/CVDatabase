@@ -51,8 +51,12 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Database initialization temporarily disabled to fix connection issues
-  log("Database initialization skipped - using existing data");
+  // Initialize database on startup
+  try {
+    await initializeDatabase();
+  } catch (error) {
+    log("Database initialization skipped - database may not be available yet");
+  }
 
   const server = await registerRoutes(app);
 

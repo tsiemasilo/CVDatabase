@@ -28,7 +28,6 @@ export async function initializeDatabase() {
         phoneNumber: "011 234 5678",
         isActive: true,
         lastLogin: new Date("2025-01-09T08:30:00.000Z"),
-        modifiedBy: "system",
         createdAt: new Date("2024-12-01T00:00:00.000Z"),
         updatedAt: new Date("2024-12-01T00:00:00.000Z")
       },
@@ -44,7 +43,6 @@ export async function initializeDatabase() {
         phoneNumber: "011 234 5677",
         isActive: true,
         lastLogin: new Date("2025-08-12T08:00:00.000Z"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-01T00:00:00.000Z"),
         updatedAt: new Date("2024-12-01T00:00:00.000Z")
       },
@@ -60,7 +58,6 @@ export async function initializeDatabase() {
         phoneNumber: "011 234 5679",
         isActive: true,
         lastLogin: new Date("2025-07-21T13:45:00.031Z"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-05T00:00:00.000Z"),
         updatedAt: new Date("2025-07-21T13:45:00.031Z")
       },
@@ -76,7 +73,6 @@ export async function initializeDatabase() {
         phoneNumber: "083 123 4567",
         isActive: true,
         lastLogin: new Date("2025-01-09T10:00:00.000Z"),
-        modifiedBy: "admin",
         createdAt: new Date("2024-12-10T00:00:00.000Z"),
         updatedAt: new Date("2024-12-10T00:00:00.000Z")
       }
@@ -128,9 +124,7 @@ export async function initializeDatabase() {
         skills: "SAP ABAP, SAP Fiori, SAP HANA, SQL, JavaScript, OData, REST APIs, ABAP Objects, SAP Gateway, Integration Technologies, Problem Solving, Technical Documentation, Code Review, System Analysis",
         status: "active" as const,
         cvFile: "michael_chen_cv.pdf",
-        modifiedBy: "admin",
-        submittedAt: new Date("2024-12-15T10:30:00.000Z"),
-        updatedAt: new Date("2024-12-15T10:30:00.000Z")
+        submittedAt: new Date("2024-12-15T10:30:00.000Z")
       },
       {
         name: "Sarah",
@@ -166,9 +160,7 @@ export async function initializeDatabase() {
         skills: "Project Management, PMP, Agile Methodology, Scrum, Risk Management, Budget Planning, Team Leadership, Communication, Microsoft Project, Stakeholder Management, Resource Planning, Quality Assurance",
         status: "pending" as const,
         cvFile: "sarah_williams_cv.pdf",
-        modifiedBy: "user",
-        submittedAt: new Date("2025-01-10T14:20:00.000Z"),
-        updatedAt: new Date("2025-01-10T14:20:00.000Z")
+        submittedAt: new Date("2025-01-10T14:20:00.000Z")
       },
       {
         name: "David",
@@ -204,9 +196,7 @@ export async function initializeDatabase() {
         skills: "Network Administration, CCNA, MCSE, Windows Server, Linux, Cisco Routers, Network Security, Firewall Management, TCP/IP, DNS, DHCP, Active Directory, Troubleshooting, System Monitoring",
         status: "archived" as const,
         cvFile: "david_brown_cv.pdf",
-        modifiedBy: "super",
-        submittedAt: new Date("2024-11-22T09:15:00.000Z"),
-        updatedAt: new Date("2024-11-22T09:15:00.000Z")
+        submittedAt: new Date("2024-11-22T09:15:00.000Z")
       }
     ];
 
