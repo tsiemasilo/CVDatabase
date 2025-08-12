@@ -129,5 +129,6 @@ export function useRoleAccess() {
     hasPermission,
     canAccessTab,
     userRole: userRole || null,
+    user,
   };
 }

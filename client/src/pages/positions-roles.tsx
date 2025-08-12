@@ -230,7 +230,7 @@ const getDefaultRecords = (): DepartmentRole[] => [
 ];
 
 export default function PositionsRoles() {
-  const permissions = useRoleAccess();
+  const { permissions, user } = useRoleAccess();
   const [records, setRecords] = useState<DepartmentRole[]>([]);
 
   const [newRecord, setNewRecord] = useState({ department: '', role: '', roleTitle: '', description: '', kLevel: '' });
@@ -533,7 +533,7 @@ export default function PositionsRoles() {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        {permissions.canDeletePositions && (
+                        {user?.role === 'admin' && (
                           <Button 
                             variant="outline" 
                             size="sm"

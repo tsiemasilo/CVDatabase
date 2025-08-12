@@ -23,7 +23,7 @@ interface QualificationName {
 }
 
 export default function Qualifications() {
-  const permissions = useRoleAccess();
+  const { permissions, user } = useRoleAccess();
   const [qualifications, setQualifications] = useState<Qualification[]>([
     {
       id: 1,
@@ -337,7 +337,7 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        {permissions.canDeleteQualifications && (
+                        {user?.role === 'admin' && (
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -539,7 +539,7 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        {permissions.canDeleteCVs && (
+                        {user?.role === 'admin' && (
                           <Button 
                             variant="ghost" 
                             size="sm" 
