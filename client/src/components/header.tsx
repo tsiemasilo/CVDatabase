@@ -96,19 +96,19 @@ export default function Header() {
             {user && (
               <div className="ml-8 text-sm text-gray-600">
                 {user.role === 'user' ? (
-                  <>
-                    Welcome
-                    <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
+                  <div>
+                    <div>Welcome</div>
+                    <span className={`px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
                       {getRoleDisplayName(user.role)}
                     </span>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    Welcome, <span className="font-medium">{user.firstName || user.username}</span>
-                    <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
+                  <div>
+                    <div>Welcome, <span className="font-medium">{user.firstName || user.username}</span></div>
+                    <span className={`px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
                       {getRoleDisplayName(user.role)}
                     </span>
-                  </>
+                  </div>
                 )}
               </div>
             )}
