@@ -14,6 +14,26 @@ export default function Header() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case 'super_user': return 'Super User';
+      case 'admin': return 'Admin';
+      case 'manager': return 'Manager';
+      case 'user': return 'User';
+      default: return role;
+    }
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin': return 'bg-red-100 text-red-800';
+      case 'super_user': return 'bg-purple-100 text-purple-800';
+      case 'manager': return 'bg-blue-100 text-blue-800';
+      case 'user': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/auth/logout");
@@ -78,15 +98,15 @@ export default function Header() {
                 {user.role === 'user' ? (
                   <>
                     Welcome
-                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                      {user.role}
+                    <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
+                      {getRoleDisplayName(user.role)}
                     </span>
                   </>
                 ) : (
                   <>
                     Welcome, <span className="font-medium">{user.firstName || user.username}</span>
-                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                      {user.role}
+                    <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getRoleColor(user.role)}`}>
+                      {getRoleDisplayName(user.role)}
                     </span>
                   </>
                 )}
@@ -111,7 +131,7 @@ export default function Header() {
           
           <div className="flex items-center space-x-3">
             {/* Hide profile button for users and managers */}
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.role === 'super_user') && (
               <Button 
                 variant="outline" 
                 size="sm" 
