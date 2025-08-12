@@ -4,7 +4,7 @@ import {
   PositionRole, InsertPositionRole, Tender, InsertTender,
   cvRecords, userProfiles, versionHistory, qualifications, positionsRoles, tenders 
 } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, like, or, and, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
@@ -752,46 +752,85 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Version History methods
+  // Version History methods - Using raw SQL to avoid Drizzle ORM issues
   async createVersionHistory(versionData: InsertVersionHistory): Promise<VersionHistoryRecord> {
-    const [newVersion] = await db.insert(versionHistory).values(versionData).returning();
-    return newVersion;
+    const client = await pool.connect();
+    try {
+      const result = await client.query(`
+        INSERT INTO version_history (table_name, record_id, action, old_values, new_values, changed_fields, user_id, username, description)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id, table_name, record_id, action, old_values, new_values, changed_fields, user_id, username, timestamp, description
+      `, [
+        versionData.tableName, 
+        versionData.recordId, 
+        versionData.action, 
+        versionData.oldValues || null, 
+        versionData.newValues || null, 
+        versionData.changedFields || null, 
+        versionData.userId, 
+        versionData.username, 
+        versionData.description || null
+      ]);
+      
+      return result.rows[0] as VersionHistoryRecord;
+    } finally {
+      client.release();
+    }
   }
 
   async getVersionHistory(tableName?: string, recordId?: number, limit?: number): Promise<VersionHistoryRecord[]> {
-    let query = db.select().from(versionHistory);
-    
-    const conditions = [];
-    
-    if (tableName) {
-      conditions.push(eq(versionHistory.tableName, tableName));
+    try {
+      const client = await pool.connect();
+      try {
+        // Proceed with the actual query
+        let query = `SELECT * FROM version_history WHERE 1=1`;
+        const params: any[] = [];
+        let paramCount = 0;
+        
+        if (tableName) {
+          paramCount++;
+          query += ` AND table_name = $${paramCount}`;
+          params.push(tableName);
+        }
+        
+        if (recordId) {
+          paramCount++;
+          query += ` AND record_id = $${paramCount}`;
+          params.push(recordId);
+        }
+        
+        query += ` ORDER BY timestamp DESC`;
+        
+        if (limit) {
+          paramCount++;
+          query += ` LIMIT $${paramCount}`;
+          params.push(limit);
+        }
+        
+        const result = await client.query(query, params);
+        return result.rows as VersionHistoryRecord[];
+      } finally {
+        client.release();
+      }
+    } catch (error) {
+      console.error('Version history query error:', error);
+      throw error;
     }
-    
-    if (recordId) {
-      conditions.push(eq(versionHistory.recordId, recordId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any;
-    }
-    
-    query = query.orderBy(desc(versionHistory.timestamp)) as any;
-    
-    if (limit) {
-      query = query.limit(limit) as any;
-    }
-    
-    return await query;
   }
 
   async getRecordVersionHistory(tableName: string, recordId: number): Promise<VersionHistoryRecord[]> {
-    return await db.select()
-      .from(versionHistory)
-      .where(and(
-        eq(versionHistory.tableName, tableName),
-        eq(versionHistory.recordId, recordId)
-      ))
-      .orderBy(desc(versionHistory.timestamp));
+    const client = await pool.connect();
+    try {
+      const result = await client.query(`
+        SELECT * FROM version_history 
+        WHERE table_name = $1 AND record_id = $2
+        ORDER BY timestamp DESC
+      `, [tableName, recordId]);
+      
+      return result.rows as VersionHistoryRecord[];
+    } finally {
+      client.release();
+    }
   }
 
   // Qualifications methods

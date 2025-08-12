@@ -686,8 +686,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const history = await storage.getRecordVersionHistory(tableName, recordIdNum);
       res.json(history);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get version history" });
+    } catch (error: any) {
+      console.error("Version history API error:", error);
+      res.status(500).json({ message: "Failed to get version history", error: error?.message || "Unknown error" });
     }
   });
   
@@ -706,8 +707,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         limitNum
       );
       res.json(history);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get version history" });
+    } catch (error: any) {
+      console.error("Version history API error:", error);
+      res.status(500).json({ message: "Failed to get version history", error: error?.message || "Unknown error" });
     }
   });
   

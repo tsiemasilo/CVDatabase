@@ -1,11 +1,41 @@
 import { db } from "./db";
 import { cvRecords, userProfiles } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 // Initialize database with sample data
 export async function initializeDatabase() {
   try {
     console.log("Initializing database with sample data...");
+
+    // Ensure version_history table exists
+    try {
+      const checkVersionHistory = await db.execute(sql`
+        SELECT COUNT(*) as count FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_name = 'version_history'
+      `);
+      
+      if (checkVersionHistory.rows[0]?.count === '0') {
+        console.log("Creating version_history table...");
+        await db.execute(sql`
+          CREATE TABLE version_history (
+            id SERIAL PRIMARY KEY,
+            table_name VARCHAR(100) NOT NULL,
+            record_id INTEGER NOT NULL,
+            action VARCHAR(20) NOT NULL,
+            old_values TEXT,
+            new_values TEXT,
+            changed_fields TEXT,
+            user_id INTEGER NOT NULL,
+            username VARCHAR(50) NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            description TEXT
+          )
+        `);
+        console.log("Version history table created successfully");
+      }
+    } catch (error) {
+      console.log("Note: Could not create version_history table:", error);
+    }
 
     // Check if users already exist
     const existingUsers = await db.select().from(userProfiles).limit(1);
