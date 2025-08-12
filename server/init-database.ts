@@ -32,6 +32,21 @@ export async function initializeDatabase() {
         updatedAt: new Date("2024-12-01T00:00:00.000Z")
       },
       {
+        username: "super",
+        email: "super@alteram.co.za",
+        password: "super1",
+        role: "super_user" as const,
+        firstName: "Super",
+        lastName: "User",
+        department: "ICT",
+        position: "Super Administrator",
+        phoneNumber: "011 234 5677",
+        isActive: true,
+        lastLogin: new Date("2025-08-12T08:00:00.000Z"),
+        createdAt: new Date("2024-12-01T00:00:00.000Z"),
+        updatedAt: new Date("2024-12-01T00:00:00.000Z")
+      },
+      {
         username: "mng",
         email: "manager@alteram.co.za",
         password: "mng1",

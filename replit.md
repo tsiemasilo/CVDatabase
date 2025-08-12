@@ -59,6 +59,8 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 12, 2025: Created new "Super User" role with admin-like permissions but no delete capabilities - can manage users, CVs, tenders, and system features but cannot delete any records for security purposes (credentials: super/super1)
+- August 12, 2025: Enhanced role-based access control system to support four user roles: Admin (full access), Super User (edit-only access), Manager (view-only Landing/Tenders), User (capture records only)
 - August 12, 2025: Implemented role-based access control for managers - managers now restricted to only Landing page and Tenders tab, cannot edit/delete CV records, cannot access user profiles, and cannot capture new records
 - August 12, 2025: Updated Word document generation to exactly match CV template structure with identical layout, colors, typography, and two-page format including proper page breaks and Alteram branding
 - August 11, 2025: Removed contact information (email, phone, position, department) from second page of CV template per user request - maintains cleaner two-page layout focusing on skills and competencies

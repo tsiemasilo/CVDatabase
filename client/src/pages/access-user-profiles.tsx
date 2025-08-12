@@ -30,7 +30,7 @@ export default function AccessUserProfiles() {
     username: "",
     email: "",
     password: "",
-    role: "user" as 'admin' | 'manager' | 'user',
+    role: "user" as 'admin' | 'super_user' | 'manager' | 'user',
     firstName: "",
     lastName: "",
     department: "",
@@ -171,9 +171,20 @@ export default function AccessUserProfiles() {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin': return 'bg-red-100 text-red-800';
+      case 'super_user': return 'bg-purple-100 text-purple-800';
       case 'manager': return 'bg-blue-100 text-blue-800';
       case 'user': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case 'super_user': return 'Super User';
+      case 'admin': return 'Admin';
+      case 'manager': return 'Manager';
+      case 'user': return 'User';
+      default: return role;
     }
   };
 
@@ -188,6 +199,16 @@ export default function AccessUserProfiles() {
           "Backup & Restore",
           "View Logs & Audit Trails",
           "Configure System Settings"
+        ];
+      case 'super_user':
+        return [
+          "Manage All Users (No Delete)",
+          "Approve/Verify Certificates",
+          "Add/Edit Roles & K-Levels", 
+          "Manage Site Content",
+          "View/Edit CVs (No Delete)",
+          "Manage Tenders",
+          "View Logs & Audit Trails"
         ];
       case 'manager':
         return [
@@ -324,12 +345,13 @@ export default function AccessUserProfiles() {
                 
                 <div>
                   <Label htmlFor="role">Role *</Label>
-                  <Select value={newUser.role} onValueChange={(value: 'admin' | 'manager' | 'user') => setNewUser({...newUser, role: value})}>
+                  <Select value={newUser.role} onValueChange={(value: 'admin' | 'super_user' | 'manager' | 'user') => setNewUser({...newUser, role: value})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="super_user">Super User</SelectItem>
                       <SelectItem value="manager">Manager</SelectItem>
                       <SelectItem value="user">User</SelectItem>
                     </SelectContent>
@@ -405,6 +427,7 @@ export default function AccessUserProfiles() {
             <SelectContent>
               <SelectItem value="all">All Roles</SelectItem>
               <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="super_user">Super User</SelectItem>
               <SelectItem value="manager">Manager</SelectItem>
               <SelectItem value="user">User</SelectItem>
             </SelectContent>
@@ -414,7 +437,7 @@ export default function AccessUserProfiles() {
 
       {/* Role Information Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['admin', 'manager', 'user'].map(role => {
+        {['admin', 'super_user', 'manager', 'user'].map(role => {
           const count = userProfiles.filter((user: UserProfile) => user.role === role).length;
           const permissions = getRolePermissions(role);
           
@@ -424,7 +447,7 @@ export default function AccessUserProfiles() {
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     {getRoleIcon(role)}
-                    <span className="capitalize">{role}</span>
+                    <span>{getRoleDisplayName(role)}</span>
                   </div>
                   <Badge className={getRoleColor(role)}>
                     {count} {count === 1 ? 'user' : 'users'}
@@ -503,7 +526,7 @@ export default function AccessUserProfiles() {
                     <TableCell>
                       <Badge className={`${getRoleColor(user.role)} flex items-center space-x-1 w-fit`}>
                         {getRoleIcon(user.role)}
-                        <span className="capitalize">{user.role}</span>
+                        <span>{getRoleDisplayName(user.role)}</span>
                       </Badge>
                     </TableCell>
                     <TableCell>{user.department || 'N/A'}</TableCell>
@@ -564,7 +587,7 @@ export default function AccessUserProfiles() {
                                     <Label className="text-sm font-medium text-gray-700">Role</Label>
                                     <Badge className={`${getRoleColor(viewingUser.role)} flex items-center space-x-1 w-fit mt-1`}>
                                       {getRoleIcon(viewingUser.role)}
-                                      <span className="capitalize">{viewingUser.role}</span>
+                                      <span>{getRoleDisplayName(viewingUser.role)}</span>
                                     </Badge>
                                   </div>
                                   <div>

@@ -214,14 +214,16 @@ export default function Tenders() {
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteTender(tender.id)}
-                            className="text-gray-600 hover:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          {permissions.canDeleteCVs && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteTender(tender.id)}
+                              className="text-gray-600 hover:text-red-600"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                       ) : (
                         <div className="text-gray-400 text-sm">View Only</div>

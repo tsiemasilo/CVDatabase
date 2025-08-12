@@ -1,6 +1,6 @@
 import { useAuth } from "./useAuth";
 
-export type UserRole = 'admin' | 'manager' | 'user';
+export type UserRole = 'admin' | 'super_user' | 'manager' | 'user';
 
 export interface RolePermissions {
   canAccessUserProfiles: boolean;
@@ -25,6 +25,19 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewAllCVs: true,
     canEditCVs: true,
     canDeleteCVs: true,
+    canManagePositions: true,
+    canManageQualifications: true,
+    canManageTenders: true,
+    canCaptureRecords: true,
+  },
+  super_user: {
+    canAccessUserProfiles: true,
+    canCreateUsers: true,
+    canEditUsers: true,
+    canDeleteUsers: false, // Cannot delete users
+    canViewAllCVs: true,
+    canEditCVs: true,
+    canDeleteCVs: false, // Cannot delete CVs
     canManagePositions: true,
     canManageQualifications: true,
     canManageTenders: true,

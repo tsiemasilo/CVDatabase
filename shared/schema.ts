@@ -70,7 +70,7 @@ export const userProfiles = pgTable("user_profiles", {
   username: varchar("username", { length: 50 }).unique().notNull(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   password: varchar("password", { length: 255 }).notNull(), // hashed
-  role: varchar("role", { length: 20 }).notNull().default("user"), // 'admin', 'manager', 'user'
+  role: varchar("role", { length: 20 }).notNull().default("user"), // 'admin', 'super_user', 'manager', 'user'
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
   department: varchar("department", { length: 100 }),
