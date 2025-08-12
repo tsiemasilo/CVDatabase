@@ -183,7 +183,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     const workExps = record.workExperience ? JSON.parse(record.workExperience) : [];
     const certifications = record.certificateTypes ? JSON.parse(record.certificateTypes) : [];
 
-    // Create HTML content for Word document matching the CV template
+    // Create HTML content matching the exact CV template structure
     return `
 <!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
@@ -192,25 +192,41 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
   <title>CV - ${record.name} ${record.surname || ''}</title>
   <style>
     @page { margin: 0.4in; size: A4; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; font-size: 13px; line-height: 1.3; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      font-size: 13px; 
+      line-height: 1.3; 
+      background: white;
+    }
     
-    /* Header styling to match CV template */
+    /* Header styling exactly matching CV template */
     .cv-header {
-      background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+      background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
       color: white;
       padding: 16px 32px;
       margin-bottom: 0;
     }
-    .header-content {
+    .header-flex {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
-    .company-info {
+    .logo-placeholder {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 4px;
+    }
+    .company-details {
       text-align: right;
       font-size: 12px;
+      line-height: 1.4;
     }
-    .company-info p { margin: 2px 0; }
+    .company-details p { margin: 1px 0; }
     .company-reg {
       border-top: 1px solid rgba(255,255,255,0.3);
       padding-top: 8px;
@@ -218,148 +234,94 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       font-size: 11px;
     }
     
-    /* Main content */
-    .cv-content {
+    /* Main content area */
+    .cv-body {
       padding: 32px;
+      position: relative;
       background: white;
     }
     
-    /* Candidate info section */
-    .candidate-header {
-      text-align: center;
-      padding: 24px 0;
-      border-bottom: 4px solid #f97316;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #fff5f0 0%, #ffedd5 100%);
-      border-radius: 8px;
-    }
-    .candidate-name {
-      font-size: 32px;
-      font-weight: bold;
-      color: #000053;
-      margin-bottom: 8px;
-    }
-    .candidate-contact {
-      font-size: 14px;
-      color: #4b5563;
-      margin-bottom: 16px;
-    }
-    .candidate-summary {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      font-size: 14px;
-    }
-    .summary-item {
-      text-align: center;
-    }
-    .summary-value {
-      font-size: 18px;
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.05;
+      font-size: 120px;
       font-weight: bold;
       color: #f97316;
-    }
-    .summary-label {
-      color: #6b7280;
-      font-size: 12px;
+      pointer-events: none;
+      z-index: 1;
     }
     
-    /* Personal info table */
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 24px 0;
+    /* Content sections */
+    .content {
+      position: relative;
+      z-index: 2;
       background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .info-table td {
-      padding: 12px 16px;
-      border: 1px solid #e5e7eb;
-      vertical-align: top;
+    
+    /* Candidate information - matching PDF exactly */
+    .candidate-info {
+      margin-bottom: 24px;
+    }
+    .info-line {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #374151;
+      line-height: 1.5;
     }
     .info-label {
-      font-weight: 600;
-      background: #f9fafb;
-      color: #374151;
-      width: 140px;
-    }
-    .info-value {
-      background: white;
-      color: #1f2937;
-    }
-    
-    /* Section styling */
-    .section {
-      margin-bottom: 32px;
-      page-break-inside: avoid;
-    }
-    .section-title {
-      font-size: 20px;
       font-weight: bold;
       color: #000053;
-      border-bottom: 3px solid #f97316;
+    }
+    
+    /* Certificate section */
+    .certificates {
+      margin: 16px 0;
+    }
+    .cert-list {
+      padding-left: 16px;
+    }
+    .cert-item {
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    .cert-item:before {
+      content: "• ";
+      color: #f97316;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    
+    /* Page break for skills section */
+    .page-break {
+      page-break-before: always;
+    }
+    
+    /* Skills section header for page 2 */
+    .skills-page-header {
+      background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+      color: white;
+      padding: 16px 32px;
+      margin: -32px -32px 32px -32px;
+    }
+    
+    .skills-section {
+      margin-top: 24px;
+    }
+    .skills-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000053;
+      border-bottom: 2px solid #f97316;
       padding-bottom: 8px;
       margin-bottom: 20px;
     }
     
-    /* Work experience styling */
-    .experience-item {
-      margin-bottom: 24px;
-      padding: 16px;
-      border-left: 4px solid #f97316;
-      background: #fafafa;
-      border-radius: 0 8px 8px 0;
-    }
-    .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-    .job-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #000053;
-    }
-    .job-company {
-      font-size: 14px;
-      color: #f97316;
-      font-weight: 600;
-      margin: 4px 0;
-    }
-    .job-duration {
-      font-size: 12px;
-      color: #6b7280;
-      font-style: italic;
-      text-align: right;
-    }
-    .job-description {
-      color: #374151;
-      margin-top: 8px;
-      text-align: justify;
-    }
-    
-    /* Qualifications styling */
-    .qualification-item {
-      margin-bottom: 16px;
-      padding: 12px 16px;
-      border-left: 4px solid #f97316;
-      background: #f0f9ff;
-      border-radius: 0 8px 8px 0;
-    }
-    .cert-name {
-      font-size: 14px;
-      font-weight: bold;
-      color: #000053;
-      margin-bottom: 4px;
-    }
-    .cert-details {
-      font-size: 12px;
-      color: #6b7280;
-    }
-    
-    /* Skills styling */
+    /* Skills container */
     .skills-container {
       border-left: 4px solid #f97316;
       padding-left: 24px;
@@ -367,15 +329,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     .skill-item {
       display: flex;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 14px;
+      margin-bottom: 6px;
+      font-size: 13px;
     }
     .skill-bullet {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: #f97316;
       border-radius: 50%;
-      margin-right: 12px;
+      margin-right: 10px;
       flex-shrink: 0;
     }
     .skill-text {
@@ -392,23 +354,24 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       margin-top: 40px;
     }
     .footer-text {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: #f97316;
     }
     .footer-names {
-      font-size: 10px;
+      font-size: 9px;
       color: #6b7280;
       margin-top: 4px;
     }
   </style>
 </head>
 <body>
-  <!-- Header with Alteram branding -->
+  <!-- PAGE 1: Main CV Content -->
+  <!-- Header matching CV template exactly -->
   <div class="cv-header">
-    <div class="header-content">
-      <div style="font-size: 24px; font-weight: bold;">ALTERAM SOLUTIONS</div>
-      <div class="company-info">
+    <div class="header-flex">
+      <div class="logo-placeholder">ALTERAM</div>
+      <div class="company-details">
         <p><strong>1144, 16th Road Randjespark Midrand</strong></p>
         <p>Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>
         <p><strong>T</strong> 010 900 4075 | <strong>F</strong> 086 665 2021 | info@alteram.co.za</p>
@@ -420,127 +383,101 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     </div>
   </div>
 
-  <div class="cv-content">
-    <!-- Candidate Information Header -->
-    <div class="candidate-header">
-      <div class="candidate-name">${record.name} ${record.surname || ''}</div>
-      <div class="candidate-contact">
-        ${record.email || ''} | ${record.phoneNumber || ''} | ${record.position || ''}
-      </div>
-      <div class="candidate-summary">
-        <div class="summary-item">
-          <div class="summary-value">${workExps.length}</div>
-          <div class="summary-label">Work Experience${workExps.length !== 1 ? 's' : ''}</div>
+  <div class="cv-body">
+    <div class="watermark">ALTERAM</div>
+    
+    <div class="content">
+      <!-- Candidate Information - exactly matching PDF structure -->
+      <div class="candidate-info">
+        <div class="info-line">
+          <span class="info-label">Name and Surname:</span> ${record.name} ${record.surname || ''}
         </div>
-        <div class="summary-item">
-          <div class="summary-value">${certifications.length}</div>
-          <div class="summary-label">Qualification${certifications.length !== 1 ? 's' : ''}</div>
+        <div class="info-line">
+          <span class="info-label">Id/Passport:</span> ${record.idPassport || record.idNumber || ''}
         </div>
-        <div class="summary-item">
-          <div class="summary-value">${skillsList.length}</div>
-          <div class="summary-label">Professional Skill${skillsList.length !== 1 ? 's' : ''}</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Personal Information -->
-    <div class="section">
-      <h2 class="section-title">Personal Information</h2>
-      <table class="info-table">
-        <tr><td class="info-label">ID Number:</td><td class="info-value">${record.idNumber || 'Not specified'}</td></tr>
-        <tr><td class="info-label">Gender:</td><td class="info-value">${record.gender || 'Not specified'}</td></tr>
-        <tr><td class="info-label">Race:</td><td class="info-value">${record.race || 'Not specified'}</td></tr>
-        <tr><td class="info-label">Date of Birth:</td><td class="info-value">${record.dateOfBirth ? new Date(record.dateOfBirth).toLocaleDateString() : 'Not specified'}</td></tr>
-        <tr><td class="info-label">Address:</td><td class="info-value">${record.address || 'Not specified'}</td></tr>
-        <tr><td class="info-label">Languages:</td><td class="info-value">${record.languages || 'Not specified'}</td></tr>
-      </table>
-    </div>
-
-    ${workExps.length > 0 ? `
-    <!-- Work Experience -->
-    <div class="section">
-      <h2 class="section-title">Work Experience</h2>
-      ${workExps.map((exp: any) => {
-        // Format date range similar to CV template
-        let dateRange = '';
-        try {
-          if (exp.startDate) {
-            let startDate;
-            if (exp.startDate.includes('/')) {
-              const [month, year] = exp.startDate.split('/');
-              startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-            } else {
-              startDate = new Date(exp.startDate);
-            }
-            const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            
-            if (exp.isCurrentRole || !exp.endDate) {
-              dateRange = `${startFormatted} - Present`;
-            } else {
-              let endDate;
-              if (exp.endDate.includes('/')) {
-                const [month, year] = exp.endDate.split('/');
-                endDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-              } else {
-                endDate = new Date(exp.endDate);
-              }
-              const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-              dateRange = `${startFormatted} - ${endFormatted}`;
-            }
-          }
-        } catch (e) {
-          dateRange = exp.startDate || '';
-        }
         
-        return `
-        <div class="experience-item">
-          <div class="job-header">
-            <div>
-              <div class="job-title">${exp.position || ''} ${exp.roleTitle ? `- ${exp.roleTitle}` : ''}</div>
-              <div class="job-company">${exp.companyName || ''}</div>
-            </div>
-            <div class="job-duration">${dateRange}</div>
-          </div>
-          ${exp.description ? `<div class="job-description">${exp.description}</div>` : ''}
-        </div>`;
-      }).join('')}
-    </div>
-    ` : ''}
-
-    ${certifications.length > 0 ? `
-    <!-- Qualifications & Certifications -->
-    <div class="section">
-      <h2 class="section-title">Qualifications & Certifications</h2>
-      ${certifications.map((cert: any) => `
-        <div class="qualification-item">
-          <div class="cert-name">${cert.certificateName || ''}</div>
-          <div class="cert-details">Department: ${cert.department || ''} | Role: ${cert.role || ''}</div>
+        ${record.department ? `
+        <div class="info-line">
+          <span class="info-label">Department:</span> ${record.department}
         </div>
-      `).join('')}
-    </div>
-    ` : ''}
-
-    ${skillsList.length > 0 ? `
-    <!-- Professional Skills -->
-    <div class="section">
-      <h2 class="section-title">Professional Skills</h2>
-      <div class="skills-container">
-        ${skillsList.map(skill => `
-          <div class="skill-item">
-            <div class="skill-bullet"></div>
-            <div class="skill-text">${skill}</div>
+        ` : ''}
+        
+        <div class="info-line">
+          <span class="info-label">Role:</span> ${record.position || record.roleTitle || ''}
+          ${record.roleTitle ? ` | <span class="info-label">Role Title:</span> ${record.roleTitle}` : ''}
+          ${record.sapKLevel && record.sapKLevel.trim() !== '' ? ` | <span class="info-label">K-Level:</span> ${record.sapKLevel}` : ''}
+        </div>
+        
+        <div class="info-line">
+          <span class="info-label">Years of Experience:</span> ${record.experience || 0} years
+        </div>
+        
+        ${certifications.length > 0 ? `
+        <div class="certificates">
+          <div class="info-line">
+            <span class="info-label">Certificates:</span>
           </div>
-        `).join('')}
+          <div class="cert-list">
+            ${certifications.map((cert: any) => `
+              <div class="cert-item">${cert.certificateName || ''} (${cert.department || ''} - ${cert.role || ''})</div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
       </div>
     </div>
-    ` : ''}
+    
+    <!-- Footer for Page 1 -->
+    <div class="cv-footer">
+      <div class="footer-text">CV Generated by Alteram Solutions - Page 1 of 2</div>
+      <div class="footer-names">Philip Henry Arnold | Garth Solomon Madella</div>
+    </div>
   </div>
 
-  <!-- Footer -->
-  <div class="cv-footer">
-    <div class="footer-text">CV Generated by Alteram Solutions</div>
-    <div class="footer-names">Philip Henry Arnold | Garth Solomon Madella</div>
+  ${skillsList.length > 0 ? `
+  <!-- PAGE 2: Skills Section -->
+  <div class="page-break">
+    <!-- Header for Page 2 -->
+    <div class="skills-page-header">
+      <div class="header-flex">
+        <div class="logo-placeholder">ALTERAM</div>
+        <div class="company-details">
+          <p><strong>1144, 16th Road Randjespark Midrand</strong></p>
+          <p>Postnet Suite 551, Private Bag X1, Melrose Arch, 2076</p>
+          <p><strong>T</strong> 010 900 4075 | <strong>F</strong> 086 665 2021 | info@alteram.co.za</p>
+          <p><strong>www.alteram.co.za</strong></p>
+          <div class="company-reg">
+            <p>Alteram Solutions (Pty) Ltd | Reg Number 2013/171329/07</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-body">
+      <div class="watermark">ALTERAM</div>
+      
+      <div class="content">
+        <div class="skills-section">
+          <h2 class="skills-title">Professional Skills</h2>
+          <div class="skills-container">
+            ${skillsList.map(skill => `
+              <div class="skill-item">
+                <div class="skill-bullet"></div>
+                <div class="skill-text">${skill}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer for Page 2 -->
+      <div class="cv-footer">
+        <div class="footer-text">CV Generated by Alteram Solutions - Page 2 of 2</div>
+        <div class="footer-names">Philip Henry Arnold | Garth Solomon Madella</div>
+      </div>
+    </div>
   </div>
+  ` : ''}
 </body>
 </html>`;
   };
