@@ -337,7 +337,7 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        {permissions.canDeleteCVs && (
+                        {permissions.canDeleteQualifications && (
                           <Button 
                             variant="ghost" 
                             size="sm" 

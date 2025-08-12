@@ -533,7 +533,7 @@ export default function PositionsRoles() {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        {permissions.canDeleteCVs && (
+                        {permissions.canDeletePositions && (
                           <Button 
                             variant="outline" 
                             size="sm"

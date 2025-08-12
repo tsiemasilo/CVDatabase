@@ -12,6 +12,8 @@ export interface RolePermissions {
   canDeleteCVs: boolean;
   canManagePositions: boolean;
   canManageQualifications: boolean;
+  canDeletePositions: boolean;
+  canDeleteQualifications: boolean;
   canManageTenders: boolean;
   canCaptureRecords: boolean;
 }
@@ -27,6 +29,8 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canDeleteCVs: true,
     canManagePositions: true,
     canManageQualifications: true,
+    canDeletePositions: true,
+    canDeleteQualifications: true,
     canManageTenders: true,
     canCaptureRecords: true,
   },
@@ -40,6 +44,8 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canDeleteCVs: false, // Cannot delete CVs
     canManagePositions: true,
     canManageQualifications: true,
+    canDeletePositions: false, // Cannot delete positions
+    canDeleteQualifications: false, // Cannot delete qualifications
     canManageTenders: true,
     canCaptureRecords: true,
   },
@@ -53,6 +59,8 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canDeleteCVs: false,
     canManagePositions: false,
     canManageQualifications: false,
+    canDeletePositions: false,
+    canDeleteQualifications: false,
     canManageTenders: true,
     canCaptureRecords: false,
   },
@@ -66,6 +74,8 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canDeleteCVs: false,
     canManagePositions: false,
     canManageQualifications: false,
+    canDeletePositions: false,
+    canDeleteQualifications: false,
     canManageTenders: false,
     canCaptureRecords: true,
   },
