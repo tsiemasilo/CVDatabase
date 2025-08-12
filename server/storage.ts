@@ -77,7 +77,9 @@ export class MemStorage implements IStorage {
         skills: "JavaScript, React, Node.js, TypeScript, HTML, CSS, SQL, Git, Problem Solving, Team Collaboration",
         status: "active",
         cvFile: "john_doe_cv.pdf",
+        modifiedBy: "admin",
         submittedAt: new Date("2024-01-15"),
+        updatedAt: new Date("2024-01-15"),
       },
       {
         name: "Sarah",
@@ -107,7 +109,9 @@ export class MemStorage implements IStorage {
         skills: "Project Management, PMP, Agile Methodology, Scrum, Risk Management, Budget Planning, Team Leadership, Communication, Microsoft Project, Stakeholder Management",
         status: "pending",
         cvFile: "sarah_johnson_cv.pdf",
+        modifiedBy: "user",
         submittedAt: new Date("2024-01-20"),
+        updatedAt: new Date("2024-01-20"),
       },
       {
         name: "Michael",
@@ -137,7 +141,9 @@ export class MemStorage implements IStorage {
         skills: "SAP ABAP, SAP Fiori, SAP HANA, SQL, JavaScript, OData, REST APIs, ABAP Objects, SAP Gateway, Integration Technologies, Problem Solving, Technical Documentation",
         status: "active",
         cvFile: "michael_chen_cv.pdf",
+        modifiedBy: "super",
         submittedAt: new Date("2024-01-25"),
+        updatedAt: new Date("2024-01-25"),
       },
     ];
 
@@ -160,6 +166,23 @@ export class MemStorage implements IStorage {
         phoneNumber: "011 234 5678",
         isActive: true,
         lastLogin: new Date("2025-01-09T08:30:00"),
+        modifiedBy: "system",
+        createdAt: new Date("2024-12-01T00:00:00"),
+        updatedAt: new Date("2024-12-01T00:00:00")
+      },
+      {
+        username: "super",
+        email: "super@alteram.co.za",
+        password: "super1",
+        role: "super_user",
+        firstName: "Super",
+        lastName: "User",
+        department: "ICT",
+        position: "Super Administrator",
+        phoneNumber: "011 234 5677",
+        isActive: true,
+        lastLogin: new Date("2025-08-12T08:00:00"),
+        modifiedBy: "admin",
         createdAt: new Date("2024-12-01T00:00:00"),
         updatedAt: new Date("2024-12-01T00:00:00")
       },
@@ -175,6 +198,7 @@ export class MemStorage implements IStorage {
         phoneNumber: "011 234 5679",
         isActive: true,
         lastLogin: new Date("2025-01-09T09:15:00"),
+        modifiedBy: "admin",
         createdAt: new Date("2024-12-05T00:00:00"),
         updatedAt: new Date("2024-12-05T00:00:00")
       },
@@ -190,6 +214,7 @@ export class MemStorage implements IStorage {
         phoneNumber: "083 123 4567",
         isActive: true,
         lastLogin: new Date("2025-01-09T10:00:00"),
+        modifiedBy: "admin",
         createdAt: new Date("2024-12-10T00:00:00"),
         updatedAt: new Date("2024-12-10T00:00:00")
       },
@@ -205,6 +230,7 @@ export class MemStorage implements IStorage {
         phoneNumber: "082 806 9568",
         isActive: true,
         lastLogin: new Date("2025-01-09T10:30:00"),
+        modifiedBy: "admin",
         createdAt: new Date("2024-12-15T00:00:00"),
         updatedAt: new Date("2024-12-15T00:00:00")
       }
