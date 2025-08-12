@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useRoleAccess } from '@/hooks/useRoleAccess';
 
 interface DepartmentRole {
   id: number;
@@ -229,6 +230,7 @@ const getDefaultRecords = (): DepartmentRole[] => [
 ];
 
 export default function PositionsRoles() {
+  const permissions = useRoleAccess();
   const [records, setRecords] = useState<DepartmentRole[]>([]);
 
   const [newRecord, setNewRecord] = useState({ department: '', role: '', roleTitle: '', description: '', kLevel: '' });
@@ -531,13 +533,15 @@ export default function PositionsRoles() {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => deleteRecord(record.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {permissions.canDeleteCVs && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => deleteRecord(record.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

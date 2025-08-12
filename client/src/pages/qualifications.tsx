@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Plus, Edit, Trash2 } from "lucide-react";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 
 interface Qualification {
   id: number;
@@ -22,6 +23,7 @@ interface QualificationName {
 }
 
 export default function Qualifications() {
+  const permissions = useRoleAccess();
   const [qualifications, setQualifications] = useState<Qualification[]>([
     {
       id: 1,
@@ -335,14 +337,16 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleDelete(qualification.id)}
-                          className="text-gray-600 hover:text-gray-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {permissions.canDeleteCVs && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleDelete(qualification.id)}
+                            className="text-gray-600 hover:text-gray-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -535,14 +539,16 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleDeleteQualificationName(qualName.id)}
-                          className="text-gray-600 hover:text-gray-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {permissions.canDeleteCVs && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleDeleteQualificationName(qualName.id)}
+                            className="text-gray-600 hover:text-gray-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
