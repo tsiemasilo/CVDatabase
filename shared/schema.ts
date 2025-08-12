@@ -90,3 +90,98 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({
 
 export type InsertUserProfile = z.infer<typeof insertUserProfileSchema>;
 export type UserProfile = typeof userProfiles.$inferSelect;
+
+// Version History / Audit Log table
+export const versionHistory = pgTable("version_history", {
+  id: serial("id").primaryKey(),
+  tableName: varchar("table_name", { length: 100 }).notNull(), // 'cv_records', 'user_profiles', 'qualifications', 'positions_roles', 'tenders'
+  recordId: integer("record_id").notNull(), // ID of the affected record
+  action: varchar("action", { length: 20 }).notNull(), // 'CREATE', 'UPDATE', 'DELETE'
+  oldValues: text("old_values"), // JSON string of old values (for UPDATE/DELETE)
+  newValues: text("new_values"), // JSON string of new values (for CREATE/UPDATE)
+  changedFields: text("changed_fields"), // JSON array of field names that changed
+  userId: integer("user_id").notNull(), // Who made the change
+  username: varchar("username", { length: 50 }).notNull(), // Username for easy reference
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  description: text("description"), // Human-readable description of the change
+});
+
+export const insertVersionHistorySchema = createInsertSchema(versionHistory).omit({
+  id: true,
+  timestamp: true,
+});
+
+export type InsertVersionHistory = z.infer<typeof insertVersionHistorySchema>;
+export type VersionHistoryRecord = typeof versionHistory.$inferSelect;
+
+// Qualifications table for system configuration
+export const qualifications = pgTable("qualifications", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  type: varchar("type", { length: 100 }).notNull(), // 'degree', 'diploma', 'certificate', etc.
+  category: varchar("category", { length: 100 }), // 'undergraduate', 'postgraduate', 'professional'
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertQualificationSchema = createInsertSchema(qualifications).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertQualification = z.infer<typeof insertQualificationSchema>;
+export type Qualification = typeof qualifications.$inferSelect;
+
+// Positions/Roles table for system configuration
+export const positionsRoles = pgTable("positions_roles", {
+  id: serial("id").primaryKey(),
+  department: varchar("department", { length: 100 }).notNull(),
+  discipline: varchar("discipline", { length: 100 }),
+  domain: varchar("domain", { length: 100 }),
+  category: varchar("category", { length: 100 }),
+  roleName: varchar("role_name", { length: 255 }).notNull(),
+  level: varchar("level", { length: 50 }), // 'junior', 'senior', 'lead', etc.
+  sapKLevel: varchar("sap_k_level", { length: 10 }), // SAP specific levels
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPositionRoleSchema = createInsertSchema(positionsRoles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertPositionRole = z.infer<typeof insertPositionRoleSchema>;
+export type PositionRole = typeof positionsRoles.$inferSelect;
+
+// Tenders table for tender management
+export const tenders = pgTable("tenders", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description"),
+  client: varchar("client", { length: 255 }),
+  status: varchar("status", { length: 50 }).notNull().default("draft"), // 'draft', 'active', 'submitted', 'awarded', 'cancelled'
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  submissionDeadline: timestamp("submission_deadline"),
+  estimatedValue: text("estimated_value"),
+  requirements: text("requirements"), // JSON string
+  attachments: text("attachments"), // JSON string
+  assignedTo: integer("assigned_to"), // User ID
+  createdBy: integer("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertTenderSchema = createInsertSchema(tenders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertTender = z.infer<typeof insertTenderSchema>;
+export type Tender = typeof tenders.$inferSelect;

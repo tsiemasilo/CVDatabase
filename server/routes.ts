@@ -1,7 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { getStorage } from "./storage";
-import { insertCVRecordSchema, insertUserProfileSchema, CVRecord } from "@shared/schema";
+import { 
+  insertCVRecordSchema, insertUserProfileSchema, CVRecord, 
+  insertVersionHistorySchema, insertQualificationSchema,
+  insertPositionRoleSchema, insertTenderSchema 
+} from "@shared/schema";
 import { upload, deleteFile, getFileInfo } from "./uploads";
 import { z } from "zod";
 import path from "path";
@@ -257,6 +261,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Form data after conversion:', formData);
       const validatedData = insertCVRecordSchema.parse(formData);
       const newRecord = await storage.createCVRecord(validatedData);
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "cv_records", newRecord.id, "CREATE", 
+          null, newRecord, req.session.user, `Created CV record for: ${newRecord.name} ${newRecord.surname || ''}`);
+      }
+      
       res.status(201).json(newRecord);
     } catch (error) {
       // If validation fails and a file was uploaded, clean it up
@@ -311,6 +322,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertCVRecordSchema.partial().parse(formData);
       const updatedRecord = await storage.updateCVRecord(id, validatedData);
 
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "cv_records", id, "UPDATE", 
+          existingRecord, updatedRecord, req.session.user, `Updated CV record for: ${updatedRecord?.name} ${updatedRecord?.surname || ''}`);
+      }
+
       res.json(updatedRecord);
     } catch (error) {
       // If validation fails and a file was uploaded, clean it up
@@ -351,6 +368,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const deleted = await storage.deleteCVRecord(id);
       if (!deleted) {
         return res.status(404).json({ message: "CV record not found" });
+      }
+
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "cv_records", id, "DELETE", 
+          record, null, req.session.user, `Deleted CV record for: ${record.name} ${record.surname || ''}`);
       }
 
       res.json({ message: "CV record deleted successfully" });
@@ -648,6 +671,382 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Version History endpoints
+  
+  // Get version history for a specific table and record
+  app.get("/api/version-history/:tableName/:recordId", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const { tableName, recordId } = req.params;
+      const recordIdNum = parseInt(recordId);
+      
+      if (isNaN(recordIdNum)) {
+        return res.status(400).json({ message: "Invalid record ID" });
+      }
+      
+      const history = await storage.getRecordVersionHistory(tableName, recordIdNum);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get version history" });
+    }
+  });
+  
+  // Get all version history with optional filters
+  app.get("/api/version-history", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const { tableName, recordId, limit } = req.query;
+      
+      const recordIdNum = recordId ? parseInt(recordId as string) : undefined;
+      const limitNum = limit ? parseInt(limit as string) : 50;
+      
+      const history = await storage.getVersionHistory(
+        tableName as string || undefined,
+        recordIdNum,
+        limitNum
+      );
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get version history" });
+    }
+  });
+  
+  // Qualifications endpoints
+  
+  app.get("/api/qualifications", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const qualifications = await storage.getAllQualifications();
+      res.json(qualifications);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get qualifications" });
+    }
+  });
+  
+  app.post("/api/qualifications", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertQualificationSchema.parse(req.body);
+      const newQualification = await storage.createQualification(validatedData);
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "qualifications", newQualification.id, "CREATE", 
+          null, newQualification, req.session.user, `Created qualification: ${newQualification.name}`);
+      }
+      
+      res.status(201).json(newQualification);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create qualification" });
+    }
+  });
+  
+  app.put("/api/qualifications/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid qualification ID" });
+      }
+      
+      const oldRecord = await storage.getQualification(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Qualification not found" });
+      }
+      
+      const validatedData = insertQualificationSchema.partial().parse(req.body);
+      const updatedQualification = await storage.updateQualification(id, validatedData);
+      
+      if (!updatedQualification) {
+        return res.status(404).json({ message: "Qualification not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "qualifications", id, "UPDATE", 
+          oldRecord, updatedQualification, req.session.user, `Updated qualification: ${updatedQualification.name}`);
+      }
+      
+      res.json(updatedQualification);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update qualification" });
+    }
+  });
+  
+  app.delete("/api/qualifications/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid qualification ID" });
+      }
+      
+      const oldRecord = await storage.getQualification(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Qualification not found" });
+      }
+      
+      const deleted = await storage.deleteQualification(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Qualification not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "qualifications", id, "DELETE", 
+          oldRecord, null, req.session.user, `Deleted qualification: ${oldRecord.name}`);
+      }
+      
+      res.json({ message: "Qualification deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete qualification" });
+    }
+  });
+  
+  // Positions/Roles endpoints
+  
+  app.get("/api/positions-roles", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const positionsRoles = await storage.getAllPositionsRoles();
+      res.json(positionsRoles);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get positions/roles" });
+    }
+  });
+  
+  app.post("/api/positions-roles", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertPositionRoleSchema.parse(req.body);
+      const newPositionRole = await storage.createPositionRole(validatedData);
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "positions_roles", newPositionRole.id, "CREATE", 
+          null, newPositionRole, req.session.user, `Created position/role: ${newPositionRole.roleName}`);
+      }
+      
+      res.status(201).json(newPositionRole);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create position/role" });
+    }
+  });
+  
+  app.put("/api/positions-roles/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid position/role ID" });
+      }
+      
+      const oldRecord = await storage.getPositionRole(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Position/role not found" });
+      }
+      
+      const validatedData = insertPositionRoleSchema.partial().parse(req.body);
+      const updatedPositionRole = await storage.updatePositionRole(id, validatedData);
+      
+      if (!updatedPositionRole) {
+        return res.status(404).json({ message: "Position/role not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "positions_roles", id, "UPDATE", 
+          oldRecord, updatedPositionRole, req.session.user, `Updated position/role: ${updatedPositionRole.roleName}`);
+      }
+      
+      res.json(updatedPositionRole);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update position/role" });
+    }
+  });
+  
+  app.delete("/api/positions-roles/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid position/role ID" });
+      }
+      
+      const oldRecord = await storage.getPositionRole(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Position/role not found" });
+      }
+      
+      const deleted = await storage.deletePositionRole(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Position/role not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "positions_roles", id, "DELETE", 
+          oldRecord, null, req.session.user, `Deleted position/role: ${oldRecord.roleName}`);
+      }
+      
+      res.json({ message: "Position/role deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete position/role" });
+    }
+  });
+  
+  // Tenders endpoints
+  
+  app.get("/api/tenders", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const tenders = await storage.getAllTenders();
+      res.json(tenders);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get tenders" });
+    }
+  });
+  
+  app.post("/api/tenders", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertTenderSchema.parse({
+        ...req.body,
+        createdBy: req.session.user?.id || 1
+      });
+      const newTender = await storage.createTender(validatedData);
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "tenders", newTender.id, "CREATE", 
+          null, newTender, req.session.user, `Created tender: ${newTender.title}`);
+      }
+      
+      res.status(201).json(newTender);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create tender" });
+    }
+  });
+  
+  app.put("/api/tenders/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid tender ID" });
+      }
+      
+      const oldRecord = await storage.getTender(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Tender not found" });
+      }
+      
+      const validatedData = insertTenderSchema.partial().parse(req.body);
+      const updatedTender = await storage.updateTender(id, validatedData);
+      
+      if (!updatedTender) {
+        return res.status(404).json({ message: "Tender not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "tenders", id, "UPDATE", 
+          oldRecord, updatedTender, req.session.user, `Updated tender: ${updatedTender.title}`);
+      }
+      
+      res.json(updatedTender);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update tender" });
+    }
+  });
+  
+  app.delete("/api/tenders/:id", async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid tender ID" });
+      }
+      
+      const oldRecord = await storage.getTender(id);
+      if (!oldRecord) {
+        return res.status(404).json({ message: "Tender not found" });
+      }
+      
+      const deleted = await storage.deleteTender(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Tender not found" });
+      }
+      
+      // Create version history record
+      if (req.session.user) {
+        await createVersionHistory(storage, "tenders", id, "DELETE", 
+          oldRecord, null, req.session.user, `Deleted tender: ${oldRecord.title}`);
+      }
+      
+      res.json({ message: "Tender deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete tender" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+}
+
+// Helper function to create version history records
+async function createVersionHistory(
+  storage: any, 
+  tableName: string, 
+  recordId: number, 
+  action: string, 
+  oldValues: any, 
+  newValues: any, 
+  user: any, 
+  description?: string
+) {
+  try {
+    // Calculate changed fields for UPDATE operations
+    let changedFields: string[] = [];
+    if (action === "UPDATE" && oldValues && newValues) {
+      changedFields = Object.keys(newValues).filter(key => {
+        return oldValues[key] !== newValues[key];
+      });
+    }
+
+    const versionData = {
+      tableName,
+      recordId,
+      action,
+      oldValues: oldValues ? JSON.stringify(oldValues) : null,
+      newValues: newValues ? JSON.stringify(newValues) : null,
+      changedFields: changedFields.length > 0 ? JSON.stringify(changedFields) : null,
+      userId: user.id,
+      username: user.username,
+      description: description || `${action.toLowerCase()} operation on ${tableName}`
+    };
+
+    await storage.createVersionHistory(versionData);
+  } catch (error) {
+    console.error("Failed to create version history record:", error);
+    // Don't throw error to prevent breaking main operations
+  }
 }

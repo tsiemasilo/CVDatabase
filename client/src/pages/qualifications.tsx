@@ -5,8 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, History } from "lucide-react";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
+import { VersionHistoryModal } from "@/components/version-history-modal";
 
 interface Qualification {
   id: number;
@@ -134,6 +135,11 @@ export default function Qualifications() {
     description: ""
   });
 
+  // Version history state
+  const [versionHistoryOpen, setVersionHistoryOpen] = useState(false);
+  const [versionHistoryRecord, setVersionHistoryRecord] = useState<Qualification | QualificationName | null>(null);
+  const [versionHistoryType, setVersionHistoryType] = useState<"qualifications" | "qualification_names">("qualifications");
+
   const handleAdd = () => {
     if (formData.type && formData.name && formData.description) {
       const newQualification: Qualification = {
@@ -224,6 +230,13 @@ export default function Qualifications() {
 
   const handleDeleteQualificationName = (id: number) => {
     setQualificationNames(qualificationNames.filter(q => q.id !== id));
+  };
+
+  // Version history handlers
+  const handleVersionHistory = (record: Qualification | QualificationName, type: "qualifications" | "qualification_names") => {
+    setVersionHistoryRecord(record);
+    setVersionHistoryType(type);
+    setVersionHistoryOpen(true);
   };
 
   const handleApplyQualificationFilter = () => {
@@ -336,6 +349,15 @@ export default function Qualifications() {
                           className="text-gray-600 hover:text-gray-900"
                         >
                           <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleVersionHistory(qualification, "qualifications")}
+                          className="text-gray-600 hover:text-blue-600"
+                          title="View Version History"
+                        >
+                          <History className="w-4 h-4" />
                         </Button>
                         {user?.role === 'admin' && (
                           <Button 
@@ -539,6 +561,15 @@ export default function Qualifications() {
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleVersionHistory(qualName, "qualification_names")}
+                          className="text-gray-600 hover:text-blue-600"
+                          title="View Version History"
+                        >
+                          <History className="w-4 h-4" />
+                        </Button>
                         {user?.role === 'admin' && (
                           <Button 
                             variant="ghost" 
@@ -620,6 +651,15 @@ export default function Qualifications() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Version History Modal */}
+        <VersionHistoryModal
+          isOpen={versionHistoryOpen}
+          onClose={() => setVersionHistoryOpen(false)}
+          tableName={versionHistoryType}
+          recordId={versionHistoryRecord?.id}
+          title={versionHistoryRecord ? `Version History - ${(versionHistoryRecord as any).name || (versionHistoryRecord as any).qualificationName}` : "Version History"}
+        />
       </main>
     </div>
   );

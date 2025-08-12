@@ -1,4 +1,9 @@
-import { CVRecord, InsertCVRecord, UserProfile, InsertUserProfile, cvRecords, userProfiles } from "@shared/schema";
+import { 
+  CVRecord, InsertCVRecord, UserProfile, InsertUserProfile, 
+  VersionHistoryRecord, InsertVersionHistory, Qualification, InsertQualification,
+  PositionRole, InsertPositionRole, Tender, InsertTender,
+  cvRecords, userProfiles, versionHistory, qualifications, positionsRoles, tenders 
+} from "@shared/schema";
 import { db } from "./db";
 import { eq, like, or, and, desc, sql } from "drizzle-orm";
 
@@ -25,6 +30,32 @@ export interface IStorage {
   
   // Authentication methods
   authenticateUser(username: string, password: string): Promise<UserProfile | null>;
+  
+  // Version History methods
+  createVersionHistory(versionData: InsertVersionHistory): Promise<VersionHistoryRecord>;
+  getVersionHistory(tableName?: string, recordId?: number, limit?: number): Promise<VersionHistoryRecord[]>;
+  getRecordVersionHistory(tableName: string, recordId: number): Promise<VersionHistoryRecord[]>;
+  
+  // Qualifications methods
+  getAllQualifications(): Promise<Qualification[]>;
+  getQualification(id: number): Promise<Qualification | undefined>;
+  createQualification(qualification: InsertQualification): Promise<Qualification>;
+  updateQualification(id: number, qualification: Partial<InsertQualification>): Promise<Qualification | undefined>;
+  deleteQualification(id: number): Promise<boolean>;
+  
+  // Positions/Roles methods
+  getAllPositionsRoles(): Promise<PositionRole[]>;
+  getPositionRole(id: number): Promise<PositionRole | undefined>;
+  createPositionRole(positionRole: InsertPositionRole): Promise<PositionRole>;
+  updatePositionRole(id: number, positionRole: Partial<InsertPositionRole>): Promise<PositionRole | undefined>;
+  deletePositionRole(id: number): Promise<boolean>;
+  
+  // Tenders methods
+  getAllTenders(): Promise<Tender[]>;
+  getTender(id: number): Promise<Tender | undefined>;
+  createTender(tender: InsertTender): Promise<Tender>;
+  updateTender(id: number, tender: Partial<InsertTender>): Promise<Tender | undefined>;
+  deleteTender(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -385,6 +416,131 @@ export class MemStorage implements IStorage {
     
     return null;
   }
+
+  // Version History methods (stub implementations for MemStorage)
+  async createVersionHistory(versionData: InsertVersionHistory): Promise<VersionHistoryRecord> {
+    // For MemStorage, just return a mock version history record
+    return {
+      id: Date.now(),
+      tableName: versionData.tableName,
+      recordId: versionData.recordId,
+      action: versionData.action,
+      oldValues: versionData.oldValues || null,
+      newValues: versionData.newValues || null,
+      changedFields: versionData.changedFields || null,
+      userId: versionData.userId,
+      username: versionData.username,
+      timestamp: new Date(),
+      description: versionData.description || null,
+    };
+  }
+
+  async getVersionHistory(tableName?: string, recordId?: number, limit?: number): Promise<VersionHistoryRecord[]> {
+    return [];
+  }
+
+  async getRecordVersionHistory(tableName: string, recordId: number): Promise<VersionHistoryRecord[]> {
+    return [];
+  }
+
+  // Qualifications methods (stub implementations for MemStorage)
+  async getAllQualifications(): Promise<Qualification[]> {
+    return [];
+  }
+
+  async getQualification(id: number): Promise<Qualification | undefined> {
+    return undefined;
+  }
+
+  async createQualification(qualification: InsertQualification): Promise<Qualification> {
+    return {
+      id: Date.now(),
+      name: qualification.name,
+      type: qualification.type,
+      category: qualification.category || null,
+      isActive: qualification.isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
+  async updateQualification(id: number, qualification: Partial<InsertQualification>): Promise<Qualification | undefined> {
+    return undefined;
+  }
+
+  async deleteQualification(id: number): Promise<boolean> {
+    return false;
+  }
+
+  // Positions/Roles methods (stub implementations for MemStorage)
+  async getAllPositionsRoles(): Promise<PositionRole[]> {
+    return [];
+  }
+
+  async getPositionRole(id: number): Promise<PositionRole | undefined> {
+    return undefined;
+  }
+
+  async createPositionRole(positionRole: InsertPositionRole): Promise<PositionRole> {
+    return {
+      id: Date.now(),
+      department: positionRole.department,
+      discipline: positionRole.discipline || null,
+      domain: positionRole.domain || null,
+      category: positionRole.category || null,
+      roleName: positionRole.roleName,
+      level: positionRole.level || null,
+      sapKLevel: positionRole.sapKLevel || null,
+      isActive: positionRole.isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
+  async updatePositionRole(id: number, positionRole: Partial<InsertPositionRole>): Promise<PositionRole | undefined> {
+    return undefined;
+  }
+
+  async deletePositionRole(id: number): Promise<boolean> {
+    return false;
+  }
+
+  // Tenders methods (stub implementations for MemStorage)
+  async getAllTenders(): Promise<Tender[]> {
+    return [];
+  }
+
+  async getTender(id: number): Promise<Tender | undefined> {
+    return undefined;
+  }
+
+  async createTender(tender: InsertTender): Promise<Tender> {
+    return {
+      id: Date.now(),
+      title: tender.title,
+      description: tender.description || null,
+      client: tender.client || null,
+      status: tender.status ?? "draft",
+      startDate: tender.startDate || null,
+      endDate: tender.endDate || null,
+      submissionDeadline: tender.submissionDeadline || null,
+      estimatedValue: tender.estimatedValue || null,
+      requirements: tender.requirements || null,
+      attachments: tender.attachments || null,
+      assignedTo: tender.assignedTo || null,
+      createdBy: tender.createdBy,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
+  async updateTender(id: number, tender: Partial<InsertTender>): Promise<Tender | undefined> {
+    return undefined;
+  }
+
+  async deleteTender(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -594,6 +750,135 @@ export class DatabaseStorage implements IStorage {
       console.log("Database authentication failed, using fallback");
       throw new Error("Database connection failed");
     }
+  }
+
+  // Version History methods
+  async createVersionHistory(versionData: InsertVersionHistory): Promise<VersionHistoryRecord> {
+    const [newVersion] = await db.insert(versionHistory).values(versionData).returning();
+    return newVersion;
+  }
+
+  async getVersionHistory(tableName?: string, recordId?: number, limit?: number): Promise<VersionHistoryRecord[]> {
+    let query = db.select().from(versionHistory);
+    
+    const conditions = [];
+    
+    if (tableName) {
+      conditions.push(eq(versionHistory.tableName, tableName));
+    }
+    
+    if (recordId) {
+      conditions.push(eq(versionHistory.recordId, recordId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    query = query.orderBy(desc(versionHistory.timestamp)) as any;
+    
+    if (limit) {
+      query = query.limit(limit) as any;
+    }
+    
+    return await query;
+  }
+
+  async getRecordVersionHistory(tableName: string, recordId: number): Promise<VersionHistoryRecord[]> {
+    return await db.select()
+      .from(versionHistory)
+      .where(and(
+        eq(versionHistory.tableName, tableName),
+        eq(versionHistory.recordId, recordId)
+      ))
+      .orderBy(desc(versionHistory.timestamp));
+  }
+
+  // Qualifications methods
+  async getAllQualifications(): Promise<Qualification[]> {
+    return await db.select().from(qualifications).orderBy(desc(qualifications.createdAt));
+  }
+
+  async getQualification(id: number): Promise<Qualification | undefined> {
+    const [qualification] = await db.select().from(qualifications).where(eq(qualifications.id, id));
+    return qualification;
+  }
+
+  async createQualification(qualification: InsertQualification): Promise<Qualification> {
+    const [newQualification] = await db.insert(qualifications).values(qualification).returning();
+    return newQualification;
+  }
+
+  async updateQualification(id: number, qualification: Partial<InsertQualification>): Promise<Qualification | undefined> {
+    const [updatedQualification] = await db
+      .update(qualifications)
+      .set({ ...qualification, updatedAt: new Date() })
+      .where(eq(qualifications.id, id))
+      .returning();
+    return updatedQualification;
+  }
+
+  async deleteQualification(id: number): Promise<boolean> {
+    const result = await db.delete(qualifications).where(eq(qualifications.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Positions/Roles methods
+  async getAllPositionsRoles(): Promise<PositionRole[]> {
+    return await db.select().from(positionsRoles).orderBy(desc(positionsRoles.createdAt));
+  }
+
+  async getPositionRole(id: number): Promise<PositionRole | undefined> {
+    const [positionRole] = await db.select().from(positionsRoles).where(eq(positionsRoles.id, id));
+    return positionRole;
+  }
+
+  async createPositionRole(positionRole: InsertPositionRole): Promise<PositionRole> {
+    const [newPositionRole] = await db.insert(positionsRoles).values(positionRole).returning();
+    return newPositionRole;
+  }
+
+  async updatePositionRole(id: number, positionRole: Partial<InsertPositionRole>): Promise<PositionRole | undefined> {
+    const [updatedPositionRole] = await db
+      .update(positionsRoles)
+      .set({ ...positionRole, updatedAt: new Date() })
+      .where(eq(positionsRoles.id, id))
+      .returning();
+    return updatedPositionRole;
+  }
+
+  async deletePositionRole(id: number): Promise<boolean> {
+    const result = await db.delete(positionsRoles).where(eq(positionsRoles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Tenders methods
+  async getAllTenders(): Promise<Tender[]> {
+    return await db.select().from(tenders).orderBy(desc(tenders.createdAt));
+  }
+
+  async getTender(id: number): Promise<Tender | undefined> {
+    const [tender] = await db.select().from(tenders).where(eq(tenders.id, id));
+    return tender;
+  }
+
+  async createTender(tender: InsertTender): Promise<Tender> {
+    const [newTender] = await db.insert(tenders).values(tender).returning();
+    return newTender;
+  }
+
+  async updateTender(id: number, tender: Partial<InsertTender>): Promise<Tender | undefined> {
+    const [updatedTender] = await db
+      .update(tenders)
+      .set({ ...tender, updatedAt: new Date() })
+      .where(eq(tenders.id, id))
+      .returning();
+    return updatedTender;
+  }
+
+  async deleteTender(id: number): Promise<boolean> {
+    const result = await db.delete(tenders).where(eq(tenders.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 }
 

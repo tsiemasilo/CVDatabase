@@ -9,11 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
+import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText, History } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import CVTemplateModal from "./cv-template-modal";
+import { VersionHistoryModal } from "./version-history-modal";
 
 interface CVTableProps {
   records: CVRecord[];
@@ -64,6 +65,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     skills: "",
     status: "active" as const
   });
+  const [versionHistoryOpen, setVersionHistoryOpen] = useState(false);
+  const [versionHistoryRecord, setVersionHistoryRecord] = useState<CVRecord | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -316,6 +319,11 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     }
   };
 
+  const handleVersionHistory = (record: CVRecord) => {
+    setVersionHistoryRecord(record);
+    setVersionHistoryOpen(true);
+  };
+
   const sortedRecords = [...records].sort((a, b) => {
     const aValue = a[sortConfig.key];
     const bValue = b[sortConfig.key];
@@ -495,6 +503,15 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                         <Edit className="w-4 h-4" />
                       </Button>
                     )}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleVersionHistory(record)}
+                      className="text-gray-600 hover:text-blue-600"
+                      title="View Version History"
+                    >
+                      <History className="w-4 h-4" />
+                    </Button>
                     {permissions.canDeleteCVs && (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -707,6 +724,15 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Version History Modal */}
+      <VersionHistoryModal
+        isOpen={versionHistoryOpen}
+        onClose={() => setVersionHistoryOpen(false)}
+        tableName="cv_records"
+        recordId={versionHistoryRecord?.id}
+        title={versionHistoryRecord ? `Version History - ${versionHistoryRecord.name} ${versionHistoryRecord.surname || ''}` : "Version History"}
+      />
     </div>
   );
 }
