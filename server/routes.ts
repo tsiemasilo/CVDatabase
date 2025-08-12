@@ -571,18 +571,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new user profile
   app.post("/api/user-profiles", async (req, res) => {
     try {
+      console.log("Creating user profile with data:", req.body);
       const storage = await getStorage();
       const validatedData = insertUserProfileSchema.parse(req.body);
+      console.log("Validated data:", validatedData);
       const newProfile = await storage.createUserProfile(validatedData);
+      console.log("Created user profile:", newProfile);
       res.status(201).json(newProfile);
     } catch (error) {
+      console.error("User profile creation error:", error);
       if (error instanceof z.ZodError) {
+        console.error("Validation error details:", error.errors);
         return res.status(400).json({ 
           message: "Validation error", 
           errors: error.errors 
         });
       }
-      res.status(500).json({ message: "Failed to create user profile" });
+      
+      // Check for unique constraint violations
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('duplicate') || errorMessage.includes('unique') || errorMessage.includes('already exists')) {
+        return res.status(409).json({ 
+          message: "User with this username or email already exists" 
+        });
+      }
+      
+      res.status(500).json({ message: "Failed to create user profile", error: errorMessage });
     }
   });
 
