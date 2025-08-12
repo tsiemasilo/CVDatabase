@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Edit, Trash2, Plus } from "lucide-react";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 
 interface Tender {
   id: number;
@@ -18,6 +19,7 @@ interface Tender {
 }
 
 export default function Tenders() {
+  const { permissions } = useRoleAccess();
   const [tenders, setTenders] = useState<Tender[]>([
     {
       id: 1,
@@ -136,13 +138,15 @@ export default function Tenders() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Tenders</h2>
-            <Button 
-              onClick={() => setAddTenderModalOpen(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add tender
-            </Button>
+            {permissions.canEditCVs && (
+              <Button 
+                onClick={() => setAddTenderModalOpen(true)}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add tender
+              </Button>
+            )}
           </div>
 
           <div className="overflow-x-auto">
@@ -200,24 +204,28 @@ export default function Tenders() {
                       {tender.closingDate ? new Date(tender.closingDate).toLocaleDateString() : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                      <div className="flex items-center justify-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditTender(tender)}
-                          className="text-gray-600 hover:text-gray-900"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteTender(tender.id)}
-                          className="text-gray-600 hover:text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      {permissions.canEditCVs ? (
+                        <div className="flex items-center justify-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditTender(tender)}
+                            className="text-gray-600 hover:text-gray-900"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteTender(tender.id)}
+                            className="text-gray-600 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="text-gray-400 text-sm">View Only</div>
+                      )}
                     </td>
                   </tr>
                 ))}
