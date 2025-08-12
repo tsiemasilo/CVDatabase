@@ -465,7 +465,7 @@ export class DatabaseStorage implements IStorage {
         console.log("Skills column added successfully");
       }
       
-      // Use raw SQL query including skills and audit columns
+      // Use raw SQL query including skills and audit tracking columns
       const rawResult = await db.execute(sql`
         SELECT id, name, surname, id_passport, gender, email, phone, position, 
                role_title, department, experience, experience_similar_role, 
@@ -500,10 +500,10 @@ export class DatabaseStorage implements IStorage {
         languages: row.languages,
         workExperiences: row.work_experiences,
         certificateTypes: row.certificate_types,
-        skills: row.skills,
+        skills: row.skills || "",
         status: row.status,
         cvFile: row.cv_file,
-        modifiedBy: row.modified_by,
+        modifiedBy: row.modified_by || null,
         submittedAt: row.submitted_at,
         updatedAt: row.updated_at,
       }));
@@ -652,11 +652,14 @@ class StorageFactory {
   static async getStorage(): Promise<IStorage> {
     if (!this.instance) {
       try {
-        // Test database connection first by running a simple query
-        const testDb = new DatabaseStorage();
-        await testDb.getAllUserProfiles();
-        console.log("✅ Database connection successful, using DatabaseStorage");
-        this.instance = testDb;
+        // Test database connection with a simple query that doesn't involve schema issues
+        const testResult = await db.execute(sql`SELECT 1 as test`);
+        if (testResult) {
+          console.log("✅ Database connection successful, using DatabaseStorage");
+          this.instance = new DatabaseStorage();
+        } else {
+          throw new Error("Database test query failed");
+        }
       } catch (error) {
         console.log("❌ Database connection failed, using MemStorage fallback", error);
         this.instance = new MemStorage();
