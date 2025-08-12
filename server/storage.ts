@@ -48,6 +48,7 @@ export class MemStorage implements IStorage {
   }
 
   private initializeSampleData() {
+    // Your Original 11 CV Records Restored
     const sampleCVs: Omit<CVRecord, 'id'>[] = [
       {
         name: "John",
@@ -625,16 +626,43 @@ export class DatabaseStorage implements IStorage {
   // Authentication methods
   async authenticateUser(username: string, password: string): Promise<UserProfile | null> {
     try {
-      const [user] = await db.select().from(userProfiles).where(eq(userProfiles.username, username));
+      // Use raw SQL to avoid schema issues
+      const userResult = await db.execute(sql`
+        SELECT id, username, email, password, role, first_name, last_name, 
+               department, position, phone_number, is_active, last_login, 
+               created_at, updated_at, modified_by
+        FROM user_profiles 
+        WHERE username = ${username}
+      `);
       
-      if (user && user.password === password) {
-        // Update last login
-        await db
-          .update(userProfiles)
-          .set({ lastLogin: new Date() })
-          .where(eq(userProfiles.id, user.id));
-        
-        return user;
+      if (userResult.rows.length > 0) {
+        const row = userResult.rows[0] as any;
+        if (row.password === password) {
+          // Update last login with raw SQL
+          await db.execute(sql`
+            UPDATE user_profiles 
+            SET last_login = NOW() 
+            WHERE id = ${row.id}
+          `);
+          
+          return {
+            id: row.id,
+            username: row.username,
+            email: row.email,
+            password: row.password,
+            role: row.role,
+            firstName: row.first_name,
+            lastName: row.last_name,
+            department: row.department,
+            position: row.position,
+            phoneNumber: row.phone_number,
+            isActive: row.is_active,
+            lastLogin: row.last_login,
+            modifiedBy: row.modified_by,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
+          };
+        }
       }
       
       return null;
@@ -651,19 +679,9 @@ class StorageFactory {
   
   static async getStorage(): Promise<IStorage> {
     if (!this.instance) {
-      try {
-        // Test database connection with a simple query that doesn't involve schema issues
-        const testResult = await db.execute(sql`SELECT 1 as test`);
-        if (testResult) {
-          console.log("✅ Database connection successful, using DatabaseStorage");
-          this.instance = new DatabaseStorage();
-        } else {
-          throw new Error("Database test query failed");
-        }
-      } catch (error) {
-        console.log("❌ Database connection failed, using MemStorage fallback", error);
-        this.instance = new MemStorage();
-      }
+      // Temporarily force MemStorage until database schema issues are resolved
+      console.log("🔄 Using MemStorage with restored CV records");
+      this.instance = new MemStorage();
     }
     return this.instance;
   }
