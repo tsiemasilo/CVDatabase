@@ -328,7 +328,9 @@ const initializeApp = async () => {
       // Version History routes
       app.get("/api/version-history/:tableName/:recordId", async (req, res) => {
         try {
+          console.log('Version history route hit:', req.params);
           const storage = await getStorage();
+          console.log('Storage obtained:', typeof storage);
           const { tableName, recordId } = req.params;
           const recordIdNum = parseInt(recordId);
           
@@ -336,7 +338,9 @@ const initializeApp = async () => {
             return res.status(400).json({ message: "Invalid record ID" });
           }
           
+          console.log('Calling getRecordVersionHistory:', tableName, recordIdNum);
           const history = await storage.getRecordVersionHistory(tableName, recordIdNum);
+          console.log('Version history result:', history?.length || 0, 'records');
           res.json(history);
         } catch (error) {
           console.error("Version history API error:", error);
@@ -346,17 +350,21 @@ const initializeApp = async () => {
 
       app.get("/api/version-history", async (req, res) => {
         try {
+          console.log('All version history route hit:', req.query);
           const storage = await getStorage();
+          console.log('Storage obtained for all history:', typeof storage);
           const { tableName, recordId, limit } = req.query;
           
           const recordIdNum = recordId ? parseInt(recordId) : undefined;
           const limitNum = limit ? parseInt(limit) : 50;
           
+          console.log('Calling getVersionHistory with params:', { tableName, recordIdNum, limitNum });
           const history = await storage.getVersionHistory(
             tableName || undefined,
             recordIdNum,
             limitNum
           );
+          console.log('All version history result:', history?.length || 0, 'records');
           res.json(history);
         } catch (error) {
           console.error("Version history API error:", error);
@@ -598,8 +606,17 @@ const initializeApp = async () => {
         }
       });
 
+      // Test endpoint to verify function is working
+      app.get("/api/test-version-history", async (req, res) => {
+        res.json({ 
+          message: "Version history routes are loaded", 
+          timestamp: new Date().toISOString(),
+          routesCount: 30
+        });
+      });
+
       routesInitialized = true;
-      console.log('Netlify function routes initialized successfully');
+      console.log('Netlify function routes initialized successfully - 31 total routes including version history');
     } catch (error) {
       console.error('Failed to initialize routes:', error);
     }
