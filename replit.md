@@ -59,6 +59,8 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 12, 2025: Implemented role-based access control for managers - managers now restricted to only Landing page and Tenders tab, cannot edit/delete CV records, cannot access user profiles, and cannot capture new records
+- August 12, 2025: Updated Word document generation to exactly match CV template structure with identical layout, colors, typography, and two-page format including proper page breaks and Alteram branding
 - August 11, 2025: Removed contact information (email, phone, position, department) from second page of CV template per user request - maintains cleaner two-page layout focusing on skills and competencies
 - August 11, 2025: Successfully resolved database schema compatibility issues and added skills column to production database with auto-detection capability - CV records now loading properly with skills functionality operational
 - August 11, 2025: Fixed accessibility warnings for Dialog components - added missing DialogDescription elements to all modals (CV Template Modal, Add CV Modal, Edit CV Record Modal, Add User Profile Modal) to ensure proper screen reader support

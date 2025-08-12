@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 import CVTemplateModal from "./cv-template-modal";
 
 interface CVTableProps {
@@ -44,6 +45,7 @@ const formatPhoneNumber = (phone: string) => {
 };
 
 export default function CVTable({ records, isLoading, onRefetch }: CVTableProps) {
+  const { permissions } = useRoleAccess();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CVRecord; direction: 'asc' | 'desc' }>({ key: 'submittedAt', direction: 'desc' });
   const [viewingRecord, setViewingRecord] = useState<CVRecord | null>(null);
@@ -434,22 +436,28 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                   <div className="text-sm text-gray-900">{record.roleTitle || 'N/A'}</div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <Select 
-                    value={record.status} 
-                    onValueChange={(value) => updateMutation.mutate({ 
-                      id: record.id, 
-                      updates: { status: value as "active" | "pending" | "archived" } 
-                    })}
-                  >
-                    <SelectTrigger className={`w-24 h-6 text-xs border-0 ${getStatusColor(record.status)}`}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="archived">Archive</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {permissions.canEditCVs ? (
+                    <Select 
+                      value={record.status} 
+                      onValueChange={(value) => updateMutation.mutate({ 
+                        id: record.id, 
+                        updates: { status: value as "active" | "pending" | "archived" } 
+                      })}
+                    >
+                      <SelectTrigger className={`w-24 h-6 text-xs border-0 ${getStatusColor(record.status)}`}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="archived">Archive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Badge className={`text-xs ${getStatusColor(record.status)}`}>
+                      {record.status}
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="text-sm text-gray-900">{record.experience || 0} years</div>
@@ -477,39 +485,43 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleEdit(record)}
-                      className="text-gray-600 hover:text-gray-900"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-gray-600 hover:text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the CV record for {record.name}.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteMutation.mutate(record.id)}>
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    {permissions.canEditCVs && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleEdit(record)}
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    )}
+                    {permissions.canDeleteCVs && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-gray-600 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the CV record for {record.name}.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteMutation.mutate(record.id)}>
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

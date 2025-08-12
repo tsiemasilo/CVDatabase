@@ -256,13 +256,15 @@ export default function CVDatabase() {
                   <p className="text-sm text-gray-500 mt-1">Showing {cvRecords.length} of {allCVRecords.length} records</p>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Button 
-                    onClick={() => setActiveTab("Capture record")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add New CV
-                  </Button>
+                  {permissions.canCaptureRecords && (
+                    <Button 
+                      onClick={() => setActiveTab("Capture record")}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add New CV
+                    </Button>
+                  )}
                 </div>
               </div>
 

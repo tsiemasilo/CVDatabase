@@ -110,8 +110,8 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-3">
-            {/* Hide profile button for users */}
-            {user?.role !== 'user' && (
+            {/* Hide profile button for users and managers */}
+            {user?.role === 'admin' && (
               <Button 
                 variant="outline" 
                 size="sm" 
