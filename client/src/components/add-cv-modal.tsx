@@ -69,6 +69,8 @@ export default function AddCVModal({ open, onOpenChange, onSuccess }: AddCVModal
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-all"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-record"] });
       toast({ title: "CV record created successfully" });
       form.reset();
       setSelectedFile(null);

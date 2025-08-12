@@ -74,6 +74,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     mutationFn: (id: number) => apiRequest("DELETE", `/api/cv-records/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-all"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-record"] });
       toast({ title: "CV record deleted successfully" });
       onRefetch();
     },
@@ -89,6 +91,8 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cv-records"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-all"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-record"] });
       setEditingRecord(null);
       toast({ title: "CV record updated successfully" });
       onRefetch();

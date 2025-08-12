@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
@@ -40,6 +40,15 @@ export function VersionHistoryModal({
   title = "Version History" 
 }: VersionHistoryModalProps) {
   const [selectedTab, setSelectedTab] = useState<string>("record");
+  const queryClient = useQueryClient();
+  
+  // Invalidate cache when modal opens to ensure fresh data
+  useEffect(() => {
+    if (isOpen) {
+      queryClient.invalidateQueries({ queryKey: ["version-history-all"] });
+      queryClient.invalidateQueries({ queryKey: ["version-history-record"] });
+    }
+  }, [isOpen, queryClient]);
 
   // Query for record-specific history
   const recordHistoryQuery = useQuery({
@@ -51,6 +60,10 @@ export function VersionHistoryModal({
       return response.json();
     },
     enabled: isOpen && !!tableName && !!recordId,
+    staleTime: 0, // Always refetch to get latest data
+    cacheTime: 0, // Don't cache results
+    refetchOnWindowFocus: true,
+    refetchInterval: selectedTab === 'record' && isOpen ? 5000 : false, // Auto-refresh every 5 seconds when tab is active
   });
 
   // Query for all recent history
@@ -62,6 +75,10 @@ export function VersionHistoryModal({
       return response.json();
     },
     enabled: isOpen,
+    staleTime: 0, // Always refetch to get latest data
+    cacheTime: 0, // Don't cache results
+    refetchOnWindowFocus: true,
+    refetchInterval: selectedTab === 'all' && isOpen ? 5000 : false, // Auto-refresh every 5 seconds when tab is active
   });
 
   const getActionIcon = (action: string) => {
@@ -143,8 +160,8 @@ export function VersionHistoryModal({
 
     const highlightChange = (recordId: number, field: string) => {
       const key = `${recordId}-${field}`;
-      setHighlightedChanges(prev => new Set([...prev, key]));
-      setAnimatingFields(prev => new Set([...prev, key]));
+      setHighlightedChanges(prev => new Set([...Array.from(prev), key]));
+      setAnimatingFields(prev => new Set([...Array.from(prev), key]));
       
       setTimeout(() => {
         setAnimatingFields(prev => {
