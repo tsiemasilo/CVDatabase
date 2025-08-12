@@ -100,6 +100,32 @@ export function VersionHistoryModal({
       .replace(/_/g, ' ');
   };
 
+  const formatValue = (value: any): string => {
+    if (value === null || value === undefined) return 'N/A';
+    if (value === '') return 'Empty';
+    
+    // Format date strings
+    if (typeof value === 'string' && value.includes('T') && value.includes('Z')) {
+      try {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+        }
+      } catch (e) {
+        // Fall through to default string handling
+      }
+    }
+    
+    return String(value);
+  };
+
   const VersionHistoryList = ({ records }: { records: VersionHistoryRecord[] }) => {
     const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
 
@@ -183,7 +209,7 @@ export function VersionHistoryModal({
                                 <div key={key} className="text-xs">
                                   <span className="font-medium">{formatFieldName(key)}:</span>{' '}
                                   <span className="text-muted-foreground">
-                                    {value !== null && value !== undefined ? String(value) : 'N/A'}
+                                    {formatValue(value)}
                                   </span>
                                 </div>
                               ))}
@@ -197,15 +223,11 @@ export function VersionHistoryModal({
                             <div className="text-xs space-y-1">
                               <div className="text-red-600">
                                 <span className="font-medium">From:</span>{' '}
-                                {oldValues?.[field] !== null && oldValues?.[field] !== undefined 
-                                  ? String(oldValues[field]) 
-                                  : 'N/A'}
+                                {formatValue(oldValues?.[field])}
                               </div>
                               <div className="text-green-600">
                                 <span className="font-medium">To:</span>{' '}
-                                {newValues?.[field] !== null && newValues?.[field] !== undefined 
-                                  ? String(newValues[field]) 
-                                  : 'N/A'}
+                                {formatValue(newValues?.[field])}
                               </div>
                             </div>
                           </div>
@@ -219,7 +241,7 @@ export function VersionHistoryModal({
                                 <div key={key} className="text-xs">
                                   <span className="font-medium">{formatFieldName(key)}:</span>{' '}
                                   <span className="text-muted-foreground">
-                                    {value !== null && value !== undefined ? String(value) : 'N/A'}
+                                    {formatValue(value)}
                                   </span>
                                 </div>
                               ))}

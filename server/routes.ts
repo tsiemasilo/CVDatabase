@@ -320,6 +320,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const validatedData = insertCVRecordSchema.partial().parse(formData);
+      // Don't update submittedAt on record updates - only on creation
+      if ('submittedAt' in validatedData) {
+        delete (validatedData as any).submittedAt;
+      }
       const updatedRecord = await storage.updateCVRecord(id, validatedData);
 
       // Create version history record
@@ -1030,7 +1034,26 @@ async function createVersionHistory(
     let changedFields: string[] = [];
     if (action === "UPDATE" && oldValues && newValues) {
       changedFields = Object.keys(newValues).filter(key => {
-        return oldValues[key] !== newValues[key];
+        const oldVal = oldValues[key];
+        const newVal = newValues[key];
+        
+        // Skip auto-updated fields that shouldn't be considered user changes
+        if (key === 'submittedAt' || key === 'updatedAt' || key === 'id') {
+          return false;
+        }
+        
+        // Normalize null, undefined, and empty string comparisons
+        const normalizeValue = (val: any): any => {
+          if (val === null || val === undefined || val === '') {
+            return null;
+          }
+          return val;
+        };
+        
+        const normalizedOld = normalizeValue(oldVal);
+        const normalizedNew = normalizeValue(newVal);
+        
+        return normalizedOld !== normalizedNew;
       });
     }
 
