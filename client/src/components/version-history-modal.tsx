@@ -57,6 +57,7 @@ export function VersionHistoryModal({
       if (!tableName || !recordId) return [];
       
       try {
+        console.log(`🔍 Fetching record version history for ${tableName}/${recordId}`);
         const response = await fetch(`/api/version-history/${tableName}/${recordId}`, {
           credentials: 'include',
           headers: {
@@ -64,17 +65,21 @@ export function VersionHistoryModal({
           }
         });
         
+        console.log(`📡 Record version history response: ${response.status} ${response.statusText}`);
+        
         if (response.status === 401) {
-          // If we get 401, redirect to login instead of showing version history
-          console.log('Version history requires authentication');
+          console.log('🔒 Version history requires authentication');
           return [];
         }
         
         if (!response.ok) {
+          console.error(`❌ Record version history failed: ${response.status}`);
           throw new Error(`Failed to fetch version history: ${response.status}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log(`📊 Record version history data:`, data);
+        return data;
       } catch (error) {
         console.error('Version history fetch error:', error);
         throw error;
@@ -92,6 +97,7 @@ export function VersionHistoryModal({
     queryKey: [`/api/version-history?limit=50`, Date.now()],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
       try {
+        console.log(`🔍 Fetching all version history (limit: 50)`);
         const response = await fetch('/api/version-history?limit=50', {
           credentials: 'include',
           headers: {
@@ -99,17 +105,21 @@ export function VersionHistoryModal({
           }
         });
         
+        console.log(`📡 All version history response: ${response.status} ${response.statusText}`);
+        
         if (response.status === 401) {
-          // If we get 401, redirect to login instead of showing version history
-          console.log('Version history requires authentication');
+          console.log('🔒 Version history requires authentication');
           return [];
         }
         
         if (!response.ok) {
+          console.error(`❌ All version history failed: ${response.status}`);
           throw new Error(`Failed to fetch version history: ${response.status}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log(`📊 All version history data:`, data);
+        return data;
       } catch (error) {
         console.error('Version history fetch error:', error);
         throw error;
@@ -221,11 +231,14 @@ export function VersionHistoryModal({
       }, 2000);
     };
 
+    console.log(`📋 VersionHistoryList rendering with ${records.length} records`);
+    
     if (records.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
           <History className="h-12 w-12 mb-4" />
           <p>No version history available</p>
+          <p className="text-xs mt-2">Check browser console for debugging information</p>
         </div>
       );
     }
