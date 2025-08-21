@@ -52,98 +52,56 @@ export function VersionHistoryModal({
 
   // Query for record-specific history with comprehensive debugging
   const recordHistoryQuery = useQuery({
-    queryKey: [`/api/version-history/${tableName}/${recordId}`, Date.now()],
+    queryKey: [`/api/version-history/${tableName}/${recordId}`],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
-      console.log('🚀 STARTING VERSION HISTORY QUERY');
-      console.log('📋 Query conditions:', { tableName, recordId, isOpen });
-      
-      if (!tableName || !recordId) {
-        console.log('❌ Missing required parameters - returning empty array');
-        return [];
-      }
-      
-      const url = `/api/version-history/${tableName}/${recordId}`;
-      console.log(`🌐 Fetching from URL: ${url}`);
+      if (!tableName || !recordId) return [];
       
       try {
-        console.log(`🔍 Making fetch request to ${url}`);
-        const startTime = Date.now();
-        
-        const response = await fetch(url, {
+        const response = await fetch(`/api/version-history/${tableName}/${recordId}`, {
           credentials: 'include',
-          headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'no-cache',
-          }
+          headers: { 'Accept': 'application/json' }
         });
         
-        const responseTime = Date.now() - startTime;
-        console.log(`📡 Response received in ${responseTime}ms`);
-        console.log(`📡 Response status: ${response.status} ${response.statusText}`);
+        if (response.status === 401) return [];
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
-        if (response.status === 401) {
-          console.log('🔒 Authentication required - returning empty array');
-          return [];
-        }
-        
-        if (!response.ok) {
-          console.error(`❌ Record version history failed: ${response.status}`);
-          throw new Error(`Failed to fetch version history: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log(`📊 Record version history data:`, data);
-        return data;
+        return await response.json();
       } catch (error) {
         console.error('Version history fetch error:', error);
         throw error;
       }
     },
     enabled: isOpen && !!tableName && !!recordId,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'record' && isOpen ? 2000 : false,
+    staleTime: 5000,
+    gcTime: 10000,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
 
   // Query for all recent history with proper error handling
   const allHistoryQuery = useQuery({
-    queryKey: [`/api/version-history?limit=50`, Date.now()],
+    queryKey: [`/api/version-history?limit=50`],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
       try {
-        console.log(`🔍 Fetching all version history (limit: 50)`);
         const response = await fetch('/api/version-history?limit=50', {
           credentials: 'include',
-          headers: {
-            'Accept': 'application/json',
-          }
+          headers: { 'Accept': 'application/json' }
         });
         
-        console.log(`📡 All version history response: ${response.status} ${response.statusText}`);
+        if (response.status === 401) return [];
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
-        if (response.status === 401) {
-          console.log('🔒 Version history requires authentication');
-          return [];
-        }
-        
-        if (!response.ok) {
-          console.error(`❌ All version history failed: ${response.status}`);
-          throw new Error(`Failed to fetch version history: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log(`📊 All version history data:`, data);
-        return data;
+        return await response.json();
       } catch (error) {
         console.error('Version history fetch error:', error);
         throw error;
       }
     },
     enabled: isOpen,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'all' && isOpen ? 2000 : false,
+    staleTime: 5000,
+    gcTime: 10000,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
 
   const getActionIcon = (action: string) => {
@@ -213,7 +171,7 @@ export function VersionHistoryModal({
     const [highlightedChanges, setHighlightedChanges] = useState<Set<string>>(new Set());
     const [animatingFields, setAnimatingFields] = useState<Set<string>>(new Set());
 
-    console.log('📋 VersionHistoryList rendering with', records?.length || 0, 'records');
+
 
     // Show empty state if no records
     if (!records || records.length === 0) {
@@ -228,15 +186,7 @@ export function VersionHistoryModal({
               This record hasn't been modified yet, or no changes have been tracked.
               {selectedTab === 'all' ? ' No recent changes found in the system.' : ' Try making an edit to see version history.'}
             </p>
-            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">Debug Info:</p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                {selectedTab === 'record' 
-                  ? `Looking for changes to ${tableName} record #${recordId}`
-                  : 'Searching for all recent system changes'
-                }
-              </p>
-            </div>
+
           </div>
         </div>
       );
@@ -274,11 +224,12 @@ export function VersionHistoryModal({
       }, 2000);
     };
 
-    // Records are handled by the parent empty state above
+
 
     return (
       <ScrollArea className="h-[400px] pr-4">
         <div className="space-y-4">
+
           {records.map((record, recordIndex) => {
             const isExpanded = expandedItems.has(record.id);
             const changedFields = record.changed_fields ? JSON.parse(record.changed_fields) : [];
@@ -509,7 +460,7 @@ export function VersionHistoryModal({
               </div>
             ) : recordHistoryQuery.error ? (
               <div className="text-center py-8 text-red-600">
-                Failed to load record history
+                Failed to load record history: {String(recordHistoryQuery.error)}
               </div>
             ) : (
               <VersionHistoryList records={(recordHistoryQuery.data as VersionHistoryRecord[]) || []} />
@@ -530,7 +481,7 @@ export function VersionHistoryModal({
               </div>
             ) : allHistoryQuery.error ? (
               <div className="text-center py-8 text-red-600">
-                Failed to load version history
+                Failed to load version history: {String(allHistoryQuery.error)}
               </div>
             ) : (
               <VersionHistoryList records={(allHistoryQuery.data as VersionHistoryRecord[]) || []} />
