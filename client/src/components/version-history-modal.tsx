@@ -59,6 +59,7 @@ export function VersionHistoryModal({
       const timestamp = Date.now();
       const response = await fetch(`/api/version-history/${tableName}/${recordId}?_t=${timestamp}`, {
         cache: 'no-cache',
+        credentials: 'include',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
@@ -83,6 +84,7 @@ export function VersionHistoryModal({
       const timestamp = Date.now();
       const response = await fetch(`/api/version-history?limit=50&_t=${timestamp}`, {
         cache: 'no-cache',
+        credentials: 'include',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
