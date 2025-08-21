@@ -52,33 +52,51 @@ export function VersionHistoryModal({
 
   // Query for record-specific history
   const recordHistoryQuery = useQuery({
-    queryKey: ['version-history-record', tableName, recordId],
+    queryKey: ['version-history-record', tableName, recordId, Date.now()],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
       if (!tableName || !recordId) return [];
-      const response = await fetch(`/api/version-history/${tableName}/${recordId}`);
+      // Add timestamp to prevent browser caching
+      const timestamp = Date.now();
+      const response = await fetch(`/api/version-history/${tableName}/${recordId}?_t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch record history');
       return response.json();
     },
     enabled: isOpen && !!tableName && !!recordId,
     staleTime: 0, // Always refetch to get latest data
-    cacheTime: 0, // Don't cache results
+    gcTime: 0, // Don't cache results (TanStack Query v5)
     refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'record' && isOpen ? 5000 : false, // Auto-refresh every 5 seconds when tab is active
+    refetchInterval: selectedTab === 'record' && isOpen ? 2000 : false, // Auto-refresh every 2 seconds when tab is active
   });
 
   // Query for all recent history
   const allHistoryQuery = useQuery({
-    queryKey: ['version-history-all'],
+    queryKey: ['version-history-all', Date.now()],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
-      const response = await fetch('/api/version-history?limit=50');
+      // Add timestamp to prevent browser caching
+      const timestamp = Date.now();
+      const response = await fetch(`/api/version-history?limit=50&_t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch version history');
       return response.json();
     },
     enabled: isOpen,
     staleTime: 0, // Always refetch to get latest data
-    cacheTime: 0, // Don't cache results
+    gcTime: 0, // Don't cache results (TanStack Query v5)
     refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'all' && isOpen ? 5000 : false, // Auto-refresh every 5 seconds when tab is active
+    refetchInterval: selectedTab === 'all' && isOpen ? 2000 : false, // Auto-refresh every 2 seconds when tab is active
   });
 
   const getActionIcon = (action: string) => {
