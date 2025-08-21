@@ -50,25 +50,39 @@ export function VersionHistoryModal({
     }
   }, [isOpen, queryClient]);
 
-  // Query for record-specific history with proper error handling
+  // Query for record-specific history with comprehensive debugging
   const recordHistoryQuery = useQuery({
     queryKey: [`/api/version-history/${tableName}/${recordId}`, Date.now()],
     queryFn: async (): Promise<VersionHistoryRecord[]> => {
-      if (!tableName || !recordId) return [];
+      console.log('🚀 STARTING VERSION HISTORY QUERY');
+      console.log('📋 Query conditions:', { tableName, recordId, isOpen });
+      
+      if (!tableName || !recordId) {
+        console.log('❌ Missing required parameters - returning empty array');
+        return [];
+      }
+      
+      const url = `/api/version-history/${tableName}/${recordId}`;
+      console.log(`🌐 Fetching from URL: ${url}`);
       
       try {
-        console.log(`🔍 Fetching record version history for ${tableName}/${recordId}`);
-        const response = await fetch(`/api/version-history/${tableName}/${recordId}`, {
+        console.log(`🔍 Making fetch request to ${url}`);
+        const startTime = Date.now();
+        
+        const response = await fetch(url, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
+            'Cache-Control': 'no-cache',
           }
         });
         
-        console.log(`📡 Record version history response: ${response.status} ${response.statusText}`);
+        const responseTime = Date.now() - startTime;
+        console.log(`📡 Response received in ${responseTime}ms`);
+        console.log(`📡 Response status: ${response.status} ${response.statusText}`);
         
         if (response.status === 401) {
-          console.log('🔒 Version history requires authentication');
+          console.log('🔒 Authentication required - returning empty array');
           return [];
         }
         
@@ -199,6 +213,35 @@ export function VersionHistoryModal({
     const [highlightedChanges, setHighlightedChanges] = useState<Set<string>>(new Set());
     const [animatingFields, setAnimatingFields] = useState<Set<string>>(new Set());
 
+    console.log('📋 VersionHistoryList rendering with', records?.length || 0, 'records');
+
+    // Show empty state if no records
+    if (!records || records.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16 space-y-4">
+          <div className="rounded-full bg-muted p-6">
+            <History className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div className="text-center space-y-2">
+            <h3 className="font-medium text-lg">No Version History Found</h3>
+            <p className="text-sm text-muted-foreground max-w-md">
+              This record hasn't been modified yet, or no changes have been tracked.
+              {selectedTab === 'all' ? ' No recent changes found in the system.' : ' Try making an edit to see version history.'}
+            </p>
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">Debug Info:</p>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                {selectedTab === 'record' 
+                  ? `Looking for changes to ${tableName} record #${recordId}`
+                  : 'Searching for all recent system changes'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     const toggleExpanded = (id: number) => {
       const newExpanded = new Set(expandedItems);
       if (newExpanded.has(id)) {
@@ -231,17 +274,7 @@ export function VersionHistoryModal({
       }, 2000);
     };
 
-    console.log(`📋 VersionHistoryList rendering with ${records.length} records`);
-    
-    if (records.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-          <History className="h-12 w-12 mb-4" />
-          <p>No version history available</p>
-          <p className="text-xs mt-2">Check browser console for debugging information</p>
-        </div>
-      );
-    }
+    // Records are handled by the parent empty state above
 
     return (
       <ScrollArea className="h-[400px] pr-4">
