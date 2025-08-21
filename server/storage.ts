@@ -937,7 +937,9 @@ class StorageFactory {
         console.error("❌ Database connection failed, using MemStorage fallback");
         console.error("Database error details:", error);
         console.error("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+        console.error("NETLIFY_DATABASE_URL exists:", !!process.env.NETLIFY_DATABASE_URL);
         console.error("DATABASE_URL starts with:", process.env.DATABASE_URL?.substring(0, 20) + "...");
+        console.error("NETLIFY_DATABASE_URL starts with:", process.env.NETLIFY_DATABASE_URL?.substring(0, 20) + "...");
         this.instance = new MemStorage();
       }
     }

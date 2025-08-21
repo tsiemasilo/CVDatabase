@@ -52,6 +52,34 @@ const initializeApp = async () => {
         console.warn('⚠️ This means version history and other features will not work properly');
       } else {
         console.log('✅ Using DatabaseStorage - full functionality available');
+        
+        // Ensure version_history table exists in production
+        try {
+          const { pool } = await import('../../server/db.js');
+          const client = await pool.connect();
+          try {
+            await client.query(`
+              CREATE TABLE IF NOT EXISTS version_history (
+                id SERIAL PRIMARY KEY,
+                table_name VARCHAR(100) NOT NULL,
+                record_id INTEGER NOT NULL,
+                action VARCHAR(20) NOT NULL,
+                old_values TEXT,
+                new_values TEXT,
+                changed_fields TEXT,
+                user_id INTEGER NOT NULL,
+                username VARCHAR(50) NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                description TEXT
+              )
+            `);
+            console.log('✅ Version history table ensured');
+          } finally {
+            client.release();
+          }
+        } catch (error) {
+          console.error('⚠️ Could not ensure version_history table:', error);
+        }
       }
       
       // Authentication routes
