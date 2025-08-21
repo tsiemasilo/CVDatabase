@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Version History Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Version History System Debug Test</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(type, title, content) {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<h3>${title}</h3><pre>${content}</pre>`;
+            results.appendChild(div);
+        }
+        
+        async function testVersionHistory() {
+            try {
+                // Test 1: Check authentication
+                addResult('info', 'Test 1: Authentication Check', 'Testing authentication status...');
+                const authResponse = await fetch('/api/auth/user', { credentials: 'include' });
+                const authData = await authResponse.text();
+                addResult(authResponse.ok ? 'success' : 'error', 
+                    `Auth Status: ${authResponse.status}`, authData);
+                
+                // Test 2: Get all version history
+                addResult('info', 'Test 2: All Version History', 'Fetching all version history...');
+                const allResponse = await fetch('/api/version-history?limit=10', { credentials: 'include' });
+                const allData = await allResponse.text();
+                addResult(allResponse.ok ? 'success' : 'error', 
+                    `All History Status: ${allResponse.status}`, allData);
+                
+                // Test 3: Get specific record history (record 37)
+                addResult('info', 'Test 3: Record 37 History', 'Fetching history for record 37...');
+                const recordResponse = await fetch('/api/version-history/cv_records/37', { credentials: 'include' });
+                const recordData = await recordResponse.text();
+                addResult(recordResponse.ok ? 'success' : 'error', 
+                    `Record 37 Status: ${recordResponse.status}`, recordData);
+                
+                // Test 4: Test a record without history (record 41)
+                addResult('info', 'Test 4: Record 41 History', 'Fetching history for record 41...');
+                const record41Response = await fetch('/api/version-history/cv_records/41', { credentials: 'include' });
+                const record41Data = await record41Response.text();
+                addResult(record41Response.ok ? 'success' : 'error', 
+                    `Record 41 Status: ${record41Response.status}`, record41Data);
+                
+            } catch (error) {
+                addResult('error', 'Test Failed', error.message);
+            }
+        }
+        
+        // Run tests when page loads
+        testVersionHistory();
+    </script>
+</body>
+</html>
