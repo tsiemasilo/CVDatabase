@@ -5,7 +5,7 @@ import serverless from 'serverless-http';
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // Enable extended URL encoding for parameterized routes
 
 // Simple JWT-like token approach for serverless environments
 // Since sessions don't persist well in serverless, we'll use a different approach
@@ -413,18 +413,22 @@ const initializeApp = async () => {
         }
       });
 
-      // Version History routes
+      // Version History routes - parameterized route MUST come before general route
       app.get("/api/version-history/:tableName/:recordId", async (req, res) => {
         try {
+          console.log("📚 Parameterized version history request:", req.params);
           const storage = await getStorage();
           const { tableName, recordId } = req.params;
           const recordIdNum = parseInt(recordId);
           
           if (isNaN(recordIdNum)) {
+            console.log("❌ Invalid record ID:", recordId);
             return res.status(400).json({ message: "Invalid record ID" });
           }
           
+          console.log("📚 Getting version history for:", tableName, recordIdNum);
           const history = await storage.getRecordVersionHistory(tableName, recordIdNum);
+          console.log("📚 Found", history?.length || 0, "version history records");
           
           // Add cache-busting headers
           res.set({
@@ -433,9 +437,9 @@ const initializeApp = async () => {
             'Expires': '0'
           });
           
-          res.json(history);
+          res.json(history || []);
         } catch (error) {
-          console.error("Version history API error:", error);
+          console.error("❌ Version history API error:", error);
           res.status(500).json({ message: "Failed to get version history", error: error?.message || "Unknown error" });
         }
       });
