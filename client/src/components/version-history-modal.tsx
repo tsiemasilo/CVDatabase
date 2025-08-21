@@ -50,25 +50,9 @@ export function VersionHistoryModal({
     }
   }, [isOpen, queryClient]);
 
-  // Query for record-specific history
+  // Query for record-specific history - using standard queryFn for better auth handling
   const recordHistoryQuery = useQuery({
-    queryKey: ['version-history-record', tableName, recordId, Date.now()],
-    queryFn: async (): Promise<VersionHistoryRecord[]> => {
-      if (!tableName || !recordId) return [];
-      // Add timestamp to prevent browser caching
-      const timestamp = Date.now();
-      const response = await fetch(`/api/version-history/${tableName}/${recordId}?_t=${timestamp}`, {
-        cache: 'no-cache',
-        credentials: 'include',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch record history');
-      return response.json();
-    },
+    queryKey: [`/api/version-history/${tableName}/${recordId}`, Date.now()],
     enabled: isOpen && !!tableName && !!recordId,
     staleTime: 0, // Always refetch to get latest data
     gcTime: 0, // Don't cache results (TanStack Query v5)
@@ -76,24 +60,9 @@ export function VersionHistoryModal({
     refetchInterval: selectedTab === 'record' && isOpen ? 2000 : false, // Auto-refresh every 2 seconds when tab is active
   });
 
-  // Query for all recent history
+  // Query for all recent history - using standard queryFn for better auth handling
   const allHistoryQuery = useQuery({
-    queryKey: ['version-history-all', Date.now()],
-    queryFn: async (): Promise<VersionHistoryRecord[]> => {
-      // Add timestamp to prevent browser caching
-      const timestamp = Date.now();
-      const response = await fetch(`/api/version-history?limit=50&_t=${timestamp}`, {
-        cache: 'no-cache',
-        credentials: 'include',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch version history');
-      return response.json();
-    },
+    queryKey: [`/api/version-history?limit=50`, Date.now()],
     enabled: isOpen,
     staleTime: 0, // Always refetch to get latest data
     gcTime: 0, // Don't cache results (TanStack Query v5)
