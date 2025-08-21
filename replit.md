@@ -59,6 +59,8 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 21, 2025: **AUTHENTICATION FIX**: Fixed version history authentication issue on production - added credentials include to API calls to prevent redirect to /api/auth/user endpoint
+- August 21, 2025: **ENHANCED CACHE-BUSTING**: Improved version history refresh with stronger no-cache headers, faster 2-second intervals, and timestamp query parameters
 - August 12, 2025: **PRODUCTION ISSUE RESOLVED**: Fixed version history 404 errors - added missing API routes to Netlify function, confirmed database working, added cache-busting headers for frontend
 - August 12, 2025: Successfully deployed version history feature to production with complete animated micro-interactions and real-time updates
 - August 12, 2025: Implemented comprehensive animated micro-interactions for version comparison with smooth transitions, hover effects, and real-time cache invalidation
