@@ -60,10 +60,7 @@ export function useAuth() {
     console.log("✅ Login successful for user:", userData);
     setIsAuthenticated(true);
     setUser(userData);
-    // Force a refetch of the auth user to ensure state is in sync
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // No need to reload page with JWT tokens - they persist in cookies
   };
 
   const logout = () => {

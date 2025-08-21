@@ -7,64 +7,44 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session middleware for Netlify
-// Using PostgreSQL session store for better persistence in serverless environments
-let sessionSetup = false;
+// Simple JWT-like token approach for serverless environments
+// Since sessions don't persist well in serverless, we'll use a different approach
+import jwt from 'jsonwebtoken';
 
-const setupSession = async () => {
-  if (sessionSetup) return;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-change-in-production';
+const TOKEN_EXPIRY = '24h';
+
+// Middleware to extract user from JWT token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   
+  // Also check cookies as fallback
+  const cookieToken = req.headers.cookie?.split('; ')
+    .find(row => row.startsWith('auth_token='))
+    ?.split('=')[1];
+  
+  const finalToken = token || cookieToken;
+  
+  if (!finalToken) {
+    req.user = null;
+    return next();
+  }
+
   try {
-    const session = await import('express-session');
-    const ConnectPgSimple = await import('connect-pg-simple');
-    const { pool } = await import('../../server/db.js');
-    
-    const PgSession = ConnectPgSimple.default(session.default);
-    
-    app.use(session.default({
-      store: new PgSession({
-        pool: pool,
-        tableName: 'user_sessions',
-        createTableIfMissing: true
-      }),
-      secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      }
-    }));
-    
-    sessionSetup = true;
-    console.log('✅ PostgreSQL session store configured');
-  } catch (error) {
-    console.error('⚠️ Could not setup PostgreSQL sessions, falling back to memory store:', error);
-    
-    // Fallback to memory store
-    const MemoryStore = await import('memorystore');
-    const session = await import('express-session');
-    
-    const MemStoreSession = MemoryStore.default(session.default);
-    
-    app.use(session.default({
-      secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
-      resave: false,
-      saveUninitialized: false,
-      store: new MemStoreSession({
-        checkPeriod: 86400000
-      }),
-      cookie: {
-        secure: false,
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000
-      }
-    }));
-    
-    sessionSetup = true;
+    const decoded = jwt.verify(finalToken, JWT_SECRET);
+    req.user = decoded;
+    console.log('✅ Token verified for user:', decoded.username);
+    next();
+  } catch (err) {
+    console.log('❌ Token verification failed:', err.message);
+    req.user = null;
+    next();
   }
 };
+
+// Apply authentication middleware
+app.use(authenticateToken);
 
 // Initialize routes
 let routesInitialized = false;
@@ -72,8 +52,6 @@ let routesInitialized = false;
 const initializeApp = async () => {
   if (!routesInitialized) {
     try {
-      // Setup sessions first
-      await setupSession();
       
       // Import storage and routes
       const { getStorage } = await import('../../server/storage.js');
@@ -141,13 +119,31 @@ const initializeApp = async () => {
             return res.status(401).json({ message: "Invalid username or password" });
           }
 
-          // Store user session
-          if (req.session) {
-            req.session.user = user;
-            console.log("✅ User session stored:", user.username);
-          } else {
-            console.error("❌ No session available");
-          }
+          // Create JWT token
+          const token = jwt.sign(
+            { 
+              id: user.id, 
+              username: user.username, 
+              email: user.email, 
+              role: user.role,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              department: user.department,
+              position: user.position
+            }, 
+            JWT_SECRET, 
+            { expiresIn: TOKEN_EXPIRY }
+          );
+          
+          console.log("✅ JWT token created for user:", user.username);
+          
+          // Set cookie with token
+          res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+            sameSite: 'lax'
+          });
           
           res.json(user);
         } catch (error) {
@@ -159,19 +155,9 @@ const initializeApp = async () => {
       app.post("/api/auth/logout", async (req, res) => {
         try {
           console.log("🔐 Logout request received");
-          if (req.session) {
-            req.session.user = null;
-            req.session.destroy((err) => {
-              if (err) {
-                console.error("Session destroy error:", err);
-              } else {
-                console.log("✅ Session destroyed successfully");
-              }
-            });
-          }
           
-          // Clear cookies
-          res.clearCookie('connect.sid');
+          // Clear auth token cookie
+          res.clearCookie('auth_token');
           res.json({ message: "Logged out successfully" });
         } catch (error) {
           console.error("Logout error:", error);
@@ -181,14 +167,13 @@ const initializeApp = async () => {
 
       app.get("/api/auth/user", async (req, res) => {
         try {
-          console.log("🔐 Auth check - Session exists:", !!req.session);
-          console.log("🔐 Auth check - User in session:", !!req.session?.user);
+          console.log("🔐 Auth check - User from token:", !!req.user);
           
-          if (req.session?.user) {
-            console.log("✅ User authenticated:", req.session.user.username);
-            res.json(req.session.user);
+          if (req.user) {
+            console.log("✅ User authenticated:", req.user.username);
+            res.json(req.user);
           } else {
-            console.log("❌ No authenticated user found in session");
+            console.log("❌ No authenticated user found");
             res.status(401).json({ message: "Not authenticated" });
           }
         } catch (error) {
