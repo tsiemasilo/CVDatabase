@@ -934,7 +934,10 @@ class StorageFactory {
         console.log("✅ Database connection successful, using DatabaseStorage");
         this.instance = testDb;
       } catch (error) {
-        console.log("❌ Database connection failed, using MemStorage fallback", error);
+        console.error("❌ Database connection failed, using MemStorage fallback");
+        console.error("Database error details:", error);
+        console.error("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+        console.error("DATABASE_URL starts with:", process.env.DATABASE_URL?.substring(0, 20) + "...");
         this.instance = new MemStorage();
       }
     }

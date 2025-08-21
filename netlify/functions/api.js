@@ -42,6 +42,18 @@ const initializeApp = async () => {
       
       console.log('Netlify function imports successful - version history routes included');
       
+      // Test storage connection and log which type is being used
+      const storage = await getStorage();
+      const storageType = storage.constructor.name;
+      console.log(`🔧 Storage initialized: ${storageType}`);
+      
+      if (storageType === 'MemStorage') {
+        console.warn('⚠️ WARNING: Using MemStorage fallback - database connection may have failed');
+        console.warn('⚠️ This means version history and other features will not work properly');
+      } else {
+        console.log('✅ Using DatabaseStorage - full functionality available');
+      }
+      
       // Authentication routes
       app.post("/api/auth/login", async (req, res) => {
         try {
