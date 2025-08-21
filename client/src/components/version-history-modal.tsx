@@ -50,24 +50,76 @@ export function VersionHistoryModal({
     }
   }, [isOpen, queryClient]);
 
-  // Query for record-specific history - using standard queryFn for better auth handling
+  // Query for record-specific history with proper error handling
   const recordHistoryQuery = useQuery({
     queryKey: [`/api/version-history/${tableName}/${recordId}`, Date.now()],
+    queryFn: async (): Promise<VersionHistoryRecord[]> => {
+      if (!tableName || !recordId) return [];
+      
+      try {
+        const response = await fetch(`/api/version-history/${tableName}/${recordId}`, {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        
+        if (response.status === 401) {
+          // If we get 401, redirect to login instead of showing version history
+          console.log('Version history requires authentication');
+          return [];
+        }
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch version history: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Version history fetch error:', error);
+        throw error;
+      }
+    },
     enabled: isOpen && !!tableName && !!recordId,
-    staleTime: 0, // Always refetch to get latest data
-    gcTime: 0, // Don't cache results (TanStack Query v5)
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'record' && isOpen ? 2000 : false, // Auto-refresh every 2 seconds when tab is active
+    refetchInterval: selectedTab === 'record' && isOpen ? 2000 : false,
   });
 
-  // Query for all recent history - using standard queryFn for better auth handling
+  // Query for all recent history with proper error handling
   const allHistoryQuery = useQuery({
     queryKey: [`/api/version-history?limit=50`, Date.now()],
+    queryFn: async (): Promise<VersionHistoryRecord[]> => {
+      try {
+        const response = await fetch('/api/version-history?limit=50', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        
+        if (response.status === 401) {
+          // If we get 401, redirect to login instead of showing version history
+          console.log('Version history requires authentication');
+          return [];
+        }
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch version history: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Version history fetch error:', error);
+        throw error;
+      }
+    },
     enabled: isOpen,
-    staleTime: 0, // Always refetch to get latest data
-    gcTime: 0, // Don't cache results (TanStack Query v5)
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: true,
-    refetchInterval: selectedTab === 'all' && isOpen ? 2000 : false, // Auto-refresh every 2 seconds when tab is active
+    refetchInterval: selectedTab === 'all' && isOpen ? 2000 : false,
   });
 
   const getActionIcon = (action: string) => {
@@ -414,7 +466,7 @@ export function VersionHistoryModal({
                 Failed to load record history
               </div>
             ) : (
-              <VersionHistoryList records={recordHistoryQuery.data || []} />
+              <VersionHistoryList records={(recordHistoryQuery.data as VersionHistoryRecord[]) || []} />
             )}
           </TabsContent>
 
@@ -435,7 +487,7 @@ export function VersionHistoryModal({
                 Failed to load version history
               </div>
             ) : (
-              <VersionHistoryList records={allHistoryQuery.data || []} />
+              <VersionHistoryList records={(allHistoryQuery.data as VersionHistoryRecord[]) || []} />
             )}
           </TabsContent>
         </Tabs>
