@@ -31,9 +31,9 @@ git commit -m "Enhanced role-based access control for managers: Restricted permi
 git push -u origin main
 ```
 
-## Latest Changes - Version History System
+## Latest Changes - Version History System (With Access Token)
 ```bash
-cd /home/runner/workspace && rm -f .git/index.lock && git add . && git commit -m "Version History System Fully Operational
+cd /home/runner/workspace && rm -f .git/index.lock && git remote set-url origin https://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@github.com/tsiemasilo/CVDatabase.git && git add . && git commit -m "Version History System Fully Operational
 
 ✅ Fixed database connectivity - PostgreSQL properly populated with version history data
 ✅ Resolved query performance issues - Disabled excessive auto-refresh and cache invalidation  
