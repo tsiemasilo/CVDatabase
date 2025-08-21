@@ -23,7 +23,9 @@ function MainContent({ activeTab }: { activeTab: ActiveTab }) {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
-    setShowSuccessPage(success === 'true');
+    const recordId = urlParams.get('recordId');
+    // Show success page if either success=true OR recordId is present
+    setShowSuccessPage(success === 'true' || !!recordId);
   }, []);
 
   if (showSuccessPage) {
