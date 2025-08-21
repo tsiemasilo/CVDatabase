@@ -8,26 +8,63 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Session middleware for Netlify
-// Note: In serverless environments, we need a different approach for sessions
-// For now, let's use a simple in-memory store but with enhanced logging
-import MemoryStore from 'memorystore';
-import session from 'express-session';
+// Using PostgreSQL session store for better persistence in serverless environments
+let sessionSetup = false;
 
-const MemStoreSession = MemoryStore(session);
-
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: true, // Changed to true for serverless
-  store: new MemStoreSession({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
-  cookie: {
-    secure: false, // Disable secure for testing
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+const setupSession = async () => {
+  if (sessionSetup) return;
+  
+  try {
+    const session = await import('express-session');
+    const ConnectPgSimple = await import('connect-pg-simple');
+    const { pool } = await import('../../server/db.js');
+    
+    const PgSession = ConnectPgSimple.default(session.default);
+    
+    app.use(session.default({
+      store: new PgSession({
+        pool: pool,
+        tableName: 'user_sessions',
+        createTableIfMissing: true
+      }),
+      secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      }
+    }));
+    
+    sessionSetup = true;
+    console.log('✅ PostgreSQL session store configured');
+  } catch (error) {
+    console.error('⚠️ Could not setup PostgreSQL sessions, falling back to memory store:', error);
+    
+    // Fallback to memory store
+    const MemoryStore = await import('memorystore');
+    const session = await import('express-session');
+    
+    const MemStoreSession = MemoryStore.default(session.default);
+    
+    app.use(session.default({
+      secret: process.env.SESSION_SECRET || 'netlify-secret-key-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      store: new MemStoreSession({
+        checkPeriod: 86400000
+      }),
+      cookie: {
+        secure: false,
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000
+      }
+    }));
+    
+    sessionSetup = true;
   }
-}));
+};
 
 // Initialize routes
 let routesInitialized = false;
@@ -35,6 +72,9 @@ let routesInitialized = false;
 const initializeApp = async () => {
   if (!routesInitialized) {
     try {
+      // Setup sessions first
+      await setupSession();
+      
       // Import storage and routes
       const { getStorage } = await import('../../server/storage.js');
       const { insertCVRecordSchema, insertUserProfileSchema } = await import('../../shared/schema.js');
@@ -118,9 +158,20 @@ const initializeApp = async () => {
 
       app.post("/api/auth/logout", async (req, res) => {
         try {
+          console.log("🔐 Logout request received");
           if (req.session) {
             req.session.user = null;
+            req.session.destroy((err) => {
+              if (err) {
+                console.error("Session destroy error:", err);
+              } else {
+                console.log("✅ Session destroyed successfully");
+              }
+            });
           }
+          
+          // Clear cookies
+          res.clearCookie('connect.sid');
           res.json({ message: "Logged out successfully" });
         } catch (error) {
           console.error("Logout error:", error);
@@ -138,17 +189,7 @@ const initializeApp = async () => {
             res.json(req.session.user);
           } else {
             console.log("❌ No authenticated user found in session");
-            // For serverless environments, return a guest user for now
-            // This allows the app to work while we fix the session persistence
-            const guestUser = {
-              id: 0,
-              username: "guest",
-              role: "user",
-              firstName: "Guest",
-              lastName: "User"
-            };
-            console.log("🔄 Returning guest user for serverless compatibility");
-            res.json(guestUser);
+            res.status(401).json({ message: "Not authenticated" });
           }
         } catch (error) {
           console.error("Get user error:", error);
