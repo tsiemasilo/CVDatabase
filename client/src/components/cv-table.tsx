@@ -135,7 +135,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
 
   const generateCVHTML = (record: CVRecord) => {
     const languages = record.languages ? record.languages.split(',').map(l => l.trim()).filter(Boolean) : [];
-    const workExperiences = record.workExperience ? record.workExperience.split(';').map(exp => {
+    const workExperiences = record.workExperiences ? JSON.parse(record.workExperiences).map((exp: any) => {
       const parts = exp.split('|');
       return {
         company: parts[0]?.trim() || '',
@@ -149,7 +149,7 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
 
     // Build experience table rows
     const experienceRows = workExperiences.length > 0 
-      ? workExperiences.map(exp => 
+      ? workExperiences.map((exp: any) => 
           '<tr class="hover:bg-blue-50">' +
           '<td class="border border-blue-300 px-4 py-2">' + (exp.position || '') + '</td>' +
           '<td class="border border-blue-300 px-4 py-2">' + (exp.company || '') + '</td>' +
