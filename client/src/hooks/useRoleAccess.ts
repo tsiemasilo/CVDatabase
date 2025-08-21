@@ -87,7 +87,7 @@ export function useRoleAccess() {
 
   
   const userRole = user?.role as UserRole;
-  const permissions = user && userRole && ROLE_PERMISSIONS[userRole] ? ROLE_PERMISSIONS[userRole] : {
+  const permissions: RolePermissions = user && userRole && ROLE_PERMISSIONS[userRole] ? ROLE_PERMISSIONS[userRole] : {
     canAccessUserProfiles: false,
     canCreateUsers: false,
     canEditUsers: false,
@@ -97,6 +97,8 @@ export function useRoleAccess() {
     canDeleteCVs: false,
     canManagePositions: false,
     canManageQualifications: false,
+    canDeletePositions: false,
+    canDeleteQualifications: false,
     canManageTenders: false,
     canCaptureRecords: false,
   };
