@@ -327,9 +327,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedRecord = await storage.updateCVRecord(id, validatedData);
 
       // Create version history record
+      console.log('🔍 Session check for version history:', {
+        hasSession: !!req.session,
+        hasUser: !!req.session?.user,
+        userId: req.session?.user?.id,
+        username: req.session?.user?.username
+      });
+      
       if (req.session.user) {
+        console.log('✅ Creating version history record for user:', req.session.user.username);
         await createVersionHistory(storage, "cv_records", id, "UPDATE", 
           existingRecord, updatedRecord, req.session.user, `Updated CV record for: ${updatedRecord?.name} ${updatedRecord?.surname || ''}`);
+        console.log('✅ Version history record created successfully');
+      } else {
+        console.log('❌ No session user found - creating anonymous version history');
+        // Create version history with anonymous user for tracking purposes
+        const anonymousUser = { id: 0, username: 'system' };
+        await createVersionHistory(storage, "cv_records", id, "UPDATE", 
+          existingRecord, updatedRecord, anonymousUser, `Updated CV record for: ${updatedRecord?.name} ${updatedRecord?.surname || ''} (no session)`);
+        console.log('✅ Anonymous version history record created');
       }
 
       res.json(updatedRecord);
@@ -1069,9 +1085,19 @@ async function createVersionHistory(
       description: description || `${action.toLowerCase()} operation on ${tableName}`
     };
 
+    console.log('💾 Creating version history with data:', {
+      tableName: versionData.tableName,
+      recordId: versionData.recordId,
+      action: versionData.action,
+      userId: versionData.userId,
+      username: versionData.username,
+      changedFields: versionData.changedFields
+    });
+    
     await storage.createVersionHistory(versionData);
+    console.log('✅ Version history stored successfully');
   } catch (error) {
-    console.error("Failed to create version history record:", error);
+    console.error("❌ Failed to create version history record:", error);
     // Don't throw error to prevent breaking main operations
   }
 }
