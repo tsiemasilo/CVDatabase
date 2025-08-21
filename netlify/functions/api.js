@@ -62,6 +62,48 @@ const initializeApp = async () => {
       
       console.log('Netlify function imports successful - version history routes included');
       
+      // Helper function to create version history
+      const createVersionHistory = async (storage, tableName, recordId, action, oldValues, newValues, user, description = null) => {
+        try {
+          // Calculate changed fields
+          const changedFields = [];
+          if (oldValues && newValues) {
+            for (const [key, newValue] of Object.entries(newValues)) {
+              if (key !== 'id' && key !== 'submittedAt' && oldValues[key] !== newValue) {
+                changedFields.push(key);
+              }
+            }
+          }
+
+          const versionData = {
+            tableName,
+            recordId: parseInt(recordId),
+            action,
+            oldValues: oldValues ? JSON.stringify(oldValues) : null,
+            newValues: newValues ? JSON.stringify(newValues) : null,
+            changedFields: JSON.stringify(changedFields),
+            userId: user.id,
+            username: user.username,
+            description: description || `${action.toLowerCase()} operation on ${tableName}`
+          };
+
+          console.log('💾 Production creating version history with data:', {
+            tableName: versionData.tableName,
+            recordId: versionData.recordId,
+            action: versionData.action,
+            userId: versionData.userId,
+            username: versionData.username,
+            changedFields: versionData.changedFields
+          });
+          
+          await storage.createVersionHistory(versionData);
+          console.log('✅ Production version history stored successfully');
+        } catch (error) {
+          console.error("❌ Production failed to create version history record:", error);
+          // Don't throw error to prevent breaking main operations
+        }
+      };
+      
       // Test storage connection and log which type is being used
       const storage = await getStorage();
       const storageType = storage.constructor.name;
@@ -275,6 +317,12 @@ const initializeApp = async () => {
             return res.status(400).json({ message: "Invalid CV record ID" });
           }
 
+          // Get existing record for version history
+          const existingRecord = await storage.getCVRecord(id);
+          if (!existingRecord) {
+            return res.status(404).json({ message: "CV record not found" });
+          }
+
           const formData = { ...req.body };
           
           // Convert experience to number if it exists
@@ -289,8 +337,31 @@ const initializeApp = async () => {
           }
 
           const updatedRecord = await storage.updateCVRecord(id, formData);
-          if (!updatedRecord) {
-            return res.status(404).json({ message: "CV record not found" });
+
+          // Create version history record
+          console.log('🔍 Production session check for version history:', {
+            hasUser: !!req.user,
+            userId: req.user?.id,
+            username: req.user?.username
+          });
+          
+          try {
+            if (req.user) {
+              console.log('✅ Creating production version history record for user:', req.user.username);
+              await createVersionHistory(storage, "cv_records", id, "UPDATE", 
+                existingRecord, updatedRecord, req.user, `Updated CV record for: ${updatedRecord?.name} ${updatedRecord?.surname || ''}`);
+              console.log('✅ Production version history record created successfully');
+            } else {
+              console.log('❌ No session user found - creating anonymous production version history');
+              // Create version history with anonymous user for tracking purposes
+              const anonymousUser = { id: 0, username: 'system' };
+              await createVersionHistory(storage, "cv_records", id, "UPDATE", 
+                existingRecord, updatedRecord, anonymousUser, `Updated CV record for: ${updatedRecord?.name} ${updatedRecord?.surname || ''} (production)`);
+              console.log('✅ Anonymous production version history record created');
+            }
+          } catch (versionError) {
+            console.error("❌ Failed to create production version history:", versionError);
+            // Don't fail the main operation
           }
 
           res.json(updatedRecord);
