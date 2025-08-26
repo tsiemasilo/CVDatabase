@@ -240,15 +240,32 @@ export default function PositionsRoles() {
   const [isEditing, setIsEditing] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editFormData, setEditFormData] = useState({ department: '', role: '', roleTitle: '', description: '', kLevel: '' });
+  
+  // New department functionality
+  const [showNewDeptInput, setShowNewDeptInput] = useState(false);
+  const [newDepartmentName, setNewDepartmentName] = useState('');
+  const [customDepartments, setCustomDepartments] = useState<string[]>([]);
 
-  const departments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
+  const baseDepartments = ["SAP", "ICT", "HR", "DEVELOPMENT", "Project Management", "Service Desk"];
+  const departments = [...baseDepartments, ...customDepartments];
   const kLevels = ["K1", "K2", "K3", "K4", "K5"];
 
   // Load data from localStorage on component mount
   useEffect(() => {
     const savedRecords = localStorage.getItem('departmentRoles');
     const dataVersion = localStorage.getItem('departmentRolesVersion');
+    const savedCustomDepts = localStorage.getItem('customDepartments');
     const currentVersion = "2.0"; // Updated version for roleTitle feature
+    
+    // Load custom departments
+    if (savedCustomDepts) {
+      try {
+        const parsedCustomDepts = JSON.parse(savedCustomDepts);
+        setCustomDepartments(parsedCustomDepts);
+      } catch (error) {
+        console.error('Error parsing custom departments:', error);
+      }
+    }
     
     if (savedRecords && dataVersion === currentVersion) {
       try {
@@ -286,6 +303,11 @@ export default function PositionsRoles() {
     }
   }, [records]);
 
+  // Save custom departments to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('customDepartments', JSON.stringify(customDepartments));
+  }, [customDepartments]);
+
   const addRecord = () => {
     if (newRecord.department && newRecord.role && newRecord.roleTitle && newRecord.description && newRecord.kLevel) {
       const record: DepartmentRole = {
@@ -300,6 +322,25 @@ export default function PositionsRoles() {
       setNewRecord({ department: '', role: '', roleTitle: '', description: '', kLevel: '' });
       setShowAddForm(false);
       setAddStep('department');
+    }
+  };
+
+  const addNewDepartment = () => {
+    if (newDepartmentName.trim() && !departments.includes(newDepartmentName.trim())) {
+      const departmentName = newDepartmentName.trim();
+      setCustomDepartments([...customDepartments, departmentName]);
+      setNewRecord({ ...newRecord, department: departmentName });
+      setNewDepartmentName('');
+      setShowNewDeptInput(false);
+    }
+  };
+
+  const handleDepartmentSelection = (value: string) => {
+    if (value === 'ADD_NEW_DEPARTMENT') {
+      setShowNewDeptInput(true);
+    } else {
+      setNewRecord({ ...newRecord, department: value });
+      setShowNewDeptInput(false);
     }
   };
 
@@ -394,15 +435,61 @@ export default function PositionsRoles() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
                     <select
                       className="w-full px-3 py-2 border rounded-md"
-                      value={newRecord.department}
-                      onChange={(e) => setNewRecord({ ...newRecord, department: e.target.value })}
+                      value={showNewDeptInput ? 'ADD_NEW_DEPARTMENT' : newRecord.department}
+                      onChange={(e) => handleDepartmentSelection(e.target.value)}
                     >
                       <option value="">Select Department</option>
                       {departments.map((dept) => (
                         <option key={dept} value={dept}>{dept}</option>
                       ))}
+                      <option value="ADD_NEW_DEPARTMENT" style={{ fontStyle: 'italic', color: '#0066cc' }}>
+                        + Add New Department
+                      </option>
                     </select>
                   </div>
+                  
+                  {showNewDeptInput && (
+                    <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
+                      <label className="block text-sm font-medium text-blue-800 mb-2">
+                        Enter New Department Name
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="e.g., Finance, Marketing, Operations"
+                          value={newDepartmentName}
+                          onChange={(e) => setNewDepartmentName(e.target.value)}
+                          className="flex-1"
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              addNewDepartment();
+                            }
+                          }}
+                        />
+                        <Button 
+                          onClick={addNewDepartment}
+                          disabled={!newDepartmentName.trim()}
+                          style={{ backgroundColor: 'rgb(0, 0, 83)' }}
+                        >
+                          Add
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            setShowNewDeptInput(false);
+                            setNewDepartmentName('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                      {newDepartmentName.trim() && departments.includes(newDepartmentName.trim()) && (
+                        <p className="text-red-600 text-sm mt-1">
+                          This department already exists
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
                   <div className="flex gap-2">
                     <Button 
                       onClick={handleNextStep} 
@@ -411,7 +498,11 @@ export default function PositionsRoles() {
                     >
                       Next Step
                     </Button>
-                    <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                    <Button variant="outline" onClick={() => {
+                      setShowAddForm(false);
+                      setShowNewDeptInput(false);
+                      setNewDepartmentName('');
+                    }}>
                       Cancel
                     </Button>
                   </div>
@@ -481,7 +572,7 @@ export default function PositionsRoles() {
                   </div>
                   <div className="flex gap-2">
                     <Button 
-                      onClick={isEditing ? updateRecord : addRecord} 
+                      onClick={isEditing ? saveEdit : addRecord} 
                       style={{ backgroundColor: 'rgb(0, 0, 83)' }}
                     >
                       {isEditing ? 'Update Role' : 'Save Role'}
