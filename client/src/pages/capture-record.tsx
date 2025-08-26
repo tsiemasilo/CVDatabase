@@ -185,7 +185,8 @@ export default function CaptureRecord() {
       certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
       experienceInSimilarRole: "",
       experienceWithITSMTools: "",
-      workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }]
+      workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }],
+      skills: ""
     });
     console.log('Form manually cleared');
   };
@@ -224,7 +225,8 @@ export default function CaptureRecord() {
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
-    workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }]
+    workExperiences: [{ companyName: "", position: "", roleTitle: "", startDate: "", endDate: "", isCurrentRole: false }],
+    skills: ""
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -303,7 +305,8 @@ export default function CaptureRecord() {
         certificates,
         experienceInSimilarRole: existingRecord.experienceInSimilarRole?.toString() || '',
         experienceWithITSMTools: existingRecord.experienceWithITSMTools?.toString() || '',
-        workExperiences
+        workExperiences,
+        skills: existingRecord.skills || ""
       });
     }
   }, [existingRecord, isEditMode]);
@@ -1021,7 +1024,8 @@ export default function CaptureRecord() {
       instituteName: formData.instituteName,
       yearCompleted: formData.yearCompleted,
       workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : undefined,
-      certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined
+      certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined,
+      skills: formData.skills || undefined
     };
 
     console.log("Form data before submission:", formData);
