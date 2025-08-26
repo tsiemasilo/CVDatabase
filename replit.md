@@ -59,6 +59,7 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 26, 2025: **SKILLS FIELD DISPLAY FIX**: Fixed skills not showing on CV template second page - added skills property to capture-record form data structure, included skills in form submission and edit mode loading, skills now properly sync between CV table edits and CV template display
 - August 26, 2025: **CUSTOM DEPARTMENT CREATION FEATURE**: Added ability to create new departments in Positions|Roles tab - users can now select "Add New Department" from dropdown, enter custom department names with validation and duplicate checking, localStorage persistence ensures custom departments persist across sessions
 - August 21, 2025: **SUCCESS PAGE REDIRECT FIXED**: Fixed capture record save button not showing review page - updated routing logic to properly detect success page redirects using recordId parameter instead of only success=true
 - August 21, 2025: **PRODUCTION VERSION HISTORY FIXED**: Resolved 404 errors in production - added missing version history tracking logic to Netlify functions, implemented anonymous fallback for production environment, ensured database synchronization works correctly between development and production
