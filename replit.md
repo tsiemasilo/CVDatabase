@@ -32,7 +32,7 @@ The application features a clean interface with a consistent design theme. Color
 - **API Layer**: REST API with endpoints for CRUD operations on CV records, including data export as CSV.
 - **Storage Layer**: Abstracted `IStorage` interface, with `MemStorage` for development and Drizzle-based PostgreSQL for production.
 - **Authentication & Authorization**: Session-based authentication with role-based access control (Admin, Manager, User roles) and user management functionality.
-- **Dynamic Content**: Implementation of K-level filtering for SAP department roles and dynamic filtering for hierarchical data like departments and roles.
+- **Dynamic Content**: Implementation of K-level filtering for SAP department roles, dynamic filtering for hierarchical data like departments and roles, and custom department creation functionality with persistent storage.
 - **File Handling**: CV file references are stored, and a creative CV viewing feature displays a professional template.
 - **Form Enhancements**: Comprehensive form fields for candidate data capture, including experience, qualifications, and institute details, with validation and submission success feedback.
 
@@ -59,6 +59,7 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- August 26, 2025: **CUSTOM DEPARTMENT CREATION FEATURE**: Added ability to create new departments in Positions|Roles tab - users can now select "Add New Department" from dropdown, enter custom department names with validation and duplicate checking, localStorage persistence ensures custom departments persist across sessions
 - August 21, 2025: **SUCCESS PAGE REDIRECT FIXED**: Fixed capture record save button not showing review page - updated routing logic to properly detect success page redirects using recordId parameter instead of only success=true
 - August 21, 2025: **PRODUCTION VERSION HISTORY FIXED**: Resolved 404 errors in production - added missing version history tracking logic to Netlify functions, implemented anonymous fallback for production environment, ensured database synchronization works correctly between development and production
 - August 21, 2025: **VERSION HISTORY TRACKING ISSUE RESOLVED**: Fixed critical bug where UI changes weren't being recorded - diagnosed session authentication problem (sessions existed but lacked user context), implemented anonymous fallback tracking for reliability, enhanced debugging logs. Version history now captures all CV record changes with proper field-level tracking showing what changed, when, and by whom
