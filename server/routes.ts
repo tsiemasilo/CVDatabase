@@ -133,6 +133,16 @@ function generateCVHTML(record: CVRecord): string {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Health check endpoint for Docker
+  app.get("/api/health", async (req, res) => {
+    try {
+      await getStorage();
+      res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
+    } catch (error) {
+      res.status(503).json({ status: "unhealthy", error: "Database connection failed" });
+    }
+  });
+  
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
     try {
