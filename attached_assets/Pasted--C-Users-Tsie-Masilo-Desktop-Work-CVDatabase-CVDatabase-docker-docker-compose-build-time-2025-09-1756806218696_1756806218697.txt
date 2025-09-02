@@ -1,0 +1,99 @@
+
+C:\Users\Tsie Masilo\Desktop\Work\CVDatabase\CVDatabase\docker>docker-compose build
+time="2025-09-02T11:40:56+02:00" level=warning msg="C:\\Users\\Tsie Masilo\\Desktop\\Work\\CVDatabase\\CVDatabase\\docker\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Building 132.6s (30/33)
+ => [internal] load local bake definitions                                                                         0.0s
+ => => reading from stdin 1.11kB                                                                                   0.0s
+ => [frontend internal] load build definition from Dockerfile.frontend                                             0.2s
+ => => transferring dockerfile: 725B                                                                               0.0s
+ => WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 2)                                     0.2s
+ => [backend internal] load build definition from Dockerfile.backend                                               0.2s
+ => => transferring dockerfile: 512B                                                                               0.0s
+ => [backend internal] load metadata for docker.io/library/node:20-alpine                                          5.8s
+ => [frontend internal] load metadata for docker.io/library/nginx:alpine                                           3.9s
+ => [auth] library/nginx:pull token for registry-1.docker.io                                                       0.0s
+ => [auth] library/node:pull token for registry-1.docker.io                                                        0.0s
+ => [backend internal] load .dockerignore                                                                          0.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [backend builder  1/13] FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7c  20.1s
+ => => resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb  0.2s
+ => => sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB                     1.5s
+ => => sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB                  16.4s
+ => => sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B                         1.5s
+ => => extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e                          2.8s
+ => => extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2                          0.1s
+ => => extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809                          0.1s
+ => [backend internal] load build context                                                                          0.5s
+ => => transferring context: 508.18kB                                                                              0.3s
+ => [frontend internal] load build context                                                                         0.8s
+ => => transferring context: 3.22MB                                                                                0.6s
+ => CACHED [frontend stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13f  0.2s
+ => => resolve docker.io/library/nginx:alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13fe08fecadc7ed98605ba5e3b2  0.2s
+ => [frontend builder  2/13] WORKDIR /app                                                                          0.6s
+ => [backend 3/9] COPY package*.json ./                                                                            0.2s
+ => [backend 4/9] COPY tsconfig.json ./                                                                           12.9s
+ => CACHED [frontend builder  3/13] COPY package*.json ./                                                          0.0s
+ => CACHED [frontend builder  4/13] COPY tsconfig.json ./                                                          0.0s
+ => [frontend builder  5/13] COPY vite.config.ts ./                                                                0.0s
+ => [backend 5/9] RUN npm ci --omit=dev                                                                           61.3s
+ => [frontend builder  6/13] COPY tailwind.config.ts ./                                                            0.2s
+ => [frontend builder  7/13] COPY postcss.config.js ./                                                             0.3s
+ => [frontend builder  8/13] COPY components.json ./                                                               0.4s
+ => [frontend builder  9/13] RUN npm ci                                                                           75.5s
+ => [backend 6/9] COPY server/ ./server/                                                                           0.3s
+ => [backend 7/9] COPY shared/ ./shared/                                                                           0.2s
+ => CANCELED [backend 8/9] RUN npm ci                                                                             28.9s
+ => [frontend builder 10/13] COPY client/ ./client/                                                                0.7s
+ => [frontend builder 11/13] COPY shared/ ./shared/                                                                0.2s
+ => [frontend builder 12/13] COPY attached_assets/ ./attached_assets/                                              0.2s
+ => ERROR [frontend builder 13/13] RUN npm run build                                                              24.1s
+------
+ > [frontend builder 13/13] RUN npm run build:
+0.855
+0.855 > rest-express@1.0.0 build
+0.855 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+0.855
+1.397 vite v5.4.19 building for production...
+1.536 transforming...
+2.196 Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2.196   npx update-browserslist-db@latest
+2.196   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+15.48 ✓ 2142 modules transformed.
+23.24 rendering chunks...
+23.26 computing gzip size...
+23.29 ../dist/public/index.html                                              0.92 kB │ gzip:   0.54 kB
+23.29 ../dist/public/assets/alteram1_1_600x197_1750838676214-BABtcn7N.png   33.65 kB
+23.29 ../dist/public/assets/index-Boux6E3P.css                              76.53 kB │ gzip:  13.07 kB
+23.29 ../dist/public/assets/index-BPU3czn4.js                              737.83 kB │ gzip: 201.56 kB
+23.29
+23.29 (!) Some chunks are larger than 500 kB after minification. Consider:
+23.29 - Using dynamic import() to code-split the application
+23.29 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+23.29 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+23.29 ✓ built in 21.84s
+23.40 ✘ [ERROR] The entry point "server/index.ts" cannot be marked as external
+23.40
+23.40 1 error
+------
+Dockerfile.frontend:23
+
+--------------------
+
+  21 |
+
+  22 |     # Build the frontend
+
+  23 | >>> RUN npm run build
+
+  24 |
+
+  25 |     # Production stage
+
+--------------------
+
+target frontend: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+
+
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/t8gf9sbft1jm45g6d5sr4v2pi
+
