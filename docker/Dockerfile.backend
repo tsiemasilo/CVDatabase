@@ -17,8 +17,8 @@ COPY shared/ ./shared/
 # Install development dependencies needed for build
 RUN npm ci
 
-# Build the backend
-RUN npm run build
+# Build only the backend server
+RUN npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
 
 # Expose the port
 EXPOSE 5000
