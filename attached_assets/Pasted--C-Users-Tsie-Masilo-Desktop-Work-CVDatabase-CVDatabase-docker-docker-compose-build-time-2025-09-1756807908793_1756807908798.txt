@@ -1,0 +1,76 @@
+
+C:\Users\Tsie Masilo\Desktop\Work\CVDatabase\CVDatabase\docker>docker-compose build
+time="2025-09-02T12:00:06+02:00" level=warning msg="C:\\Users\\Tsie Masilo\\Desktop\\Work\\CVDatabase\\CVDatabase\\docker\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Building 280.6s (37/37) FINISHED
+ => [internal] load local bake definitions                                                                         0.0s
+ => => reading from stdin 1.11kB                                                                                   0.0s
+ => [frontend internal] load build definition from Dockerfile.frontend                                             0.1s
+ => => transferring dockerfile: 731B                                                                               0.0s
+ => WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 2)                                     0.1s
+ => [backend internal] load build definition from Dockerfile.backend                                               0.1s
+ => => transferring dockerfile: 633B                                                                               0.0s
+ => [backend internal] load metadata for docker.io/library/node:20-alpine                                          2.8s
+ => [frontend internal] load metadata for docker.io/library/nginx:alpine                                           1.5s
+ => [auth] library/node:pull token for registry-1.docker.io                                                        0.0s
+ => [backend internal] load .dockerignore                                                                          0.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [backend  1/10] FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b3  0.2s
+ => => resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb  0.2s
+ => [backend internal] load build context                                                                          0.1s
+ => => transferring context: 1.59kB                                                                                0.0s
+ => [frontend stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13fe08feca  0.2s
+ => => resolve docker.io/library/nginx:alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13fe08fecadc7ed98605ba5e3b2  0.1s
+ => [frontend internal] load build context                                                                         0.2s
+ => => transferring context: 6.79kB                                                                                0.2s
+ => CACHED [frontend builder  5/13] COPY vite.config.ts ./                                                         0.0s
+ => CACHED [backend  2/10] WORKDIR /app                                                                            0.0s
+ => CACHED [frontend builder  3/13] COPY package*.json ./                                                          0.0s
+ => CACHED [frontend builder  4/13] COPY tsconfig.json ./                                                          0.0s
+ => CACHED [backend  3/10] COPY package*.json ./                                                                   0.0s
+ => CACHED [backend  4/10] COPY tsconfig.json ./                                                                   0.0s
+ => CACHED [backend  5/10] COPY vite.config.ts ./                                                                  0.0s
+ => [backend  6/10] RUN npm ci --omit=dev                                                                         46.7s
+ => CACHED [frontend builder  6/13] COPY tailwind.config.ts ./                                                     0.0s
+ => CACHED [frontend builder  7/13] COPY postcss.config.js ./                                                      0.0s
+ => CACHED [frontend builder  8/13] COPY components.json ./                                                        0.0s
+ => CACHED [frontend builder  9/13] RUN npm ci                                                                     0.0s
+ => CACHED [frontend builder 10/13] COPY client/ ./client/                                                         0.0s
+ => CACHED [frontend builder 11/13] COPY shared/ ./shared/                                                         0.0s
+ => CACHED [frontend builder 12/13] COPY attached_assets/ ./attached_assets/                                       0.0s
+ => CACHED [frontend builder 13/13] RUN npx vite build                                                             0.0s
+ => CACHED [frontend stage-1 2/3] COPY --from=builder /app/dist/public /usr/share/nginx/html                       0.0s
+ => CACHED [frontend stage-1 3/3] COPY docker/nginx.conf /etc/nginx/nginx.conf                                     0.0s
+ => [frontend] exporting to image                                                                                  0.5s
+ => => exporting layers                                                                                            0.0s
+ => => exporting manifest sha256:7812e7d57f1fdb20811c16fe08eace8180bd2f4fd5044177556763a61dfcc3cd                  0.0s
+ => => exporting config sha256:59776f3bbaa200110e7e96249cf897f862a6b32dbf9bd72e11d442b4277106b0                    0.0s
+ => => exporting attestation manifest sha256:3ea8ddbe1addbdd3649e99a483f8bab98672f7c0d4bf346a5fa52cb4d87b6d86      0.2s
+ => => exporting manifest list sha256:bcae2fc7d0a778593aac641a946baf045372b20e3fe9ca3693d6115285a97a00             0.1s
+ => => naming to docker.io/library/docker-frontend:latest                                                          0.0s
+ => => unpacking to docker.io/library/docker-frontend:latest                                                       0.0s
+ => [frontend] resolving provenance for metadata file                                                              0.1s
+ => [backend  7/10] COPY server/ ./server/                                                                         0.6s
+ => [backend  8/10] COPY shared/ ./shared/                                                                         0.2s
+ => [backend  9/10] RUN npm ci                                                                                    44.9s
+ => [backend 10/10] RUN npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --o  1.8s
+ => [backend] exporting to image                                                                                 179.8s
+ => => exporting layers                                                                                           51.8s
+ => => exporting manifest sha256:79b7eb1673e19260e44a00cf6b3590150351ded4ea0cf9997cfa21b6c00c3007                 12.7s
+ => => exporting config sha256:7ba585b1f32080f39aa01cb87d00cc3cd5b841bd51047bde746627504b2e824b                    0.1s
+ => => exporting attestation manifest sha256:9e3235541335635e9fbd9387d38c900df1bca44d61829f27e0287533259c85a5      0.1s
+ => => exporting manifest list sha256:53ae522f8a36d1fa308807f80feaa7ec8c867e1d4b4f729136c4776681ec057b             0.0s
+ => => naming to docker.io/library/docker-backend:latest                                                           0.0s
+ => => unpacking to docker.io/library/docker-backend:latest                                                      127.4s
+ => [backend] resolving provenance for metadata file                                                               0.2s
+[+] Building 2/2
+ ✔ docker-frontend  Built                                                                                          0.0s
+ ✔ docker-backend   Built                                                                                          0.0s
+
+C:\Users\Tsie Masilo\Desktop\Work\CVDatabase\CVDatabase\docker>docker-compose up -d
+time="2025-09-02T12:05:07+02:00" level=warning msg="C:\\Users\\Tsie Masilo\\Desktop\\Work\\CVDatabase\\CVDatabase\\docker\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Running 3/3
+ ✔ Network cv-database-network     Created                                                                         0.3s
+ ✔ Container cv-database-backend   Started                                                                         6.3s
+ ✔ Container cv-database-frontend  Started                                                                         9.8s
+
+C:\Users\Tsie Masilo\Desktop\Work\CVDatabase\CVDatabase\docker>
