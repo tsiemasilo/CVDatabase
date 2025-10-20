@@ -182,7 +182,7 @@ export default function CaptureRecord() {
       instituteName: "",
       yearCompleted: "",
       qualificationCertificate: null as File | null,
-      otherQualifications: [] as Array<{ qualificationType: string | undefined; qualificationName: string | undefined; instituteName: string; yearCompleted: string; certificate: File | null }>,
+      otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
       certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
       experienceInSimilarRole: "",
       experienceWithITSMTools: "",
@@ -222,7 +222,7 @@ export default function CaptureRecord() {
     instituteName: "",
     yearCompleted: "",
     qualificationCertificate: null as File | null,
-    otherQualifications: [] as Array<{ qualificationType: string | undefined; qualificationName: string | undefined; instituteName: string; yearCompleted: string; certificate: File | null }>,
+    otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
@@ -553,8 +553,11 @@ export default function CaptureRecord() {
   };
 
   const handleOtherQualificationChange = (index: number, field: string, value: string | File | null | undefined) => {
+    console.log(`[Additional Qual ${index}] Changing ${field} to:`, value);
     const newOtherQualifications = [...(formData.otherQualifications || [])];
+    console.log(`[Additional Qual ${index}] Before update:`, newOtherQualifications[index]);
     newOtherQualifications[index] = { ...newOtherQualifications[index], [field]: value };
+    console.log(`[Additional Qual ${index}] After update:`, newOtherQualifications[index]);
     setFormData(prev => ({
       ...prev,
       otherQualifications: newOtherQualifications
@@ -564,7 +567,7 @@ export default function CaptureRecord() {
   const addOtherQualification = () => {
     setFormData(prev => ({
       ...prev,
-      otherQualifications: [...(prev.otherQualifications || []), { qualificationType: undefined, qualificationName: undefined, instituteName: "", yearCompleted: "", certificate: null }]
+      otherQualifications: [...(prev.otherQualifications || []), { qualificationType: "", qualificationName: "", instituteName: "", yearCompleted: "", certificate: null }]
     }));
   };
 
@@ -1625,39 +1628,48 @@ export default function CaptureRecord() {
 
               {/* Additional Qualifications */}
               {(formData.otherQualifications && formData.otherQualifications.length > 0) && (
-                <div className="space-y-4 mt-6 relative">
+                <div className="space-y-4 mt-6">
                   {formData.otherQualifications.map((qualification, index) => (
-                    <div key={index} className="border rounded-lg p-6 bg-gray-50 relative z-10">
-                      <div className="flex justify-between items-center mb-4">
-                        <h5 className="font-medium text-gray-700 text-base">
+                    <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-medium text-gray-800">
                           Additional Qualification {index + 1}
-                        </h5>
+                        </h4>
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={() => removeOtherQualification(index)}
                           className="text-red-600 hover:text-red-700"
+                          data-testid={`button-remove-qualification-${index}`}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="relative z-20">
+                        <div>
                           <Label htmlFor={`otherQualType${index}`}>Qualification Type</Label>
                           <Select
                             value={qualification.qualificationType}
                             onValueChange={(value) => {
-                              handleOtherQualificationChange(index, 'qualificationType', value);
-                              // Clear qualification name when type changes
-                              handleOtherQualificationChange(index, 'qualificationName', undefined);
+                              // Update both qualificationType and clear qualificationName in a single state update
+                              const newOtherQualifications = [...(formData.otherQualifications || [])];
+                              newOtherQualifications[index] = { 
+                                ...newOtherQualifications[index], 
+                                qualificationType: value,
+                                qualificationName: "" 
+                              };
+                              setFormData(prev => ({
+                                ...prev,
+                                otherQualifications: newOtherQualifications
+                              }));
                             }}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger data-testid={`select-qualification-type-${index}`}>
                               <SelectValue placeholder="Select qualification type" />
                             </SelectTrigger>
-                            <SelectContent className="z-50">
+                            <SelectContent>
                               {QUALIFICATION_TYPES.map((type) => (
                                 <SelectItem key={type} value={type}>
                                   {type}
@@ -1666,17 +1678,17 @@ export default function CaptureRecord() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="relative z-20">
+                        <div>
                           <Label htmlFor={`otherQualName${index}`}>Qualification Name</Label>
                           <Select
                             value={qualification.qualificationName}
                             onValueChange={(value) => handleOtherQualificationChange(index, 'qualificationName', value)}
                             disabled={!qualification.qualificationType}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger data-testid={`select-qualification-name-${index}`}>
                               <SelectValue placeholder={qualification.qualificationType ? "Select qualification name" : "Select qualification type first"} />
                             </SelectTrigger>
-                            <SelectContent className="z-50">
+                            <SelectContent>
                               {qualification.qualificationType && getQualificationNamesByType(qualification.qualificationType).map((name) => (
                                 <SelectItem key={name} value={name}>
                                   {name}
@@ -1687,7 +1699,6 @@ export default function CaptureRecord() {
                         </div>
                       </div>
                       
-                      {/* Institute Name and Year Completed */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor={`otherInstName${index}`}>Institute Name</Label>
@@ -1696,6 +1707,8 @@ export default function CaptureRecord() {
                             value={qualification.instituteName || ""}
                             onChange={(e) => handleOtherQualificationChange(index, 'instituteName', e.target.value)}
                             placeholder="Enter institute name"
+                            className="mt-1"
+                            data-testid={`input-institute-name-${index}`}
                           />
                         </div>
                         <div>
@@ -1704,32 +1717,31 @@ export default function CaptureRecord() {
                             id={`otherYearComp${index}`}
                             value={qualification.yearCompleted || ""}
                             onChange={(e) => handleOtherQualificationChange(index, 'yearCompleted', e.target.value)}
-                            placeholder="e.g., 2020"
+                            placeholder="e.g., 2023"
+                            className="mt-1"
+                            data-testid={`input-year-completed-${index}`}
                           />
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div></div>
-                        
-                        <div>
-                          <Label htmlFor={`otherQualCert${index}`}>Upload Certificate (Optional)</Label>
-                          <Input
-                            id={`otherQualCert${index}`}
-                            type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => handleFileUpload('otherQualificationCertificate', e.target.files?.[0] || null, index)}
-                            className="mt-1"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">
-                            Accepted formats: PDF, JPG, PNG (Max 10MB)
+                      <div>
+                        <Label htmlFor={`otherQualCert${index}`}>Upload Certificate (Optional)</Label>
+                        <Input
+                          id={`otherQualCert${index}`}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => handleFileUpload('otherQualificationCertificate', e.target.files?.[0] || null, index)}
+                          className="mt-1"
+                          data-testid={`input-certificate-${index}`}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Accepted formats: PDF, JPG, PNG (Max 10MB)
+                        </p>
+                        {qualification.certificate && (
+                          <p className="text-xs text-green-600 mt-1">
+                            ✓ Certificate uploaded: {(qualification.certificate as File).name}
                           </p>
-                          {qualification.certificate && (
-                            <p className="text-xs text-green-600 mt-1">
-                              ✓ Certificate uploaded: {(qualification.certificate as File).name}
-                            </p>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </div>
                   ))}
