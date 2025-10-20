@@ -54,6 +54,17 @@ function AppContent() {
   const { activeTab, setActiveTab } = useAppContext();
   const { isAuthenticated, isLoading, login, user } = useAuth();
   
+  // Check if we're on the success page
+  const [isSuccessPage, setIsSuccessPage] = useState(false);
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const recordId = urlParams.get('recordId');
+    // Show success page if either success=true OR recordId is present
+    setIsSuccessPage(success === 'true' || !!recordId);
+  }, []);
+  
   // Set initial tab based on user role
   useEffect(() => {
     if (user && user.role === 'user') {
@@ -86,7 +97,7 @@ function AppContent() {
   return (
     <div>
       <Toaster />
-      <Header />
+      {!isSuccessPage && <Header />}
       <MainContent activeTab={activeTab} />
     </div>
   );

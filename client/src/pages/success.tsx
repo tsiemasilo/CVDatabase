@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, User, Mail, Phone, Building, Calendar, Languages, Award, FileText, Home, ArrowLeft, Download, LogOut, Edit } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 
 interface CVRecord {
   id: number;
@@ -33,6 +34,7 @@ interface CVRecord {
 
 export default function SuccessPage() {
   const [submittedRecordId, setSubmittedRecordId] = useState<number | null>(null);
+  const { user } = useAuth();
 
   // Logout mutation
   const logoutMutation = useMutation({
@@ -372,34 +374,31 @@ export default function SuccessPage() {
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 mt-8">
+          {record && user && user.role !== 'user' && (
+            <Button 
+              variant="default" 
+              onClick={() => window.location.href = '/'}
+              className="flex items-center gap-2"
+              style={{ backgroundColor: 'rgb(0, 0, 83)', borderColor: 'rgb(0, 0, 83)' }}
+            >
+              <Home className="h-4 w-4" />
+              Back to Landing Page
+            </Button>
+          )}
+          
           {record && (
-            <>
-              <Button 
-                variant="default" 
-                onClick={() => {
-                  // Download the CV as PDF
-                  window.open(`/api/cv-records/${record.id}/download`, '_blank');
-                }}
-                className="flex items-center gap-2"
-                style={{ backgroundColor: 'rgb(0, 0, 83)', borderColor: 'rgb(0, 0, 83)' }}
-              >
-                <Download className="h-4 w-4" />
-                Download Your CV
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  // Navigate to edit mode with record ID
-                  window.location.href = `/capture?edit=${record.id}`;
-                }}
-                className="flex items-center gap-2"
-                style={{ borderColor: 'rgb(0, 0, 83)', color: 'rgb(0, 0, 83)' }}
-              >
-                <Edit className="h-4 w-4" />
-                Edit Record
-              </Button>
-            </>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                // Navigate to edit mode with record ID
+                window.location.href = `/capture?edit=${record.id}`;
+              }}
+              className="flex items-center gap-2"
+              style={{ borderColor: 'rgb(0, 0, 83)', color: 'rgb(0, 0, 83)' }}
+            >
+              <Edit className="h-4 w-4" />
+              Edit Record
+            </Button>
           )}
           
           <Button 

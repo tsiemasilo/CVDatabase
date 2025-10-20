@@ -54,10 +54,18 @@ export default function Tenders() {
   ]);
 
   const [editingTender, setEditingTender] = useState<Tender | null>(null);
-  const [tenderFormData, setTenderFormData] = useState({
+  const [tenderFormData, setTenderFormData] = useState<{
+    referenceNumber: string;
+    description: string;
+    status: 'open' | 'closed' | 'awarded';
+    publishDate: string;
+    closingDate: string;
+    estimatedValue: string;
+    department: string;
+  }>({
     referenceNumber: "",
     description: "",
-    status: "open" as const,
+    status: "open",
     publishDate: "",
     closingDate: "",
     estimatedValue: "",
@@ -65,10 +73,18 @@ export default function Tenders() {
   });
 
   const [addTenderModalOpen, setAddTenderModalOpen] = useState(false);
-  const [newTender, setNewTender] = useState({
+  const [newTender, setNewTender] = useState<{
+    referenceNumber: string;
+    description: string;
+    status: 'open' | 'closed' | 'awarded';
+    publishDate: string;
+    closingDate: string;
+    estimatedValue: string;
+    department: string;
+  }>({
     referenceNumber: "",
     description: "",
-    status: "open" as const,
+    status: "open",
     publishDate: "",
     closingDate: "",
     estimatedValue: "",
@@ -82,6 +98,22 @@ export default function Tenders() {
       awarded: 'bg-blue-100 text-blue-800 border-blue-200'
     };
     return colors[status as keyof typeof colors] || colors.open;
+  };
+
+  const getEffectiveStatus = (tender: Tender): 'open' | 'closed' | 'awarded' => {
+    // If closing date has passed and status is still 'open', return 'closed'
+    if (tender.closingDate && tender.status === 'open') {
+      const closingDate = new Date(tender.closingDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset to start of day for accurate comparison
+      closingDate.setHours(0, 0, 0, 0);
+      
+      if (closingDate < today) {
+        return 'closed';
+      }
+    }
+    
+    return tender.status;
   };
 
   const handleAddTender = () => {
@@ -193,9 +225,14 @@ export default function Tenders() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(tender.status)}`}>
-                        {tender.status.charAt(0).toUpperCase() + tender.status.slice(1)}
-                      </span>
+                      {(() => {
+                        const effectiveStatus = getEffectiveStatus(tender);
+                        return (
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(effectiveStatus)}`}>
+                            {effectiveStatus.charAt(0).toUpperCase() + effectiveStatus.slice(1)}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {tender.estimatedValue}

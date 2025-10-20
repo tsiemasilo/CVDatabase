@@ -180,7 +180,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       .filter(skill => !skill.match(/^[•\-\*\s]+$/));
 
     // Parse work experiences
-    const workExps = record.workExperience ? JSON.parse(record.workExperience) : [];
+    const workExps = record.workExperiences ? JSON.parse(record.workExperiences) : [];
     const certifications = record.certificateTypes ? JSON.parse(record.certificateTypes) : [];
 
     // Create HTML content matching the exact CV template structure
@@ -393,7 +393,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           <span class="info-label">Name and Surname:</span> ${record.name} ${record.surname || ''}
         </div>
         <div class="info-line">
-          <span class="info-label">Id/Passport:</span> ${record.idPassport || record.idNumber || ''}
+          <span class="info-label">Id/Passport:</span> ${record.idPassport || ''}
         </div>
         
         ${record.department ? `
@@ -514,16 +514,20 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         filename: `CV_${record.name}_${record.surname || ''}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 1.2, // Adjusted scale for multi-page content
+          scale: 2, // Higher scale for better quality
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 794, // A4 width in pixels at 96 DPI
-          height: 2246, // Height for 2 pages (1123 * 2)
           scrollX: 0,
           scrollY: 0,
-          onrendered: function (canvas: any) {
-            console.log('Canvas rendered with dimensions:', canvas.width, 'x', canvas.height);
+          logging: true, // Enable logging for debugging
+          onclone: (clonedDoc: Document) => {
+            // Ensure all content is visible in the clone
+            const clonedElement = clonedDoc.getElementById('cv-content');
+            if (clonedElement) {
+              clonedElement.style.height = 'auto';
+              clonedElement.style.maxHeight = 'none';
+            }
           }
         },
         jsPDF: { 

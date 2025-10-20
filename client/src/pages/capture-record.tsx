@@ -34,6 +34,7 @@ interface CVRecord {
   experienceWithITSMTools?: number;
   workExperiences?: string;
   certificateTypes?: string;
+  skills?: string;
 }
 
 // Custom checkbox styles and dropdown z-index fix
@@ -181,7 +182,7 @@ export default function CaptureRecord() {
       instituteName: "",
       yearCompleted: "",
       qualificationCertificate: null as File | null,
-      otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
+      otherQualifications: [] as Array<{ qualificationType: string | undefined; qualificationName: string | undefined; instituteName: string; yearCompleted: string; certificate: File | null }>,
       certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
       experienceInSimilarRole: "",
       experienceWithITSMTools: "",
@@ -221,7 +222,7 @@ export default function CaptureRecord() {
     instituteName: "",
     yearCompleted: "",
     qualificationCertificate: null as File | null,
-    otherQualifications: [] as Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }>,
+    otherQualifications: [] as Array<{ qualificationType: string | undefined; qualificationName: string | undefined; instituteName: string; yearCompleted: string; certificate: File | null }>,
     certificates: [{ department: "", role: "", certificateName: "", certificateFile: null }],
     experienceInSimilarRole: "",
     experienceWithITSMTools: "",
@@ -551,7 +552,7 @@ export default function CaptureRecord() {
     }
   };
 
-  const handleOtherQualificationChange = (index: number, field: string, value: string | File | null) => {
+  const handleOtherQualificationChange = (index: number, field: string, value: string | File | null | undefined) => {
     const newOtherQualifications = [...(formData.otherQualifications || [])];
     newOtherQualifications[index] = { ...newOtherQualifications[index], [field]: value };
     setFormData(prev => ({
@@ -563,7 +564,7 @@ export default function CaptureRecord() {
   const addOtherQualification = () => {
     setFormData(prev => ({
       ...prev,
-      otherQualifications: [...(prev.otherQualifications || []), { qualificationType: "", qualificationName: "", instituteName: "", yearCompleted: "", certificate: null }]
+      otherQualifications: [...(prev.otherQualifications || []), { qualificationType: undefined, qualificationName: undefined, instituteName: "", yearCompleted: "", certificate: null }]
     }));
   };
 
@@ -1646,11 +1647,11 @@ export default function CaptureRecord() {
                         <div className="relative z-20">
                           <Label htmlFor={`otherQualType${index}`}>Qualification Type</Label>
                           <Select
-                            value={qualification.qualificationType || ""}
+                            value={qualification.qualificationType}
                             onValueChange={(value) => {
                               handleOtherQualificationChange(index, 'qualificationType', value);
                               // Clear qualification name when type changes
-                              handleOtherQualificationChange(index, 'qualificationName', "");
+                              handleOtherQualificationChange(index, 'qualificationName', undefined);
                             }}
                           >
                             <SelectTrigger>
@@ -1668,7 +1669,7 @@ export default function CaptureRecord() {
                         <div className="relative z-20">
                           <Label htmlFor={`otherQualName${index}`}>Qualification Name</Label>
                           <Select
-                            value={qualification.qualificationName || ""}
+                            value={qualification.qualificationName}
                             onValueChange={(value) => handleOtherQualificationChange(index, 'qualificationName', value)}
                             disabled={!qualification.qualificationType}
                           >
