@@ -277,9 +277,9 @@ export default function CaptureRecord() {
       }
 
       let otherQualifications: Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }> = [];
-      if (existingRecord.otherQualifications) {
+      if ((existingRecord as any).otherQualifications) {
         try {
-          otherQualifications = JSON.parse(existingRecord.otherQualifications);
+          otherQualifications = JSON.parse((existingRecord as any).otherQualifications);
         } catch (e) {
           console.error('Error parsing other qualifications:', e);
         }
