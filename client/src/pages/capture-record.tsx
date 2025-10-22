@@ -276,6 +276,15 @@ export default function CaptureRecord() {
         }
       }
 
+      let otherQualifications: Array<{ qualificationType: string; qualificationName: string; instituteName: string; yearCompleted: string; certificate: File | null }> = [];
+      if (existingRecord.otherQualifications) {
+        try {
+          otherQualifications = JSON.parse(existingRecord.otherQualifications);
+        } catch (e) {
+          console.error('Error parsing other qualifications:', e);
+        }
+      }
+
       // Split name back into components
       const nameParts = existingRecord.name.split(' ');
       const firstName = nameParts[0] || '';
@@ -302,7 +311,7 @@ export default function CaptureRecord() {
         instituteName: existingRecord.instituteName || '',
         yearCompleted: existingRecord.yearCompleted || '',
         qualificationCertificate: null,
-        otherQualifications: [],
+        otherQualifications,
         certificates,
         experienceInSimilarRole: existingRecord.experienceInSimilarRole?.toString() || '',
         experienceWithITSMTools: existingRecord.experienceWithITSMTools?.toString() || '',

@@ -103,9 +103,85 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     }
   })();
   
-  // Note: Using empty array since otherQualifications field doesn't exist in schema
-  // Only using the main qualifications field from the schema
-  const otherQualifications: any[] = [];
+  // Parse other qualifications from the record
+  const otherQualifications = (() => {
+    if (!record.otherQualifications) return [];
+    try {
+      console.log("Raw otherQualifications data:", record.otherQualifications);
+      
+      // Handle PostgreSQL array format if it's a string that looks like {"item1","item2"}
+      if (typeof record.otherQualifications === 'string' && record.otherQualifications.startsWith('{') && record.otherQualifications.endsWith('}')) {
+        const arrayContent = record.otherQualifications.slice(1, -1);
+        const items = [];
+        let current = '';
+        let inQuotes = false;
+        let escapeNext = false;
+        
+        for (let i = 0; i < arrayContent.length; i++) {
+          const char = arrayContent[i];
+          
+          if (escapeNext) {
+            current += char;
+            escapeNext = false;
+            continue;
+          }
+          
+          if (char === '\\') {
+            current += char;
+            escapeNext = true;
+            continue;
+          }
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+            current += char;
+            continue;
+          }
+          
+          if (char === ',' && !inQuotes) {
+            if (current.trim()) {
+              try {
+                let cleanItem = current.trim();
+                if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+                  cleanItem = cleanItem.slice(1, -1);
+                }
+                cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                const parsed = JSON.parse(cleanItem);
+                items.push(parsed);
+              } catch (e) {
+                console.warn("Failed to parse item:", current);
+              }
+            }
+            current = '';
+            continue;
+          }
+          
+          current += char;
+        }
+        
+        if (current.trim()) {
+          try {
+            let cleanItem = current.trim();
+            if (cleanItem.startsWith('"') && cleanItem.endsWith('"')) {
+              cleanItem = cleanItem.slice(1, -1);
+            }
+            cleanItem = cleanItem.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+            const parsed = JSON.parse(cleanItem);
+            items.push(parsed);
+          } catch (e) {
+            console.warn("Failed to parse final item:", current);
+          }
+        }
+        
+        return items;
+      } else {
+        return JSON.parse(record.otherQualifications);
+      }
+    } catch (error) {
+      console.error("Error parsing otherQualifications:", error);
+      return [];
+    }
+  })();
   
   const languages = record.languages ? record.languages.split(', ') : [];
 
@@ -889,9 +965,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     ) : null}
                     {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
                       <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{qual.name || qual.type}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>-</td>
+                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>
+                          {qual.qualificationType && qual.qualificationName 
+                            ? `${qual.qualificationType} - ${qual.qualificationName}`
+                            : (qual.qualificationName || qual.qualificationType || qual.name || qual.type || '-')}
+                        </td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{qual.instituteName || '-'}</td>
+                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{qual.yearCompleted || '-'}</td>
                       </tr>
                     ))}
                     {!record.qualifications && otherQualifications.length === 0 && (
