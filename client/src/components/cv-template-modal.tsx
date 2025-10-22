@@ -604,9 +604,34 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               clonedElement.style.height = 'auto';
               clonedElement.style.maxHeight = 'none';
               
-              // Add explicit page break styles to cloned document
+              // Add explicit styles for A4 pages with flex layout and footer positioning
               const style = clonedDoc.createElement('style');
               style.textContent = `
+                /* A4 page containers with flex layout */
+                .cv-page {
+                  display: flex !important;
+                  flex-direction: column !important;
+                  min-height: 297mm !important;
+                  width: 210mm !important;
+                  max-width: 210mm !important;
+                  position: relative !important;
+                  box-sizing: border-box !important;
+                }
+                
+                /* Content area should fill available space */
+                .cv-page > div[style*="flex"] {
+                  flex: 1 0 auto !important;
+                  display: flex !important;
+                  flex-direction: column !important;
+                }
+                
+                /* Footer should stay at bottom and not shrink */
+                .cv-page .mt-auto {
+                  margin-top: auto !important;
+                  flex-shrink: 0 !important;
+                }
+                
+                /* Page break controls */
                 .no-page-break { 
                   page-break-inside: avoid !important; 
                   break-inside: avoid !important;
@@ -626,6 +651,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 }
               `;
               clonedDoc.head.appendChild(style);
+              
+              // Ensure flex styles are applied to page containers
+              const pageContainers = clonedDoc.querySelectorAll('.cv-page');
+              pageContainers.forEach((page) => {
+                (page as HTMLElement).style.display = 'flex';
+                (page as HTMLElement).style.flexDirection = 'column';
+                (page as HTMLElement).style.minHeight = '297mm';
+                (page as HTMLElement).style.width = '210mm';
+              });
             }
           }
         },
@@ -726,11 +760,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           lineHeight: '1.3'
         }}>
           {/* Page 1 - Complete page with header, content, and footer */}
-          <div className="bg-white print:max-w-none print:shadow-none a4-optimized no-page-break" style={{ 
+          <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break page-break-after" style={{ 
             maxWidth: '210mm',
+            minHeight: '297mm',
             margin: '0 auto',
             fontSize: '13px',
-            lineHeight: '1.3'
+            lineHeight: '1.3',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative'
           }}>
             {/* Header with Alteram Logo and Branding */}
             <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4 print-avoid-break">
@@ -760,7 +798,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-3 space-y-2 font-sans relative">
+          <div className="p-3 space-y-2 font-sans relative" style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column' }}>
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -770,7 +808,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-2">
+            <div className="relative z-10 space-y-2" style={{ flex: '1 0 auto' }}>
               {/* Name and ID Section */}
               <div className="space-y-1">
                 <p className="text-base font-medium text-gray-800 leading-snug">
@@ -1067,8 +1105,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           )}
 
-              {/* Footer for Page 1 */}
-              <div className="text-center pt-4 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-4 page-break-after">
+            </div>
+
+              {/* Footer for Page 1 - Flex positioned at bottom */}
+              <div className="text-center pt-4 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
@@ -1087,14 +1127,17 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
             </div>
           </div>
-          </div>
 
           {/* Page 2 - Skills Section */}
-          <div className="bg-white print:max-w-none print:shadow-none a4-optimized" style={{ 
-            maxWidth: '210mm', // A4 width
+          <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break" style={{ 
+            maxWidth: '210mm',
+            minHeight: '297mm',
             margin: '0 auto',
             fontSize: '13px',
-            lineHeight: '1.3'
+            lineHeight: '1.3',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative'
           }}>
             {/* Header with Alteram Logo and Branding - Page 2 */}
             <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
@@ -1124,7 +1167,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
             </div>
 
-            <div className="p-8 font-sans relative">
+            <div className="p-8 font-sans relative" style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column' }}>
               {/* Background watermark */}
               <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
                 <img 
@@ -1134,7 +1177,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 />
               </div>
 
-              <div className="relative z-10 space-y-6">
+              <div className="relative z-10 space-y-6" style={{ flex: '1 0 auto' }}>
                 {/* Skills Section */}
                 <div>
                   <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
@@ -1222,8 +1265,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               </div>
 
-              {/* Footer for Page 2 - positioned at bottom */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-8">
+              {/* Footer for Page 2 - Flex positioned at bottom */}
+              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
