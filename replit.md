@@ -59,6 +59,7 @@ The application uses a full-stack architecture with clear separation of concerns
 - Replit Cartographer plugin
 
 ## Recent Updates
+- October 22, 2025: **ADDITIONAL QUALIFICATIONS FIX**: Fixed additional qualifications not appearing on generated CVs - added otherQualifications field to database schema as JSON string, updated form submission to include additional qualifications data, enhanced CV template to parse and display all additional qualifications with complete details (type, name, institution, year), fixed edit flow to properly load and preserve existing additional qualifications preventing data loss on edits
 - August 26, 2025: **SKILLS FIELD DISPLAY FIX**: Fixed skills not showing on CV template second page - added skills property to capture-record form data structure, included skills in form submission and edit mode loading, skills now properly sync between CV table edits and CV template display
 - August 26, 2025: **CUSTOM DEPARTMENT CREATION FEATURE**: Added ability to create new departments in Positions|Roles tab - users can now select "Add New Department" from dropdown, enter custom department names with validation and duplicate checking, localStorage persistence ensures custom departments persist across sessions
 - August 21, 2025: **SUCCESS PAGE REDIRECT FIXED**: Fixed capture record save button not showing review page - updated routing logic to properly detect success page redirects using recordId parameter instead of only success=true
