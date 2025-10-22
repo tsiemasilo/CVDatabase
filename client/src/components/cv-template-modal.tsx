@@ -762,7 +762,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           {/* Page 1 - Complete page with header, content, and footer */}
           <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break page-break-after" style={{ 
             maxWidth: '210mm',
-            minHeight: '260mm',
+            height: '297mm',
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3',
@@ -798,7 +798,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-3 space-y-2 font-sans relative" style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column' }}>
+          <div className="p-3 space-y-2 font-sans relative" style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -808,7 +808,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-2" style={{ flex: '1 0 auto' }}>
+            <div className="relative z-10 space-y-2" style={{ flex: '0 1 auto', overflowY: 'auto' }}>
               {/* Name and ID Section */}
               <div className="space-y-1">
                 <p className="text-base font-medium text-gray-800 leading-snug">
@@ -1108,7 +1108,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
 
               {/* Footer for Page 1 - Flex positioned at bottom */}
-              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '80px' }}>
+              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
@@ -1131,7 +1131,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           {/* Page 2 - Skills Section */}
           <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break" style={{ 
             maxWidth: '210mm',
-            minHeight: '260mm',
+            height: '297mm',
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3',
@@ -1167,7 +1167,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
             </div>
 
-            <div className="p-8 font-sans relative" style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column' }}>
+            <div className="p-8 font-sans relative" style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               {/* Background watermark */}
               <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
                 <img 
@@ -1177,7 +1177,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 />
               </div>
 
-              <div className="relative z-10 space-y-6" style={{ flex: '1 0 auto' }}>
+              <div className="relative z-10 space-y-6" style={{ flex: '0 1 auto', overflowY: 'auto' }}>
                 {/* Skills Section */}
                 <div>
                   <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
@@ -1266,7 +1266,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Footer for Page 2 - Flex positioned at bottom */}
-              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '80px' }}>
+              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
