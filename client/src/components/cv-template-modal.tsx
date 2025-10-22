@@ -706,15 +706,6 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             Download PDF
           </Button>
           <Button
-            onClick={handleDownloadWord}
-            size="sm"
-            className="bg-gray-400 text-gray-200 border-0 shadow-lg cursor-not-allowed"
-            disabled
-          >
-            <Download className="w-4 h-4 mr-1" />
-            Download Word
-          </Button>
-          <Button
             onClick={handlePrint}
             size="sm"
             variant="outline"
@@ -729,15 +720,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           Professional CV template displaying candidate information including work experience, qualifications, and contact details for {record.name} {record.surname || ''}
         </div>
         
-        <div id="cv-content" className="bg-white print:max-w-none print:shadow-none a4-optimized" style={{ 
-          maxWidth: '210mm', // A4 width
-          minHeight: '297mm', // A4 height
+        <div id="cv-content" className="bg-white print:max-w-none print:shadow-none" style={{ 
           margin: '0 auto',
           fontSize: '13px',
           lineHeight: '1.3'
         }}>
-          {/* Header with Alteram Logo and Branding */}
-          <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+          {/* Page 1 - Complete page with header, content, and footer */}
+          <div className="no-page-break a4-optimized" style={{ 
+            maxWidth: '210mm',
+            minHeight: '297mm'
+          }}>
+            {/* Header with Alteram Logo and Branding */}
+            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img 
@@ -1091,9 +1085,10 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
             </div>
           </div>
+          </div>
 
           {/* Page 2 - Skills Section */}
-          <div className="bg-white print:max-w-none print:shadow-none a4-optimized page-break-before flex flex-col" style={{ 
+          <div className="bg-white print:max-w-none print:shadow-none a4-optimized page-break-before no-page-break flex flex-col" style={{ 
             maxWidth: '210mm', // A4 width
             minHeight: '297mm', // A4 height
             margin: '0 auto',
