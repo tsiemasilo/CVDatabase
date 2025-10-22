@@ -603,6 +603,29 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             if (clonedElement) {
               clonedElement.style.height = 'auto';
               clonedElement.style.maxHeight = 'none';
+              
+              // Add explicit page break styles to cloned document
+              const style = clonedDoc.createElement('style');
+              style.textContent = `
+                .no-page-break { 
+                  page-break-inside: avoid !important; 
+                  break-inside: avoid !important;
+                }
+                .page-break-before { 
+                  page-break-before: always !important; 
+                  break-before: page !important;
+                  clear: both;
+                }
+                .page-break-after { 
+                  page-break-after: always !important; 
+                  break-after: page !important;
+                }
+                .print-avoid-break {
+                  page-break-inside: avoid !important;
+                  break-inside: avoid !important;
+                }
+              `;
+              clonedDoc.head.appendChild(style);
             }
           }
         },
@@ -615,15 +638,15 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         },
         pagebreak: { 
           mode: ['css', 'legacy'], 
-          before: '.page-break-before', 
-          after: '.page-break-after', 
-          avoid: '.no-page-break'
+          before: ['.page-break-before'], 
+          after: ['.page-break-after'], 
+          avoid: ['.no-page-break', '.print-avoid-break']
         },
         enableLinks: false
       };
       
       await (window as any).html2pdf().set(opt).from(element).save();
-      console.log('PDF generated successfully with A4 sizing');
+      console.log('PDF generated successfully with A4 sizing and proper page breaks');
     } catch (error) {
       console.error('Error in generatePDF:', error);
       throw error;
@@ -685,7 +708,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           <Button
             onClick={handleDownloadWord}
             size="sm"
-            className="bg-blue-500 hover:bg-blue-600 text-white border-0 shadow-lg"
+            className="bg-gray-400 text-gray-200 border-0 shadow-lg cursor-not-allowed"
+            disabled
           >
             <Download className="w-4 h-4 mr-1" />
             Download Word
@@ -740,7 +764,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative">
+          <div className="p-8 space-y-6 font-sans relative no-page-break">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -750,7 +774,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-4">
+            <div className="relative z-10 space-y-4 no-page-break">
               {/* Name and ID Section */}
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
