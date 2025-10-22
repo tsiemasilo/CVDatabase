@@ -726,11 +726,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           lineHeight: '1.3'
         }}>
           {/* Page 1 - Complete page with header, content, and footer */}
-          <div className="no-page-break a4-optimized" style={{ 
+          <div className="a4-optimized" style={{ 
             maxWidth: '210mm'
           }}>
             {/* Header with Alteram Logo and Branding */}
-            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4 print-avoid-break">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img 
@@ -757,7 +757,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative no-page-break">
+          <div className="p-8 space-y-6 font-sans relative">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -767,7 +767,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-4 no-page-break">
+            <div className="relative z-10 space-y-4">
               {/* Name and ID Section */}
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-800 leading-relaxed">
