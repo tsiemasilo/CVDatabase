@@ -50,6 +50,25 @@ function generateCVHTML(record: CVRecord): string {
     }
   }
 
+  let additionalQualifications = '';
+  if (record.otherQualifications) {
+    try {
+      const otherQuals = JSON.parse(record.otherQualifications);
+      if (otherQuals && otherQuals.length > 0) {
+        additionalQualifications = otherQuals.map((qual: any) => `
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">${qual.qualificationType || 'Not specified'}</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">${qual.qualificationName || 'Not specified'}</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">${qual.instituteName || 'Not specified'}</td>
+            <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${qual.yearCompleted || 'Not specified'}</td>
+          </tr>
+        `).join('');
+      }
+    } catch (e) {
+      console.error('Error parsing additional qualifications:', e);
+    }
+  }
+
   return `
     <!DOCTYPE html>
     <html>
@@ -100,10 +119,32 @@ function generateCVHTML(record: CVRecord): string {
 
       <div class="section">
         <div class="section-title">Qualifications</div>
-        <div class="info-item"><span class="label">Qualification Type:</span> ${record.qualificationType || 'Not specified'}</div>
-        <div class="info-item"><span class="label">Qualification Name:</span> ${record.qualificationName || 'Not specified'}</div>
-        <div class="info-item"><span class="label">Institution:</span> ${record.instituteName || 'Not specified'}</div>
-        <div class="info-item"><span class="label">Year Completed:</span> ${record.yearCompleted || 'Not specified'}</div>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+          <thead>
+            <tr style="background-color: rgb(0, 0, 83); color: white;">
+              <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Qualification Type</th>
+              <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Qualification Name</th>
+              <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Institution</th>
+              <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Year Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${record.qualificationType || record.qualificationName ? `
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px;">${record.qualificationType || 'Not specified'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">${record.qualificationName || 'Not specified'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">${record.instituteName || 'Not specified'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${record.yearCompleted || 'Not specified'}</td>
+              </tr>
+            ` : ''}
+            ${additionalQualifications}
+            ${!record.qualificationType && !record.qualificationName && !additionalQualifications ? `
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center; color: #666; font-style: italic;" colspan="4">No qualifications recorded</td>
+              </tr>
+            ` : ''}
+          </tbody>
+        </table>
         <div class="info-item"><span class="label">Languages:</span> ${record.languages || 'Not specified'}</div>
       </div>
 
