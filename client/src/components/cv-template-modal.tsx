@@ -727,8 +727,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
         }}>
           {/* Page 1 - Complete page with header, content, and footer */}
           <div className="no-page-break a4-optimized" style={{ 
-            maxWidth: '210mm',
-            minHeight: '297mm'
+            maxWidth: '210mm'
           }}>
             {/* Header with Alteram Logo and Branding */}
             <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
