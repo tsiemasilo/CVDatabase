@@ -1090,9 +1090,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           </div>
 
           {/* Page 2 - Skills Section */}
-          <div className="bg-white print:max-w-none print:shadow-none a4-optimized page-break-before no-page-break flex flex-col" style={{ 
+          <div className="bg-white print:max-w-none print:shadow-none a4-optimized" style={{ 
             maxWidth: '210mm', // A4 width
-            minHeight: '297mm', // A4 height
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3'
@@ -1125,7 +1124,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
             </div>
 
-            <div className="p-8 font-sans relative flex-grow flex flex-col">
+            <div className="p-8 font-sans relative">
               {/* Background watermark */}
               <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
                 <img 
@@ -1135,7 +1134,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 />
               </div>
 
-              <div className="relative z-10 space-y-6 flex-grow">
+              <div className="relative z-10 space-y-6">
                 {/* Skills Section */}
                 <div>
                   <h2 className="text-xl font-bold mb-6 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>
@@ -1224,7 +1223,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Footer for Page 2 - positioned at bottom */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-auto">
+              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-8">
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
