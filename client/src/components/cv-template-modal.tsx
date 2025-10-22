@@ -757,7 +757,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-8 space-y-6 font-sans relative">
+          <div className="p-4 space-y-3 font-sans relative">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -767,25 +767,25 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-4">
+            <div className="relative z-10 space-y-2">
               {/* Name and ID Section */}
-              <div className="space-y-2">
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+              <div className="space-y-1">
+                <p className="text-base font-medium text-gray-800 leading-snug">
                   <span className="font-bold" style={{ color: '#000053' }}>Name and Surname:</span> {record.name} {record.surname || ''}
                 </p>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                <p className="text-base font-medium text-gray-800 leading-snug">
                   <span className="font-bold" style={{ color: '#000053' }}>Id/Passport:</span> {record.idPassport || ''}
                 </p>
               </div>
 
               {/* Role Information */}
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {record.department && (
-                  <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                  <p className="text-base font-medium text-gray-800 leading-snug">
                     <span className="font-bold" style={{ color: '#000053' }}>Department:</span> {record.department}
                   </p>
                 )}
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                <p className="text-base font-medium text-gray-800 leading-snug">
                   <span className="font-bold" style={{ color: '#000053' }}>Role:</span> {record.position || record.roleTitle || ''}
                   {record.roleTitle && (
                     <span> | <span className="font-bold" style={{ color: '#000053' }}>Role Title:</span> {record.roleTitle}</span>
@@ -795,16 +795,16 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                   )}
                 </p>
                 
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                <p className="text-base font-medium text-gray-800 leading-snug">
                   <span className="font-bold" style={{ color: '#000053' }}>Years of Experience:</span> {record.experience || 0} years
                 </p>
                 
                 {record.certificateTypes && (
-                  <div className="mt-4">
-                    <p className="text-lg font-medium text-gray-800 leading-relaxed mb-2">
+                  <div className="mt-2">
+                    <p className="text-base font-medium text-gray-800 leading-snug mb-1">
                       <span className="font-bold" style={{ color: '#000053' }}>Certificates:</span>
                     </p>
-                    <div className="pl-4 space-y-1">
+                    <div className="pl-3 space-y-0.5">
                       {(() => {
                         try {
                           console.log("Raw certificateTypes data:", record.certificateTypes);
@@ -881,13 +881,13 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                           }
                           
                           return certificates.map((cert: any, index: number) => (
-                            <p key={index} className="text-lg font-medium text-gray-800 leading-relaxed">
+                            <p key={index} className="text-sm font-medium text-gray-800 leading-snug">
                               • {cert.certificateName || cert.certificate}
                             </p>
                           ));
                         } catch (error) {
                           console.error("Error parsing certificates:", error);
-                          return <p className="text-lg font-medium text-gray-800 leading-relaxed">• {record.certificateTypes}</p>;
+                          return <p className="text-sm font-medium text-gray-800 leading-snug">• {record.certificateTypes}</p>;
                         }
                       })()}
                     </div>
@@ -896,23 +896,23 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Experience Table */}
-              <div className="mt-8 mb-8 print-avoid-break">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience Summary
+              <div className="mt-3 mb-3 print-avoid-break">
+                <h2 className="text-lg font-bold mb-2 border-b-2 border-orange-400 pb-1" style={{ color: '#000053' }}>Experience Summary
 </h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
+                <table className="w-full border-collapse border shadow-sm text-sm" style={{ borderColor: '#000053' }}>
                   <thead>
                     <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Position</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Company</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Duration</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Position</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Company</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Duration</th>
                     </tr>
                   </thead>
                   <tbody>
                     {workExperiences.length > 0 ? workExperiences.map((exp: any, index: number) => (
                       <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.position || exp.role || ''}</td>
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>
+                        <td className="border px-3 py-1.5 align-top" style={{ borderColor: '#000053' }}>{exp.position || exp.role || ''}</td>
+                        <td className="border px-3 py-1.5 align-top" style={{ borderColor: '#000053' }}>{exp.companyName || exp.company || exp.employer || exp.organization || ''}</td>
+                        <td className="border px-3 py-1.5 align-top" style={{ borderColor: '#000053' }}>
                           {(() => {
                             try {
                               if (!exp.startDate) return '';
@@ -954,7 +954,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                       </tr>
                     )) : (
                       <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No work experience recorded</td>
+                        <td className="border px-3 py-2 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No work experience recorded</td>
                       </tr>
                     )}
                   </tbody>
@@ -962,38 +962,38 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Qualification Table */}
-              <div className="mt-8 mb-8 print-avoid-break">
-                <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Qualification</h2>
-                <table className="w-full border-collapse border shadow-sm" style={{ borderColor: '#000053' }}>
+              <div className="mt-3 mb-3 print-avoid-break">
+                <h2 className="text-lg font-bold mb-2 border-b-2 border-orange-400 pb-1" style={{ color: '#000053' }}>Qualification</h2>
+                <table className="w-full border-collapse border shadow-sm text-sm" style={{ borderColor: '#000053' }}>
                   <thead>
                     <tr style={{ background: 'linear-gradient(to right, #000053, #000066)' }}>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Qualifications</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Institution</th>
-                      <th className="border px-6 py-3 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Year Completed</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Qualifications</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Institution</th>
+                      <th className="border px-3 py-1.5 text-left font-bold text-white" style={{ borderColor: '#000053' }}>Year Completed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {record.qualifications ? (
                       <tr className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
+                        <td className="border px-3 py-1.5 align-top" style={{ borderColor: '#000053' }}>{record.qualifications}</td>
+                        <td className="border px-3 py-1.5 align-top text-center" style={{ borderColor: '#000053' }}>{record.instituteName || '-'}</td>
+                        <td className="border px-3 py-1.5 align-top text-center" style={{ borderColor: '#000053' }}>{record.yearCompleted || '-'}</td>
                       </tr>
                     ) : null}
                     {otherQualifications.length > 0 && otherQualifications.map((qual: any, index: number) => (
                       <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="border px-6 py-3 align-top" style={{ borderColor: '#000053' }}>
+                        <td className="border px-3 py-1.5 align-top" style={{ borderColor: '#000053' }}>
                           {qual.qualificationType && qual.qualificationName 
                             ? `${qual.qualificationType} - ${qual.qualificationName}`
                             : (qual.qualificationName || qual.qualificationType || qual.name || qual.type || '-')}
                         </td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{qual.instituteName || '-'}</td>
-                        <td className="border px-6 py-3 align-top text-center" style={{ borderColor: '#000053' }}>{qual.yearCompleted || '-'}</td>
+                        <td className="border px-3 py-1.5 align-top text-center" style={{ borderColor: '#000053' }}>{qual.instituteName || '-'}</td>
+                        <td className="border px-3 py-1.5 align-top text-center" style={{ borderColor: '#000053' }}>{qual.yearCompleted || '-'}</td>
                       </tr>
                     ))}
                     {!record.qualifications && otherQualifications.length === 0 && (
                       <tr>
-                        <td className="border px-6 py-4 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
+                        <td className="border px-3 py-2 text-center text-gray-500 italic" style={{ borderColor: '#000053' }} colSpan={3}>No qualifications recorded</td>
                       </tr>
                     )}
                   </tbody>
@@ -1004,18 +1004,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
 
               {/* Experience Details Section */}
               {workExperiences.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4 border-b-2 border-orange-400 pb-2" style={{ color: '#000053' }}>Experience</h2>
+                <div className="mb-3">
+                  <h2 className="text-lg font-bold mb-2 border-b-2 border-orange-400 pb-1" style={{ color: '#000053' }}>Experience</h2>
               {workExperiences.map((exp: any, index: number) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <div key={index} className="mb-3">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
                     {exp.companyName || exp.company || exp.employer || exp.organization || 'Company'}
                     {(exp.roleTitle || exp.title) && (
                       <span className="font-medium ml-2" style={{ color: '#000053' }}>| {exp.roleTitle || exp.title}</span>
                     )}
                   </h3>
-                  <p className="font-semibold text-gray-800">{exp.position || exp.role || 'Position'}</p>
-                  <p className="text-gray-600 mb-3">
+                  <p className="font-semibold text-gray-800 text-sm">{exp.position || exp.role || 'Position'}</p>
+                  <p className="text-gray-600 text-sm mb-1">
                     {(() => {
                       try {
                         if (!exp.startDate) return '';
@@ -1055,7 +1055,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                     })()}
                   </p>
                   {exp.description && (
-                    <p className="text-gray-700 leading-relaxed text-justify">
+                    <p className="text-gray-700 text-sm leading-snug text-justify">
                       {exp.description}
                     </p>
                   )}
@@ -1065,18 +1065,18 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           )}
 
               {/* Footer for Page 1 */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg page-break-after">
-                <div className="flex items-center justify-center space-x-4">
+              <div className="text-center pt-2 border-t-2 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-2 rounded page-break-after">
+                <div className="flex items-center justify-center space-x-3">
                   <img 
                     src={alteramLogoPath} 
                     alt="Alteram Solutions" 
-                    className="h-8 w-auto"
+                    className="h-6 w-auto"
                   />
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-orange-600">
+                    <p className="text-xs font-semibold text-orange-600">
                       CV Generated by Alteram Solutions - Page 1 of 2
                     </p>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-xs text-gray-600">
                       Philip Henry Arnold | Garth Solomon Madella
                     </p>
                   </div>
