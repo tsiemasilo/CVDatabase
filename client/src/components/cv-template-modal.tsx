@@ -382,7 +382,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
       color: white;
       padding: 16px 32px;
-      margin: -32px -32px 32px -32px;
+      margin: 40px -32px 32px -32px;
     }
     
     .skills-section {
@@ -427,7 +427,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       border-top: 4px solid #f97316;
       background: linear-gradient(135deg, #fff5f0 0%, #ffedd5 100%);
       border-radius: 8px;
-      margin-top: 80px;
+      margin-top: 120px;
     }
     .footer-text {
       font-size: 13px;
@@ -1108,7 +1108,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
 
               {/* Footer for Page 1 - Flex positioned at bottom */}
-              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '80px' }}>
+              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '120px' }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
@@ -1140,7 +1140,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             position: 'relative'
           }}>
             {/* Header with Alteram Logo and Branding - Page 2 */}
-            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4" style={{ marginTop: '40px' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <img 
