@@ -1029,6 +1029,7 @@ export default function CaptureRecord() {
       yearCompleted: formData.yearCompleted,
       workExperiences: formData.workExperiences ? JSON.stringify(formData.workExperiences) : undefined,
       certificateTypes: formData.certificates ? JSON.stringify(formData.certificates) : undefined,
+      otherQualifications: formData.otherQualifications && formData.otherQualifications.length > 0 ? JSON.stringify(formData.otherQualifications) : undefined,
       skills: formData.skills || undefined
     };
 
