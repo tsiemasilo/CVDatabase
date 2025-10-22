@@ -281,7 +281,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     .cv-header {
       background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
       color: white;
-      padding: 16px 32px;
+      padding: 12px 32px;
       margin-bottom: 0;
     }
     .header-flex {
@@ -381,7 +381,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     .skills-page-header {
       background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
       color: white;
-      padding: 16px 32px;
+      padding: 12px 32px;
       margin: -32px -32px 32px -32px;
     }
     
@@ -771,7 +771,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             position: 'relative'
           }}>
             {/* Header with Alteram Logo and Branding */}
-            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4 print-avoid-break">
+            <div className="bg-gradient-to-r from-orange-300 to-orange-400 print-avoid-break" style={{ padding: '12px 32px' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img 
@@ -1140,7 +1140,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             position: 'relative'
           }}>
             {/* Header with Alteram Logo and Branding - Page 2 */}
-            <div className="bg-gradient-to-r from-orange-300 to-orange-400 px-8 py-4">
+            <div className="bg-gradient-to-r from-orange-300 to-orange-400" style={{ padding: '12px 32px' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <img 
@@ -1266,7 +1266,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               </div>
 
               {/* Footer for Page 2 - Flex positioned at bottom */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
+              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '80px' }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
