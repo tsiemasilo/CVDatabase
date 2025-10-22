@@ -611,7 +611,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
                 .cv-page {
                   display: flex !important;
                   flex-direction: column !important;
-                  min-height: 297mm !important;
+                  min-height: 260mm !important;
                   width: 210mm !important;
                   max-width: 210mm !important;
                   position: relative !important;
@@ -657,7 +657,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               pageContainers.forEach((page) => {
                 (page as HTMLElement).style.display = 'flex';
                 (page as HTMLElement).style.flexDirection = 'column';
-                (page as HTMLElement).style.minHeight = '297mm';
+                (page as HTMLElement).style.minHeight = '260mm';
                 (page as HTMLElement).style.width = '210mm';
               });
             }
@@ -762,7 +762,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           {/* Page 1 - Complete page with header, content, and footer */}
           <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break page-break-after" style={{ 
             maxWidth: '210mm',
-            minHeight: '297mm',
+            minHeight: '260mm',
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3',
@@ -1131,7 +1131,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           {/* Page 2 - Skills Section */}
           <div className="cv-page bg-white print:max-w-none print:shadow-none a4-optimized no-page-break" style={{ 
             maxWidth: '210mm',
-            minHeight: '297mm',
+            minHeight: '260mm',
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3',
