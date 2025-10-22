@@ -423,11 +423,11 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     /* Footer */
     .cv-footer {
       text-align: center;
-      padding: 24px 16px;
+      padding: 20px 16px;
       border-top: 4px solid #f97316;
       background: linear-gradient(135deg, #fff5f0 0%, #ffedd5 100%);
       border-radius: 8px;
-      margin-top: 40px;
+      margin-top: 24px;
     }
     .footer-text {
       font-size: 13px;
@@ -437,7 +437,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
     .footer-names {
       font-size: 11px;
       color: #6b7280;
-      margin-top: 6px;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -726,9 +726,8 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           lineHeight: '1.3'
         }}>
           {/* Page 1 - Complete page with header, content, and footer */}
-          <div className="bg-white print:max-w-none print:shadow-none a4-optimized no-page-break flex flex-col" style={{ 
+          <div className="bg-white print:max-w-none print:shadow-none a4-optimized no-page-break" style={{ 
             maxWidth: '210mm',
-            minHeight: '297mm',
             margin: '0 auto',
             fontSize: '13px',
             lineHeight: '1.3'
@@ -761,7 +760,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
           </div>
         
-          <div className="p-4 space-y-3 font-sans relative flex-grow flex flex-col">
+          <div className="p-3 space-y-2 font-sans relative">
             {/* Background watermark */}
             <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
               <img 
@@ -771,7 +770,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
               />
             </div>
             
-            <div className="relative z-10 space-y-2 flex-grow">
+            <div className="relative z-10 space-y-2">
               {/* Name and ID Section */}
               <div className="space-y-1">
                 <p className="text-base font-medium text-gray-800 leading-snug">
@@ -1069,7 +1068,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           )}
 
               {/* Footer for Page 1 */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg mt-auto page-break-after">
+              <div className="text-center pt-4 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-4 page-break-after">
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
