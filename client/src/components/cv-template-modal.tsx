@@ -1065,7 +1065,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
           )}
 
               {/* Footer for Page 1 */}
-              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">
+              <div className="text-center pt-6 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg page-break-after">
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
