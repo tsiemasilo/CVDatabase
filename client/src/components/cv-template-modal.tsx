@@ -427,7 +427,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
       border-top: 4px solid #f97316;
       background: linear-gradient(135deg, #fff5f0 0%, #ffedd5 100%);
       border-radius: 8px;
-      margin-top: 24px;
+      margin-top: 80px;
     }
     .footer-text {
       font-size: 13px;
@@ -1108,7 +1108,7 @@ export default function CVTemplateModal({ record, onClose }: CVTemplateModalProp
             </div>
 
               {/* Footer for Page 1 - Flex positioned at bottom */}
-              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg mt-auto no-page-break" style={{ flexShrink: 0 }}>
+              <div className="text-center pt-8 border-t-4 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg no-page-break" style={{ flexShrink: 0, marginTop: '80px' }}>
                 <div className="flex items-center justify-center space-x-4">
                   <img 
                     src={alteramLogoPath} 
