@@ -523,7 +523,18 @@ export default function CaptureRecord() {
     
     // Add slash after 2 digits
     if (digits.length >= 2) {
-      return digits.slice(0, 2) + '/' + digits.slice(2, 6);
+      let month = digits.slice(0, 2);
+      const year = digits.slice(2, 6);
+      
+      // Validate month (01-12)
+      const monthNum = parseInt(month, 10);
+      if (monthNum > 12) {
+        month = '12';
+      } else if (monthNum === 0) {
+        month = '01';
+      }
+      
+      return month + '/' + year;
     }
     return digits;
   };
@@ -925,11 +936,21 @@ export default function CaptureRecord() {
         newErrors[`workExperience${index}StartDate`] = "Start date is required";
       } else if (!/^\d{2}\/\d{4}$/.test(exp.startDate)) {
         newErrors[`workExperience${index}StartDate`] = "Please use MM/YYYY format (e.g., 01/2020)";
+      } else {
+        const month = parseInt(exp.startDate.slice(0, 2), 10);
+        if (month < 1 || month > 12) {
+          newErrors[`workExperience${index}StartDate`] = "Month must be between 01 and 12";
+        }
       }
       if (!exp.isCurrentRole && !exp.endDate.trim()) {
         newErrors[`workExperience${index}EndDate`] = "End date is required for non-current roles";
       } else if (!exp.isCurrentRole && exp.endDate && !/^\d{2}\/\d{4}$/.test(exp.endDate)) {
         newErrors[`workExperience${index}EndDate`] = "Please use MM/YYYY format (e.g., 12/2023)";
+      } else if (!exp.isCurrentRole && exp.endDate) {
+        const month = parseInt(exp.endDate.slice(0, 2), 10);
+        if (month < 1 || month > 12) {
+          newErrors[`workExperience${index}EndDate`] = "Month must be between 01 and 12";
+        }
       }
     });
 
