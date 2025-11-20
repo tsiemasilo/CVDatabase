@@ -210,6 +210,7 @@ interface DepartmentRole {
 export default function CaptureRecord() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [urlSearchParams, setUrlSearchParams] = useState(window.location.search);
   
   // Force clear form function
   const clearForm = () => {
@@ -242,6 +243,33 @@ export default function CaptureRecord() {
     });
     console.log('Form manually cleared');
   };
+
+  // Update URL search params when they change or when component receives focus
+  useEffect(() => {
+    // Check URL params when component mounts or re-renders
+    setUrlSearchParams(window.location.search);
+    
+    const handleLocationChange = () => {
+      setUrlSearchParams(window.location.search);
+    };
+    
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handleLocationChange);
+    
+    // Listen for custom event from navigation (for SPA navigation)
+    const checkUrlParams = () => setUrlSearchParams(window.location.search);
+    window.addEventListener('urlchange', checkUrlParams);
+    
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('urlchange', checkUrlParams);
+    };
+  }, []);
+  
+  // Also check URL params whenever the component is shown (tab changes)
+  useEffect(() => {
+    setUrlSearchParams(window.location.search);
+  }, []);
 
   // Inject custom checkbox styles
   useEffect(() => {
@@ -288,13 +316,37 @@ export default function CaptureRecord() {
 
   // Detect edit mode from URL parameters
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(urlSearchParams);
     const editId = urlParams.get('edit');
     if (editId) {
       setIsEditMode(true);
       setEditRecordId(parseInt(editId));
+    } else {
+      // Reset edit mode if no edit parameter
+      setIsEditMode(false);
+      setEditRecordId(null);
     }
+  }, [urlSearchParams]);
+
+  // Cleanup: Clear form data and reset edit state when component unmounts or when exiting edit mode
+  useEffect(() => {
+    return () => {
+      // Component unmounting - clear everything
+      console.log('CaptureRecord unmounting - clearing edit state and form data');
+      setIsEditMode(false);
+      setEditRecordId(null);
+      clearForm();
+    };
   }, []);
+
+  // Clear form data when exiting edit mode (edit parameter removed from URL)
+  useEffect(() => {
+    if (!isEditMode && editRecordId === null) {
+      // We've exited edit mode - clear the form
+      console.log('Exited edit mode - clearing form data');
+      clearForm();
+    }
+  }, [isEditMode, editRecordId]);
 
   // Fetch existing record data when in edit mode
   const { data: existingRecord, isLoading: isLoadingRecord } = useQuery<CVRecord>({

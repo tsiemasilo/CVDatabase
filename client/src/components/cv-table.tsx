@@ -13,6 +13,7 @@ import { Eye, Edit, Trash2, ChevronLeft, ChevronRight, Download, FileText, Histo
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
+import { useAppContext } from "@/contexts/AppContext";
 import CVTemplateModal from "./cv-template-modal";
 import { VersionHistoryModal } from "./version-history-modal";
 
@@ -47,6 +48,7 @@ const formatPhoneNumber = (phone: string) => {
 
 export default function CVTable({ records, isLoading, onRefetch }: CVTableProps) {
   const { permissions } = useRoleAccess();
+  const { setActiveTab } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CVRecord; direction: 'asc' | 'desc' }>({ key: 'submittedAt', direction: 'desc' });
   const [viewingRecord, setViewingRecord] = useState<CVRecord | null>(null);
@@ -294,21 +296,36 @@ export default function CVTable({ records, isLoading, onRefetch }: CVTableProps)
   };
 
   const handleEdit = (record: CVRecord) => {
-    setEditingRecord(record);
-    setEditFormData({
-      name: record.name,
-      surname: record.surname || "",
-      email: record.email,
-      phone: record.phone || "",
-      position: record.position || "",
-      roleTitle: record.roleTitle || "",
-      department: record.department || "",
-      qualifications: record.qualifications || "",
-      experience: record.experience?.toString() || "",
-      sapKLevel: record.sapKLevel || "",
-      skills: record.skills || "",
-      status: record.status
-    });
+    if (permissions.canCaptureRecords) {
+      // For users who can capture records, navigate to the Capture record page with edit parameter
+      // Preserve existing query parameters (like success) when adding edit parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('edit', record.id.toString());
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+      window.history.pushState({}, '', newUrl);
+      
+      // Dispatch custom event to notify components of URL change
+      window.dispatchEvent(new Event('urlchange'));
+      
+      setActiveTab("Capture record");
+    } else {
+      // For users without capture permission, use the inline edit modal
+      setEditingRecord(record);
+      setEditFormData({
+        name: record.name,
+        surname: record.surname || "",
+        email: record.email,
+        phone: record.phone || "",
+        position: record.position || "",
+        roleTitle: record.roleTitle || "",
+        department: record.department || "",
+        qualifications: record.qualifications || "",
+        experience: record.experience?.toString() || "",
+        sapKLevel: record.sapKLevel || "",
+        skills: record.skills || "",
+        status: record.status
+      });
+    }
   };
 
   const handleUpdate = () => {

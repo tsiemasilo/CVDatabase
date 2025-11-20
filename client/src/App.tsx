@@ -65,14 +65,53 @@ function AppContent() {
     setIsSuccessPage(success === 'true' || !!recordId);
   }, []);
   
-  // Set initial tab based on user role
+  // Set initial tab based on user role or URL parameters
   useEffect(() => {
-    if (user && user.role === 'user') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editParam = urlParams.get('edit');
+    
+    // If there's an edit parameter, go to Capture record page regardless of role
+    if (editParam) {
+      setActiveTab("Capture record");
+    } else if (user && user.role === 'user') {
       setActiveTab("Capture record");
     } else if (user && (user.role === 'admin' || user.role === 'manager')) {
       setActiveTab("Landing page");
     }
   }, [user, setActiveTab]);
+
+  // Listen for browser back/forward navigation (popstate) and update activeTab based on URL
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const editParam = urlParams.get('edit');
+      const success = urlParams.get('success');
+      const recordId = urlParams.get('recordId');
+      
+      console.log('Browser navigation detected, URL params:', { editParam, success, recordId });
+      
+      // Update success page state
+      setIsSuccessPage(success === 'true' || !!recordId);
+      
+      // Update active tab based on URL parameters
+      if (editParam) {
+        setActiveTab("Capture record");
+      } else if (!success && !recordId && user) {
+        // No special params - go to default tab for user role
+        if (user.role === 'user') {
+          setActiveTab("Capture record");
+        } else if (user.role === 'admin' || user.role === 'manager') {
+          setActiveTab("Landing page");
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [setActiveTab, user]);
 
   // Show loading spinner while checking authentication
   if (isLoading) {
