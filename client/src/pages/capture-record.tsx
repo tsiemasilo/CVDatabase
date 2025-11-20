@@ -37,6 +37,57 @@ interface CVRecord {
   skills?: string;
 }
 
+// South African ID Number validation and gender extraction
+const validateSAID = (idNumber: string): boolean => {
+  if (!/^\d{13}$/.test(idNumber)) return false;
+  
+  // Extract date components
+  const year = parseInt(idNumber.substring(0, 2), 10);
+  const month = parseInt(idNumber.substring(2, 4), 10);
+  const day = parseInt(idNumber.substring(4, 6), 10);
+  
+  // Validate date components
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+  
+  // South African ID checksum algorithm
+  // Sum odd-position digits (positions 1, 3, 5, 7, 9, 11)
+  let oddSum = 0;
+  for (let i = 0; i < 12; i += 2) {
+    oddSum += parseInt(idNumber[i], 10);
+  }
+  
+  // Concatenate even-position digits (positions 2, 4, 6, 8, 10, 12)
+  let evenDigits = '';
+  for (let i = 1; i < 12; i += 2) {
+    evenDigits += idNumber[i];
+  }
+  
+  // Double the concatenated even digits and sum the result's digits
+  const doubled = parseInt(evenDigits, 10) * 2;
+  let evenSum = 0;
+  for (const digit of doubled.toString()) {
+    evenSum += parseInt(digit, 10);
+  }
+  
+  // Calculate total and verify check digit
+  const total = oddSum + evenSum;
+  const checkDigit = parseInt(idNumber[12], 10);
+  const calculatedCheckDigit = (10 - (total % 10)) % 10;
+  
+  return checkDigit === calculatedCheckDigit;
+};
+
+const extractGenderFromSAID = (idNumber: string): string | null => {
+  if (!validateSAID(idNumber)) return null;
+  
+  // Gender is determined by digits 7-10 (index 6-9)
+  const genderDigit = parseInt(idNumber.substring(6, 10), 10);
+  
+  // 0000-4999 = Female, 5000-9999 = Male
+  return genderDigit < 5000 ? "Female" : "Male";
+};
+
 // Custom checkbox styles and dropdown z-index fix
 const checkboxStyles = `
   .checkbox-container {
@@ -917,6 +968,8 @@ export default function CaptureRecord() {
       newErrors.idPassportNumber = "ID/Passport number is required";
     } else if (!/^\d{13}$/.test(formData.idPassportNumber)) {
       newErrors.idPassportNumber = "ID/Passport number must be exactly 13 digits";
+    } else if (!validateSAID(formData.idPassportNumber)) {
+      newErrors.idPassportNumber = "Invalid South African ID number";
     }
     if (!formData.gender) newErrors.gender = "Gender is required";
     if (!formData.yearsOfExperience.trim()) newErrors.yearsOfExperience = "Years of experience is required";
@@ -1175,6 +1228,14 @@ export default function CaptureRecord() {
                       // Only allow digits and limit to 13 characters
                       const value = e.target.value.replace(/\D/g, '').slice(0, 13);
                       handleInputChange("idPassportNumber", value);
+                      
+                      // Auto-populate gender when valid ID is entered
+                      if (value.length === 13) {
+                        const detectedGender = extractGenderFromSAID(value);
+                        if (detectedGender) {
+                          handleInputChange("gender", detectedGender.toLowerCase());
+                        }
+                      }
                     }}
                     className={errors.idPassportNumber ? "border-red-500" : ""}
                     placeholder="Enter 13-digit ID number"
@@ -1183,6 +1244,9 @@ export default function CaptureRecord() {
                     inputMode="numeric"
                   />
                   {errors.idPassportNumber && <p className="text-red-500 text-sm mt-1">{errors.idPassportNumber}</p>}
+                  {formData.idPassportNumber.length === 13 && validateSAID(formData.idPassportNumber) && (
+                    <p className="text-green-600 text-sm mt-1">✓ Valid South African ID number</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="gender">Gender *</Label>
